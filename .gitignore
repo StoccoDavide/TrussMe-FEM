@@ -1,0 +1,6 @@
+# Maple
+*.mla
+*.bak
+
+# MacOS
+.DS_Store
