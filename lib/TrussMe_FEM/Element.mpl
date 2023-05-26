@@ -40,17 +40,21 @@ export GetSpringStiffness::static := proc({
   local K_x, K_y, K_z, T_x, T_y, T_z;
 
   # Retrieve the translational stiffnesses
-  if type(K, list(algebraic)) then
+  if type(K, list(algebraic)) and evalb(nops(K) = 3) then
     K_x := K[1]; K_y := K[2]; K_z := K[3];
-  else
+  elif type(K, algebraic) then
     K_x := K; K_y := K; K_z := K;
+  else
+    error "<K> must be a list of 3 elements or a single element.";
   end if;
 
   # Retrieve the torsional stiffnesses
-  if type(T, list(algebraic)) then
+  if type(T, list(algebraic)) and evalb(nops(T) = 3) then
     T_x := T[1]; T_y := T[2]; T_z := T[3];
-  else
+  elif type(T, algebraic) then
     T_x := T; T_y := T; T_z := T;
+  else
+    error "<T> must be a list of 3 elements or a single element.";
   end if;
 
   # Return the stiffness matrix
@@ -77,19 +81,21 @@ export GetRodStiffness::static := proc({
   E::algebraic,
   G::algebraic,
   L::algebraic,
-  J::algebraic,
+  I::list(algebraic),
   }, $)::STIFFNESS;
 
-  description "Get the 12x12 stiffness matrix of a rod (only axial-stiffness) "
+  description "Get the stiffness matrix of a rod (only axial-stiffness) "
     "given the cross-section area <A>, the Young's modulus <E>, the shear "
-    "modulus <G>, the length <L>, and the torsional constant <J>.";
+    "modulus <G>, the length <L>, and the inertia of the cross-section "
+    "<I_x, I_y, I_z>.";
 
-  local EA_L, GJ_L, EIy_L3, EIy_L2, EIy_L1, EIz_L3, EIz_L2, EIz_L1;
+  if evalb(nops(I) <> 3) then
+    error "<I> must be a list of 3 elements.";
+  end if;
 
-  EA_L = E*A/L; GJ_L = G*J/L;
   return TrussMe_FEM:-GetSpringStiffness(
-    parse("K_x") = EA_L, parse("K_y") = 0, parse("K_z") = 0,
-    parse("T_x") = GJ_L, parse("T_y") = 0, parse("T_z") = 0
+    parse("K_x") = E*A/L,           parse("K_y") = 0, parse("K_z") = 0,
+    parse("T_x") = G*(I[1]+I[2])/L, parse("T_y") = 0, parse("T_z") = 0
   );
 
 end proc: # GetRodStiffness
@@ -101,18 +107,23 @@ export GetBeamStiffness::static := proc({
   E::algebraic,
   G::algebraic,
   L::algebraic,
-  I_y::list(algebraic),
-  I_z::list(algebraic),
-  J::algebraic,
+  I::list(algebraic),
   }, $)::STIFFNESS;
 
-  description "Get the stiffness matrix o";
+  description "Get the stiffness matrix of a rod (only axial-stiffness) "
+    "given the cross-section area <A>, the Young's modulus <E>, the shear "
+    "modulus <G>, the length <L>, and the inertia of the cross-section "
+    "<I_x, I_y, I_z>.";
 
   local EA_L, GJ_L, EIy_L3, EIy_L2, EIy_L1, EIz_L3, EIz_L2, EIz_L1;
 
-  EA_L = E*A/L; GJ_L = G*J/L;
-  EIy_L3 := E*I_y/L^3; EIy_L2 := E*I_y/L^2; EIy_L1 := E*I_y/L;
-  EIz_L3 := E*I_z/L^3; EIz_L2 := E*I_z/L^2; EIz_L1 := E*I_z/L;
+  if evalb(nops(I) <> 3) then
+    error "<I> must be a list of 3 elements.";
+  end if;
+
+  EA_L := E*A/L; GJ_L := G*(I[1]+I[2])/L;
+  EIy_L3 := E*I[2]/L^3; EIy_L2 := E*I[2]/L^2; EIy_L1 := E*I[2]/L;
+  EIz_L3 := E*I[2]/L^3; EIz_L2 := E*I[2]/L^2; EIz_L1 := E*I[2]/L;
   return <
     <EA_L, 0, 0, 0, 0, 0, -EA_L, 0, 0, 0, 0, 0>,
     <0, 12*EIz_L3, 0, 0, 0, 6*EIz_L2, 0, -12*EIz_L3, 0, 0, 0, 6*EIz_L2>,
