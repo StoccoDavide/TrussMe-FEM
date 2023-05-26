@@ -71,11 +71,12 @@ TrussMe_FEM := module()
     end if;
 
     # Define module types
-    TypeTools:-AddType('FRAME',  TrussMe_FEM:-IsFrame);  protect('FRAME');
-    TypeTools:-AddType('VECTOR', TrussMe_FEM:-IsVector); protect('VECTOR');
-    TypeTools:-AddType('EARTH',  TrussMe_FEM:-IsEarth);  protect('EARTH');
-    TypeTools:-AddType('NODE',   TrussMe_FEM:-IsNode);   protect('NODE');
-    #TypeTools:-AddType('ELEMENT', TrussMe_FEM:-IsElement); protect('ELEMENT')
+    TypeTools:-AddType('FRAME',   TrussMe_FEM:-IsFRAME);   protect('FRAME');
+    TypeTools:-AddType('VECTOR',  TrussMe_FEM:-IsVECTOR);  protect('VECTOR');
+    TypeTools:-AddType('POINT',   TrussMe_FEM:-IsPOINT);   protect('POINT');
+    TypeTools:-AddType('EARTH',   TrussMe_FEM:-IsEARTH);   protect('EARTH');
+    TypeTools:-AddType('NODE',    TrussMe_FEM:-IsNODE);    protect('NODE');
+    TypeTools:-AddType('ELEMENT', TrussMe_FEM:-IsELEMENT); protect('ELEMENT')
     #TypeTools:-AddType('FORCE', TrussMe_FEM:-IsForce); protect('FORCE')
     #TypeTools:-AddType('MOMENT', TrussMe_FEM:-IsMoment); protect('MOMENT')
     #TypeTools:-AddType('QFORCE', TrussMe_FEM:-IsQForce); protect('QFORCE')
@@ -356,7 +357,7 @@ TrussMe_FEM := module()
     description "Set ground reference frame to <ground>.";
 
     _self:-m_ground := ground;
-    if (_self:-WarningMode) then
+    if _self:-WarningMode then
       WARNING("ground reference is changed.");
     end if;
     _self:-m_earth["frame"] := ground;
@@ -404,88 +405,57 @@ TrussMe_FEM := module()
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  export IsEarth::static := proc(
+  export IsEARTH::static := proc(
     var::anything,
     $)::boolean;
 
     description "Check if the variable <var> is of EARTH type.";
 
     return type(var, table) and evalb(var["type"] = EARTH);
-  end proc: # IsEarth
+  end proc: # IsEARTH
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  export MakeMaterial::static := proc({
-      name::string               := "DeafultSteel",
-      elastic_modulus::algebraic := 210.0e+09,
-      poisson_ratio::algebraic   := 0.3,
-      shear_modulus::algebraic   := elastic_modulus/(2*(1+poisson_ratio)),
-      density::algebraic         := 7.4e+03
-    }, $)::MATERIAL;
-
-    description "Define a MATERIAL object with inputs: name of the material "
-      "<name>, elastic modulus <elastic_modulus> (default = 210.0E9 (Pa)), "
-      "Poisson's ratio <poisson_ratio> (default = 0.3 (-)), shear modulus "
-      "<shear_modulus> (default = E/(2*(1+nu))), density <density> (default = "
-      "7.4E3 (kg/m^3)).";
-
-    return table({
-      "type"            = MATERIAL,
-      "name"            = name,
-      "elastic_modulus" = elastic_modulus,
-      "poisson_ratio"   = poisson_ratio,
-      "shear_modulus"   = shear_modulus,
-      "density"         = density
-    });
-  end proc: # MakeMaterial
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export IsMaterial := proc(
-    obj::anything,
-    $)::boolean;
-
-    description "Check if the variable <var> is of MATERIAL type.";
-
-    return type(obj, table) and evalb(var["type"] = MATERIAL);
-  end proc: # IsMaterial
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export MakeNode::static := proc({
-    name::string,
-    constrained_dof::list,
-    coords::VECTOR,
-    RF::FRAME := ground,
-    }, $)::NODE;
-
-    description "Define a MATERIAL object with inputs: name of the material "
-      "<name>, elastic modulus <elastic_modulus> (default = 210.0E9 (Pa)), "
-      "Poisson's ratio <poisson_ratio> (default = 0.3 (-)), shear modulus "
-      "<shear_modulus> (default = E/(2*(1+nu))), density <density> (default = "
-      "7.4E3 (kg/m^3)).";
-
-    return table({
-      "type"  = NODE,
-      "name"  = name,
-      "frame" = RF,
-    });
-  end proc: # MakeNode
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export IsNode::static := proc(
+  export Simplify::static := proc(
+    _self::TrussMe_FEM,
     var::anything,
-    $)::boolean;
+    opt::anything := NULL,
+    $)::anything;
 
-    description "Check if the variable <var> is of NODE type.";
+    description "Try to simplify an algebraic expression <var> with optional "
+      "simplification options <opt>. The simplification is performed within "
+      "the internal or indexed time limit of <TimeLimit> seconds.";
 
-    return type(var, table) and evalb(var["type"] = NODE);
-  end proc: # IsNode
+    try
+      return timelimit(
+        `if`(procname::indexed, op(procname), TrussMe_FEM:-m_TimeLimit),
+        simplify(var, opt)
+      );
+    catch "time expired":
+      if _self:-WarningMode then
+        WARNING("time limit of exceeded, raw solutions is returned.");
+      end if;
+      return var;
+    catch "division by zero":
+      error("division by zero detected.");
+      return var;
+    catch:
+      error("something went wrong.");
+    end try:
+  end proc: # Simplify
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+  export GenerateId::static := proc({
+      size::positive := 5,
+      opts::symbol   := 'alnum'
+    }, $)::string;
 
+    return StringTools:-Random(size, opts);
+  end proc: # GenerateId
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
