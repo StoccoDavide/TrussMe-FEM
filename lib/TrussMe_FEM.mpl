@@ -71,19 +71,19 @@ TrussMe_FEM := module()
     end if;
 
     # Define module types
-    TypeTools:-AddType('FRAME',   TrussMe_FEM:-IsFRAME);   protect('FRAME');
-    TypeTools:-AddType('VECTOR',  TrussMe_FEM:-IsVECTOR);  protect('VECTOR');
-    TypeTools:-AddType('POINT',   TrussMe_FEM:-IsPOINT);   protect('POINT');
-    TypeTools:-AddType('EARTH',   TrussMe_FEM:-IsEARTH);   protect('EARTH');
-    TypeTools:-AddType('NODE',    TrussMe_FEM:-IsNODE);    protect('NODE');
-    TypeTools:-AddType('ELEMENT', TrussMe_FEM:-IsELEMENT); protect('ELEMENT')
-    #TypeTools:-AddType('FORCE', TrussMe_FEM:-IsForce); protect('FORCE')
-    #TypeTools:-AddType('MOMENT', TrussMe_FEM:-IsMoment); protect('MOMENT')
-    #TypeTools:-AddType('QFORCE', TrussMe_FEM:-IsQForce); protect('QFORCE')
-    #TypeTools:-AddType('QMOMENT', TrussMe_FEM:-IsQMoment); protect('QMOMENT')
-    #TypeTools:-AddType('SUPPORT', TrussMe_FEM:-IsSupport); protect('SUPPORT')
-    #TypeTools:-AddType('JOINT',   TrussMe_FEM:-IsJoint); protect('JOINT')
-    #TypeTools:-AddType('MATERIAL', TrussMe_FEM:-IsMaterial); protect('MATERIAL')
+    TypeTools:-AddType('FRAME',    TrussMe_FEM:-IsFRAME);    protect('FRAME');
+    TypeTools:-AddType('VECTOR',   TrussMe_FEM:-IsVECTOR);   protect('VECTOR');
+    TypeTools:-AddType('POINT',    TrussMe_FEM:-IsPOINT);    protect('POINT');
+    TypeTools:-AddType('EARTH',    TrussMe_FEM:-IsEARTH);    protect('EARTH');
+    TypeTools:-AddType('NODE',     TrussMe_FEM:-IsNODE);     protect('NODE');
+    TypeTools:-AddType('SUPPORT',  TrussMe_FEM:-IsSUPPORT);  protect('SUPPORT');
+    TypeTools:-AddType('DOFS',     TrussMe_FEM:-IsDOFS);     protect('DOFS');
+    TypeTools:-AddType('ELEMENT',  TrussMe_FEM:-IsELEMENT);  protect('ELEMENT');
+    TypeTools:-AddType('FORCE',    TrussMe_FEM:-IsFORCE);    protect('FORCE');
+    TypeTools:-AddType('QFORCE',   TrussMe_FEM:-IsQFORCE);   protect('QFORCE');
+    TypeTools:-AddType('MOMENT',   TrussMe_FEM:-IsMOMENT);   protect('MOMENT');
+    TypeTools:-AddType('QMOMENT',  TrussMe_FEM:-IsQMOMENT);  protect('QMOMENT');
+    TypeTools:-AddType('MATERIAL', TrussMe_FEM:-IsMATERIAL); protect('MATERIAL');
     #TypeTools:-AddType('STRUCTURE', TrussMe_FEM:-IsStructure); protect('STRUCTURE')
     return NULL;
   end proc: # ModuleLoad
@@ -95,19 +95,18 @@ TrussMe_FEM := module()
     description "TrussMe_FEM' module unload procedure.";
 
     unprotect(
-      'EARTH',
       'FRAME',
-      'POINT',
       'VECTOR',
-      'BEAM',
-      'ROD',
-      'RIGID_BODY',
-      'FORCE',
-      'MOMENT',
-      'QFORCE',
-      'QMOMENT',
+      'POINT',
+      'EARTH',
+      'NODE',
       'SUPPORT',
-      'JOINT',
+      'DOFS',
+      'ELEMENT',
+      'FORCE',
+      'QFORCE',
+      'MOMENT',
+      'QMOMENT',
       'MATERIAL',
       'STRUCTURE'
     );
@@ -455,21 +454,12 @@ TrussMe_FEM := module()
   end proc: # GenerateId
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 $include "./lib/TrussMe_FEM/Affine.mpl"
+$include "./lib/TrussMe_FEM/Element.mpl"
+$include "./lib/TrussMe_FEM/Loads.mpl"
+$include "./lib/TrussMe_FEM/Material.mpl"
+$include "./lib/TrussMe_FEM/Node.mpl"
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

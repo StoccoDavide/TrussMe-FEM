@@ -142,23 +142,33 @@ end proc: # IsELEMENT
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeElement::static := proc({
+export MakeElement::static := proc(
   name::string,
-  node_L::NODE,
-  dofs_L::list(boolean),
-  node_R::NODE,
-  dofs_R::list(boolean),
-  material::MATERIAL,
+  L::list({NODE, DOFS}),
+  R::list({NODE, DOFS}),
   stiffness::STIFFNESS
   $)::ELEMENT;
 
+  description "Make an element with name <name> and stiffness <stiffness>, "
+    "connecting the dofs <L_dofs> on left node <L, L_dofs>, and connecting "
+    "the dofs <R_dofs> on right node <R, R_dofs>.";
+
+  if evalb(nops(L) <> 2) or not type(L[1], NODE) or not type(L[2], DOFS) then
+    error "the first element of <L> must be a NODE and the second a DOFS";
+  end if;
+  if evalb(nops(R) <> 2) or not type(R[1], NODE) or not type(R[2], DOFS) then
+    error "the first element of <R> must be a NODE and the second a DOFS";
+  end if;
+
+  # FIXME: lef node L may collide with length L change to something else
+
   return table([
-    "type"      = ELEMENT,
-    "name"      = name,
-    "id"        = TrussMe_FEM:-GenerateId(),
-    "node_L"    = [node_L["id"], dofs_L],
-    "node_R"    = [node_R["id"], dofs_R],
-    "stiffness" = stiffness
+    "type" = ELEMENT,
+    "name" = name,
+    "id"   = TrussMe_FEM:-GenerateId(),
+    "L"    = [L[1]["id"], L[2]],
+    "R"    = [R[1]["id"], R[2]],
+    "K"    = stiffness
   ]);
 end proc: # MakeElement
 
@@ -166,12 +176,21 @@ end proc: # MakeElement
 
 export MakeSpring::static := proc(
   name::string,
-  L::{NODE, list(integer)},
-  R::{NODE, list(integer)},
+  L::list({NODE, DOFS}),
+  R::list({NODE, DOFS}),
   {
   K::{algebraic, list(algebraic)},
   T::{algebraic, list(algebraic)}
   }, $)::ELEMENT;
+
+  description "Make a spring element.";
+
+  if evalb(nops(L) <> 2) or not type(L[1], NODE) or not type(L[2], DOFS) then
+    error "the first element of <L> must be a NODE and the second a DOFS";
+  end if;
+  if evalb(nops(R) <> 2) or not type(R[1], NODE) or not type(R[2], DOFS) then
+    error "the first element of <R> must be a NODE and the second a DOFS";
+  end if;
 
   return table([
     "type" = ELEMENT,
@@ -185,18 +204,35 @@ end proc: # MakeSpring
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeRod::static := proc({
+export MakeRod::static := proc(
   name::string,
-  node_L::NODE,
-  dofs_L::list(boolean),
-  node_R::NODE,
-  dofs_R::list(boolean),
-  material::MATERIAL := NULL,
-  inertia::INERTIA   := [0, 0, 0],
-  inertia::INERTIA   := [0, 0, 0],
+  L::list({NODE, DOFS}),
+  R::list({NODE, DOFS}),
+  {
+  M::MATERIAL        := NULL,
+  I::list(algebraic) := [0, 0, 0],
+  A::algebraic       := 0,
   }, $)::ELEMENT;
 
-end proc: # MakeBeam
+  if evalb(nops(L) <> 2) or not type(L[1], NODE) or not type(L[2], DOFS) then
+    error "the first element of <L> must be a NODE and the second a DOFS";
+  end if;
+  if evalb(nops(R) <> 2) or not type(R[1], NODE) or not type(R[2], DOFS) then
+    error "the first element of <R> must be a NODE and the second a DOFS";
+  end if;
+
+  return table([
+    "type" = ELEMENT,
+    "name" = name,
+    "id"   = TrussMe_FEM:-GenerateId(),
+    "L"    = [L[1]["id"], L[2]],
+    "R"    = [R[1]["id"], R[2]],
+    "K"    = TrussMe_FEM:-GetRodStiffness(
+      parse("M") = M, parse("I") = I, parse("A") = A
+    );
+  ]);
+
+end proc: # MakeRod
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

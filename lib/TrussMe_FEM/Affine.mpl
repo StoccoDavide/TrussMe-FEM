@@ -125,24 +125,48 @@ end proc: # Origin
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export Uvec::static := proc(
-  axis::{symbol, string},
-  RF::FRAME := Matrix(4, shape = identity),
-  $)::VECTOR;
+export CompX::static := proc(
+  x::{VECTOR, POINT},
+  $)::algebraic;
 
-  description "Extract the unit vector of the reference frame <RF> along the "
-    "given <axis>.";
+  description "Extract the x-axis component of the vector or point <x>.";
 
-  if evalb(axis = 'X') or evalb(axis = "X") then
-    return TrussMe_FEM:-UvecX(RF);
-  elif evalb(axis = 'Y') or evalb(axis = "Y") then
-    return TrussMe_FEM:-UvecY(RF);
-  elif evalb(axis = 'Z') or evalb(axis = "Z") then
-    return TrussMe_FEM:-UvecZ(RF);
-  else
-    error "invalid axis detected.";
-  end if;
-end proc: # Uvec
+  return x[1];
+end proc: # CompX
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export CompY::static := proc(
+  x::{VECTOR, POINT},
+  $)::algebraic;
+
+  description "Extract the y-axis component of the vector or point <x>.";
+
+  return x[2];
+end proc: # CompY
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export CompZ::static := proc(
+  x::{VECTOR, POINT},
+  $)::algebraic;
+
+  description "Extract the z-axis component of the vector or point <x>.";
+
+  return x[3];
+end proc: # CompZ
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export CompXYZ::static := proc(
+  x::{VECTOR, POINT},
+  $)::algebraic, algebraic, algebraic;
+
+  description "Extract the x, y and z-axis components of the vector or point "
+    "<x>.";
+
+  return x[1], x[2], x[3];
+end proc: # CompXYZ
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -176,6 +200,18 @@ export UvecZ::static := proc(
 
   return <RF[1..3, 3], 0>;
 end proc: # UvecZ
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export UvecXYZ::static := proc(
+  RF::FRAME := Matrix(4, shape = identity),
+  $)::VECTOR, VECTOR, VECTOR;
+
+  description "Extract the x, y and z-axis unit vectors of the reference "
+    "frame <RF>.";
+
+  return <RF[1..3, 1], 0>, <RF[1..3, 2], 0>, <RF[1..3, 3], 0>;
+end proc: # UvecXYZ
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
