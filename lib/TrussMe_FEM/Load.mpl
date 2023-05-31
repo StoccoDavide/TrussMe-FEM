@@ -41,11 +41,17 @@ export MakeLoad::static := proc(
   name::string,
   RF::FRAME,
   node::NODE,
-  comps::COMPONENTS,
+  components::COMPONENTS,
   $)::LOAD;
 
   description "Create a load with name <name> acting on the node (or its id) "
-    "<node> on the frame <RF> with components <comps>.";
+    "<node> on the frame <RF> with components <components>.";
+
+  if evalb(nops(components) <> 6) then
+    error("<displacements> must be a list of 6 elements.");
+  elif evalb(add(-(dofs-2) *~ components) <> 0) then
+    error("<displacements> must be defined only for constrained dofs.");
+  end if;
 
   return table(
     "type"       = LOAD,
@@ -53,7 +59,7 @@ export MakeLoad::static := proc(
     "id"         = TrussMe_FEM:-GenerateId(),
     "frame"      = RF,
     "node"       = node["id"],
-    "components" = comps
+    "components" = components
   );
 end proc: # MakeLoad
 

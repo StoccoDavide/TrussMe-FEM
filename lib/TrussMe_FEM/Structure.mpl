@@ -54,7 +54,8 @@ export MakeNode::static := proc(
   coords::{list, POINT, VECTOR},
   RF::FRAME := Matrix(4, shape = identity),
   {
-  dofs::DOFS := [1, 1, 1, 1, 1, 1]
+  dofs::DOFS                     := [1, 1, 1, 1, 1, 1],
+  displacements::list(algebraic) := [0, 0, 0, 0, 0, 0]
   }, $)::NODE;
 
   description "Create a node with name <name> at coordinates <coords> in the "
@@ -72,16 +73,22 @@ export MakeNode::static := proc(
     error("<coords> must be a list of 3 elements, a POINT or a VECTOR.");
   end if;
 
+  if evalb(nops(displacements) <> 6) then
+    error("<displacements> must be a list of 6 elements.");
+  elif evalb(add(dofs *~ displacements) <> 0) then
+    error("<displacements> must be defined only for constrained dofs.");
+  end if;
+
   return table([
-    "type"                = NODE,
-    "name"                = name,
-    "id"                  = TrussMe_FEM:-GenerateId(),
-    "frame"               = RF,
-    "coordinates"         = coords_tmp,
-    "dofs"                = dofs,
-    "displacements"       = [],
-    "output_reactions"    = [], # Output loads in the node frame
-    "output_deformations" = []  # Output displacements in the node frame
+    "type"                 = NODE,
+    "name"                 = name,
+    "id"                   = TrussMe_FEM:-GenerateId(),
+    "frame"                = RF,
+    "coordinates"          = coords_tmp,
+    "dofs"                 = dofs,
+    "displacements"        = displacements,
+    "output_reactions"     = [], # Output reactions in the node frame
+    "output_displacements" = []  # Output displacements in the node frame
   ]);
 end proc: # MakeNode
 
@@ -260,7 +267,7 @@ export MakeElement::static := proc(
     "the dofs <N2_dofs> on node 2 <[N2, N2_dofs]> with stiffness <K>. "
     "Optional nodes distance <distance> can be specified.";
 
-  local node_1, node_2, dofs_1, dofs_2, L, Q;
+  local node_1, node_2, dofs_1, dofs_2, L, R, Q;
 
   if evalb(nops(N1) = 1) and type(N1, NODE) then
     node_1 := N1;
@@ -428,21 +435,40 @@ end proc: # IsSTRUCTURE
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 export GetNodesDofs::static := proc(
-  node::list(NODE),
+  nodes::list(NODE),
   $)::list;
 
-  description "Get the list of dofs of the structure <s>.";
+  description "Get the list of dofs of nodes <nodes>.";
 
-  local node;
+  local dofs, i;
 
   dofs := [];
-  for node in s do
-    if type(node, NODE) then
-      dofs := [op(dofs), op(node["dofs"])];
+  for i in nodes do
+    if type(i, NODE) then
+      dofs := [op(dofs), op(i["dofs"])];
     end if;
   end do;
   return dofs;
-end proc: # GetDofs
+end proc: # GetNodesDofs
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export GetNodesDiplacements::static := proc(
+  nodes::list(NODE),
+  $)::list;
+
+  description "Get the list of dofs of nodes <nodes>.";
+
+  local displacements, i;
+
+  displacements := [];
+  for i in nodes do
+    if type(i, NODE) then
+      displacements := [op(displacements), op(i["displacements"])];
+    end if;
+  end do;
+  return displacements;
+end proc: # GetNodesDofs
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -454,15 +480,14 @@ export StiffnessTransformation::static := proc(
 
   local T, i;
 
-  T := Matrix(12 * nops(nodes), shape = identity, storage = sparse);
+  T := Matrix(6 * nops(nodes), shape = identity, storage = sparse);
   for i from 1 to nops(nodes) do
     if type(i, SUPPORT) then
-      T[12*i-11..12*i-6, 12*i-11..12*i-6] := i["frame"];
-      T[12*i-5..12*i,    12*i-5..12*i   ] := i["frame"];
+      T[6*i-5..6*i, 6*i-5..6*i] := i["frame"];
     end if;
   end do;
-  local T;
-end proc: # Transformation
+  return T;
+end proc: # StiffnessTransformation
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -474,18 +499,22 @@ export GlobalStiffness::static := proc(
   description "Compute the global stiffness matrix of the nodes <nodes> and "
     "elements <elements>.";
 
-  local K, i;
+  local K, element_k, i, j, k;
 
-  K := Matrix(12 * nops(nodes), storage = sparse);
+  K := Matrix(6 * nops(nodes), storage = sparse);
   for i from 1 to nops(elements) do
+    # Nodes positions
     j := TrussMe_FEM:-GetObjById(nodes, i["node_1"], parse("position") = true);
     k := TrussMe_FEM:-GetObjById(nodes, i["node_2"], parse("position") = true);
-    dofs_1 := <op(i["dofs_1"]), op(i["dofs_1"])>;
-    dofs_2 := <op(i["dofs_2"]), op(i["dofs_2"])>;
-    K[12*j-11..12*j, 12*j-11..12*j] := i["stiffness"].dofs_1.i["rotation"];
-    K[12*k-11..12*k, 12*k-11..12*k] := i["stiffness"].dofs_2.i["rotation"];
+    # Element stiffness contribution selecting only constrained dofs (= 0)
+    element_k := i["stiffness"].<seq(<op(i["dofs_1"]), op(i["dofs_2"])>, mn = 1..12)>;
+    element_k := element_k.i["rotation"];
+    K[6*j-5..6*j, 6*j-5..6*j] := K[6*j-5..6*j, 6*j-5..6*j] + element_k[1..6,  1..6 ];
+    K[6*j-5..6*j, 6*k-5..6*k] := K[6*j-5..6*j, 6*k-5..6*k] + element_k[1..6,  6..12];
+    K[6*k-5..6*k, 6*j-5..6*j] := K[6*k-5..6*k, 6*j-5..6*j] + element_k[6..12, 1..6 ];
+    K[6*k-5..6*k, 6*k-5..6*k] := K[6*k-5..6*k, 6*k-5..6*k] + element_k[6..12, 6..12];
   end do;
-  local K;
+  return K;
 end proc: # GlobalStiffness
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -507,3 +536,72 @@ end proc: # GlobalStiffnessPrime
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+export IsFEM::static := proc(
+  var::anything,
+  $)::boolean;
+
+  description "Check if the variable <var> is of FEM type.";
+
+  return type(var, table) and evalb(var["type"] = FEM);
+end proc: # IsFEM
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export GenerateFEM::static := proc(
+  nodes::list(NODE),
+  elements::list(ELEMENT),
+  loads::list(algebraic),
+  $)::FEM;
+
+  description "Generate a FEM structure from the nodes <nodes>, elements "
+    "<elements>, and loads <loads>.";
+
+  return table([
+    "type"                 = FEM,
+    "nodes"                = map(x -> x["id"], nodes),
+    "elements"             = map(x -> x["id"], elements),
+    "dofs"                 = TrussMe_FEM:-GetNodesDofs(nodes),
+    "displacements"        = TrussMe_FEM:-GetNodesDisplacements(nodes),
+    "stiffness"            = TrussMe_FEM:-GlobalStiffnessPrime(nodes, elements),
+    "loads"                = TrussMe_FEM:-GetNodesLoads(nodes, loads),
+    "output_reactions"     = [], # Output reactions in the ground frame
+    "output_displacements" = []  # Output displacements in the ground frame
+  ]);
+end proc: # GenerateFEM
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export SolveFEM::static := proc(
+  fem::FEM,
+  $)::nothing;
+
+  description "Solve the FEM structure <fem>.";
+
+  local dofs, d, K, f, permutation, n, K_ff, K_fs, K_sf, K_ss, f_f, f_s;
+
+  # Retrieve fem data
+  dofs := fem["dofs"];
+  d := fem["displacements"];
+  K := fem["stiffness"];
+  f := fem["loads"];
+
+  # Apply permutation to stiffness and loads to split free and constrained dofs
+  permutation := sort(dofs, `>`, output = 'permutation');
+  d := d[permutation];
+  K := K[1..-1, permutation];
+  f := f[permutation];
+
+  # Compute output displacements
+  n := add(dofs);
+  K_ff := K[1..n, 1..n];
+  K_fs := K[1..n, n+1..-1];
+  K_sf := K[n+1..-1, 1..n];
+  K_ss := K[n+1..-1, n+1..-1];
+  f_f  := f[1..n];
+  f_s  := f[n+1..-1];
+  fem["output_displacements"] := LinearAlgebra:-LinearSolve(K_ff, f_f - K_fs.d);
+  fem["output_reactions"]     := K_sf.fem["output_displacements"] + K_ss.f_s;
+  return NULL;
+end proc: # SolveFEM
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
