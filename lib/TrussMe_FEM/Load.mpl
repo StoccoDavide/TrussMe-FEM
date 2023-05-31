@@ -15,46 +15,69 @@
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsFORCE::static := proc(
+export IsLOAD::static := proc(
   var::anything,
   $)::boolean;
 
-  description "Check if the variable <var> is of FORCE type.";
+  description "Check if the variable <var> is of LOAD type.";
 
-  return type(var, table) and evalb(var["type"] = FORCE);
-end proc: # IsFORCE
+  return type(var, LOAD);
+end proc: # IsLOAD
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsQFORCE::static := proc(
+export IsCOMPONENTS::static := proc(
   var::anything,
   $)::boolean;
 
-  description "Check if the variable <var> is of QFORCE type.";
+  description "Check if the variable <var> is of COMPONENTS type.";
 
-  return type(var, table) and evalb(var["type"] = QFORCE);
-end proc: # IsQFORCE
+  return type(var, list({algebraic, procedure})) and evalb(nops(var) = 6);
+end proc: # IsCOMPONENTS
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsMOMENT::static := proc(
-  var::anything,
-  $)::boolean;
+export MakeLoad::static := proc(
+  name::string,
+  RF::FRAME,
+  node::NODE,
+  comps::COMPONENTS,
+  $)::LOAD;
 
-  description "Check if the variable <var> is of MOMENT type.";
+  description "Create a load with name <name> acting on the node (or its id) "
+    "<node> on the frame <RF> with components <comps>.";
 
-  return type(var, table) and evalb(var["type"] = MOMENT);
-end proc: # IsMOMENT
+  return table(
+    "type"       = LOAD,
+    "name"       = name,
+    "id"         = TrussMe_FEM:-GenerateId(),
+    "frame"      = RF,
+    "node"       = node["id"],
+    "components" = comps
+  );
+end proc: # MakeLoad
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsQMOMENT::static := proc(
+export IsLOADS::static := proc(
   var::anything,
   $)::boolean;
 
-  description "Check if the variable <var> is of QMOMENT type.";
+  description "Check if the variable <var> is of LOADS type.";
 
-  return type(var, table) and evalb(var["type"] = QMOMENT);
-end proc: # IsQMOMENT
+  return type(var, list(LOAD));
+end proc: # IsLOADS
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export GetLocalLoads::static := proc(
+  RF::FRAME,
+  node::NODE,
+  $)::LOADS;
+
+  description "Get the loads acting on the node (or its id) <node> on the "
+    "frame <RF>.";
+
+end proc: # GetLocalLoads
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

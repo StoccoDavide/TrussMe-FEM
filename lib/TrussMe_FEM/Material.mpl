@@ -27,24 +27,24 @@ end proc: # IsMATERIAL
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 export MakeMaterial::static := proc({
-    name::string,
-    elastic_modulus::algebraic,
-    poisson_ratio::algebraic,
-    density::algebraic,
-    shear_modulus::algebraic := elastic_modulus/(2*(1+poisson_ratio))
+  name::string               := "Undefined",
+  elastic_modulus::algebraic := 0,
+  poisson_ratio::algebraic   := 0,
+  shear_modulus::algebraic   := elastic_modulus/(2*(1+poisson_ratio)),
+  density::algebraic         := 0
   }, $)::MATERIAL;
 
-  description "Define material with inputs: name <name>, elastic modulus "
-    "<elastic_modulus>, Poisson's ratio <poisson_ratio>, density <density>, "
-    "and shear modulus <shear_modulus> (default = E/(2*(1+nu))).";
+  description "Define material with inputs: name <name>, elastic modulus (E) "
+    "<elastic_modulus>, Poisson's ratio (nu) <poisson_ratio>, shear modulus "
+    "<shear_modulus> (default = E/(2*(1+nu))), and density <density>.";
 
   return table([
     "type"            = MATERIAL,
     "name"            = name,
     "id"              = TrussMe_FEM:-GenerateId(),
     "elastic_modulus" = elastic_modulus,
-    "poisson_ratio"   = poisson_ratio,
     "shear_modulus"   = shear_modulus,
+    "poisson_ratio"   = poisson_ratio,
     "density"         = density
   ]);
 end proc: # MakeMaterial

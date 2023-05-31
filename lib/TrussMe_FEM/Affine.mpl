@@ -60,6 +60,17 @@ end proc: # Translate
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+export  Translation::static := proc(
+  RF::FRAME,
+  $)::Vector;
+
+  description "Extract the translation vector of the reference frame <RF>.";
+
+  return RF[1..3, 4];
+end proc: # Translation
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 export Rotate::static := proc(
   axis::{symbol, string},
   angle::algebraic,
@@ -87,6 +98,17 @@ export Rotate::static := proc(
     error "invalid axis detected.";
   end if;
 end proc: # Rotate
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export Rotation::static := proc(
+  RF::FRAME,
+  $)::Matrix;
+
+  description "Extract the rotation vector of the reference frame <RF>.";
+
+  return RF[1..3, 1..3];
+end proc: # Rotation
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

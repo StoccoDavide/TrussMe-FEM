@@ -71,20 +71,19 @@ TrussMe_FEM := module()
     end if;
 
     # Define module types
-    TypeTools:-AddType('FRAME',    TrussMe_FEM:-IsFRAME);    protect('FRAME');
-    TypeTools:-AddType('VECTOR',   TrussMe_FEM:-IsVECTOR);   protect('VECTOR');
-    TypeTools:-AddType('POINT',    TrussMe_FEM:-IsPOINT);    protect('POINT');
-    TypeTools:-AddType('EARTH',    TrussMe_FEM:-IsEARTH);    protect('EARTH');
-    TypeTools:-AddType('NODE',     TrussMe_FEM:-IsNODE);     protect('NODE');
-    TypeTools:-AddType('SUPPORT',  TrussMe_FEM:-IsSUPPORT);  protect('SUPPORT');
-    TypeTools:-AddType('DOFS',     TrussMe_FEM:-IsDOFS);     protect('DOFS');
-    TypeTools:-AddType('ELEMENT',  TrussMe_FEM:-IsELEMENT);  protect('ELEMENT');
-    TypeTools:-AddType('FORCE',    TrussMe_FEM:-IsFORCE);    protect('FORCE');
-    TypeTools:-AddType('QFORCE',   TrussMe_FEM:-IsQFORCE);   protect('QFORCE');
-    TypeTools:-AddType('MOMENT',   TrussMe_FEM:-IsMOMENT);   protect('MOMENT');
-    TypeTools:-AddType('QMOMENT',  TrussMe_FEM:-IsQMOMENT);  protect('QMOMENT');
-    TypeTools:-AddType('MATERIAL', TrussMe_FEM:-IsMATERIAL); protect('MATERIAL');
-    #TypeTools:-AddType('STRUCTURE', TrussMe_FEM:-IsStructure); protect('STRUCTURE')
+    TypeTools:-AddType('FRAME',     TrussMe_FEM:-IsFRAME);     protect('FRAME');
+    TypeTools:-AddType('VECTOR',    TrussMe_FEM:-IsVECTOR);    protect('VECTOR');
+    TypeTools:-AddType('POINT',     TrussMe_FEM:-IsPOINT);     protect('POINT');
+    #TypeTools:-AddType('EARTH',     TrussMe_FEM:-IsEARTH);     protect('EARTH');
+    TypeTools:-AddType('MATERIAL',  TrussMe_FEM:-IsMATERIAL);  protect('MATERIAL');
+    TypeTools:-AddType('DOFS',      TrussMe_FEM:-IsDOFS);      protect('DOFS');
+    TypeTools:-AddType('SUPPORT',   TrussMe_FEM:-IsSUPPORT);   protect('SUPPORT');
+    TypeTools:-AddType('NODE',      TrussMe_FEM:-IsNODE);      protect('NODE');
+    TypeTools:-AddType('STIFFNESS', TrussMe_FEM:-IsSTIFFNESS); protect('STIFFNESS');
+    TypeTools:-AddType('ELEMENT',   TrussMe_FEM:-IsELEMENT);   protect('ELEMENT');
+    TypeTools:-AddType('STRUCTURE', TrussMe_FEM:-IsSTRUCTURE); protect('STRUCTURE');
+    TypeTools:-AddType('LOAD',      TrussMe_FEM:-IsLOAD);      protect('LOAD');
+    TypeTools:-AddType('LOADS',     TrussMe_FEM:-IsLOADS);     protect('LOADS');
     return NULL;
   end proc: # ModuleLoad
 
@@ -415,6 +414,87 @@ TrussMe_FEM := module()
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+  export GetObjByName := proc(
+    objs::list(anything),
+    name::string,
+    $)::anything;
+
+    description "Get object which field name is <name> from a list or set of "
+      "objects <objs>.";
+
+    local out, pos, i;
+
+    out := NULL;
+    for i from 1 to nops(objs) do
+      if evalb(objs[i]["name"] = name) then
+        out := eval(objs[i]); # Do not remove eval: eval(table)
+        pos := i;
+        break;
+      end if;
+    end do;
+
+    if (_nresults = 2) then
+      return eval(out), pos;
+    else
+      return eval(out);
+    end if;
+  end proc: # GetObjByName
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  export GetObjById := proc(
+    objs::list(anything),
+    id::string, {
+    position::boolean := false
+    }, $)::anything;
+
+    description "Get object which field id is <id> from a list or set of "
+      "objects <objs>.";
+
+    local out, pos, i;
+
+    out := NULL;
+    for i from 1 to nops(objs) do
+      if evalb(objs[i]["id"] = id) then
+        out := [op(out), `if`(position, i, eval(objs[i]))]; # Do not remove eval: eval(table)
+        break;
+      end if;
+    end do;
+    return eval(out);
+  end proc: # GetObjByName
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  export GetObjsByType := proc(
+    objs::list(anything),
+    type_fld::{symbol, list(symbol), set(symbol)},{
+    position::boolean := false
+    }, $)::list(anything);
+
+    description "Get objects which field type is in <type_fld> from a list or "
+      "set of objects <objs>.";
+
+    local type_set, out, i;
+
+    if type(type_fld, symbol) then
+      type_set := {type_fld};
+    elif type(type_fld, list) then
+      type_set := convert(type_fld, set);
+    else
+      type_set := type_fld;
+    end if;
+
+    out := [];
+    for i from 1 to nops(objs) do
+      if type(objs[i], type_set) then
+        out := [op(out), `if`(position, i, eval(objs[i]))]; # Do not remove eval: eval(table)
+      end if;
+    end do;
+    return eval(out);
+  end proc: # GetObjsByType
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
   export Simplify::static := proc(
     _self::TrussMe_FEM,
     var::anything,
@@ -445,6 +525,17 @@ TrussMe_FEM := module()
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+  export Norm2::static := proc(
+    x::{list, Vector},
+    $)::algebraic;
+
+    description "Compute the Euclidean norm of the input vector or list <x>.";
+
+    return sqrt(add(i, i in x^~2));
+  end proc: # Norm2
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
   export GenerateId::static := proc({
       size::positive := 5,
       opts::symbol   := 'alnum'
@@ -456,10 +547,9 @@ TrussMe_FEM := module()
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 $include "./lib/TrussMe_FEM/Affine.mpl"
-$include "./lib/TrussMe_FEM/Element.mpl"
-$include "./lib/TrussMe_FEM/Loads.mpl"
 $include "./lib/TrussMe_FEM/Material.mpl"
-$include "./lib/TrussMe_FEM/Node.mpl"
+$include "./lib/TrussMe_FEM/Structure.mpl"
+$include "./lib/TrussMe_FEM/Load.mpl"
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
