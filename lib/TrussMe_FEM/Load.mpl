@@ -42,7 +42,7 @@ export MakeLoad::static := proc(
   node::NODE,
   components::COMPONENTS,
   {
-  frame::FRAME := node["frame"]
+  frame::{string, FRAME} := node["id"]
   }, $)::LOAD;
 
   description "Create a load with name <name> acting on the node (or its id) "
@@ -86,16 +86,22 @@ export GetNodalLoads::static := proc(
 
   local F, i, j, R;
 
+  printf("TrussMe_FEM:-GetNodalLoads() ... ");
   F := Vector(6 * nops(nodes), storage = sparse);
   for i from 1 to nops(loads) do
     # Node position
     j := TrussMe_FEM:-GetObjById(nodes, loads[i]["node"], parse("position") = true);
     # Node loads in node frame
-    R := (LinearAlgebra:-Transpose(nodes[j]["frame"]).loads[i]["frame"])[1..3, 1..3];
+    if evalb(loads[i]["frame"] = nodes[j]["id"]) then
+      R := LinearAlgebra:-IdentityMatrix(3);
+    else
+      R := (LinearAlgebra:-Transpose(nodes[j]["frame"]).loads[i]["frame"])[1..3, 1..3];
+    end if;
     F[6*j-5..6*j] := <
       R.<op(loads[i]["components"][1..3])>, R.<op(loads[i]["components"][4..6])>
     >;
   end do;
+  printf("DONE\n");
   return convert(F, Vector);
 end proc: # GetNodalLoads
 
