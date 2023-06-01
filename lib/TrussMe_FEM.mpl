@@ -67,23 +67,28 @@ TrussMe_FEM := module()
       end if;
     end do;
     if (lib_base_path = NULL) then
-      error "cannot find 'TrussMe_FEM' library.";
+      error("cannot find 'TrussMe_FEM' library.");
     end if;
 
     # Define module types
-    TypeTools:-AddType('FRAME',     TrussMe_FEM:-IsFRAME);     protect('FRAME');
-    TypeTools:-AddType('VECTOR',    TrussMe_FEM:-IsVECTOR);    protect('VECTOR');
-    TypeTools:-AddType('POINT',     TrussMe_FEM:-IsPOINT);     protect('POINT');
-    #TypeTools:-AddType('EARTH',     TrussMe_FEM:-IsEARTH);     protect('EARTH');
-    TypeTools:-AddType('MATERIAL',  TrussMe_FEM:-IsMATERIAL);  protect('MATERIAL');
-    TypeTools:-AddType('DOFS',      TrussMe_FEM:-IsDOFS);      protect('DOFS');
-    TypeTools:-AddType('SUPPORT',   TrussMe_FEM:-IsSUPPORT);   protect('SUPPORT');
-    TypeTools:-AddType('NODE',      TrussMe_FEM:-IsNODE);      protect('NODE');
-    TypeTools:-AddType('STIFFNESS', TrussMe_FEM:-IsSTIFFNESS); protect('STIFFNESS');
-    TypeTools:-AddType('ELEMENT',   TrussMe_FEM:-IsELEMENT);   protect('ELEMENT');
-    TypeTools:-AddType('STRUCTURE', TrussMe_FEM:-IsSTRUCTURE); protect('STRUCTURE');
-    TypeTools:-AddType('LOAD',      TrussMe_FEM:-IsLOAD);      protect('LOAD');
-    TypeTools:-AddType('LOADS',     TrussMe_FEM:-IsLOADS);     protect('LOADS');
+    TypeTools:-AddType('FRAME',      TrussMe_FEM:-IsFRAME);      protect('FRAME');
+    TypeTools:-AddType('VECTOR',     TrussMe_FEM:-IsVECTOR);     protect('VECTOR');
+    TypeTools:-AddType('POINT',      TrussMe_FEM:-IsPOINT);      protect('POINT');
+    #TypeTools:-AddType('EARTH',      TrussMe_FEM:-IsEARTH);      protect('EARTH');
+    TypeTools:-AddType('MATERIAL',   TrussMe_FEM:-IsMATERIAL);   protect('MATERIAL');
+    TypeTools:-AddType('DOFS',       TrussMe_FEM:-IsDOFS);       protect('DOFS');
+    TypeTools:-AddType('NODE',       TrussMe_FEM:-IsNODE);       protect('NODE');
+    TypeTools:-AddType('NODES',      TrussMe_FEM:-IsNODES);      protect('NODES');
+    TypeTools:-AddType('SUPPORT',    TrussMe_FEM:-IsSUPPORT);    protect('SUPPORT');
+    TypeTools:-AddType('SUPPORTS',   TrussMe_FEM:-IsSUPPORTS);   protect('SUPPORTS');
+    TypeTools:-AddType('STIFFNESS',  TrussMe_FEM:-IsSTIFFNESS);  protect('STIFFNESS');
+    TypeTools:-AddType('ELEMENT',    TrussMe_FEM:-IsELEMENT);    protect('ELEMENT');
+    TypeTools:-AddType('ELEMENTS',   TrussMe_FEM:-IsELEMENTS);   protect('ELEMENTS');
+    TypeTools:-AddType('STRUCTURE',  TrussMe_FEM:-IsSTRUCTURE);  protect('STRUCTURE');
+    TypeTools:-AddType('COMPONENTS', TrussMe_FEM:-IsCOMPONENTS); protect('COMPONENTS');
+    TypeTools:-AddType('LOAD',       TrussMe_FEM:-IsLOAD);       protect('LOAD');
+    TypeTools:-AddType('LOADS',      TrussMe_FEM:-IsLOADS);      protect('LOADS');
+    TypeTools:-AddType('FEM',        TrussMe_FEM:-IsFEM);        protect('FEM');
     return NULL;
   end proc: # ModuleLoad
 
@@ -98,16 +103,20 @@ TrussMe_FEM := module()
       'VECTOR',
       'POINT',
       'EARTH',
-      'NODE',
-      'SUPPORT',
-      'DOFS',
-      'ELEMENT',
-      'FORCE',
-      'QFORCE',
-      'MOMENT',
-      'QMOMENT',
       'MATERIAL',
-      'STRUCTURE'
+      'DOFS',
+      'NODE',
+      'NODES',
+      'SUPPORT',
+      'SUPPORTS',
+      'STIFFNESS',
+      'ELEMENT',
+      'ELEMENTS',
+      'STRUCTURE',
+      'COMPONENTS',
+      'LOAD',
+      'LOADS',
+      'FEM'
     );
     return NULL;
   end proc: # ModuleUnload
@@ -123,59 +132,6 @@ TrussMe_FEM := module()
 
 
   end proc: # ModuleCopy
-
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export Protect::static := proc()
-
-    description "Protect module type symbols.";
-
-    protect(
-      'EARTH',
-      'FRAME',
-      'POINT',
-      'VECTOR',
-      'BEAM',
-      'ROD',
-      'RIGID_BODY',
-      'FORCE',
-      'MOMENT',
-      'QFORCE',
-      'QMOMENT',
-      'SUPPORT',
-      'JOINT',
-      'MATERIAL',
-      'STRUCTURE'
-    );
-    return NULL;
-  end proc: # Protect
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export Unprotect::static := proc()
-
-    description "Unprotect module type symbols.";
-
-    unprotect(
-      'EARTH',
-      'FRAME',
-      'POINT',
-      'VECTOR',
-      'BEAM',
-      'ROD',
-      'RIGID_BODY',
-      'FORCE',
-      'MOMENT',
-      'QFORCE',
-      'QMOMENT',
-      'SUPPORT',
-      'JOINT',
-      'MATERIAL',
-      'STRUCTURE'
-    );
-    return NULL;
-  end proc: # Unprotect
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -385,7 +341,7 @@ TrussMe_FEM := module()
     if evalb(LinearAlgebra:-Dimension(g) = 3) then
       m_gravity := g;
     else
-      error "invalid gravity vector dimension.";
+      error("invalid gravity vector dimension.");
     end if;
     return NULL;
   end proc: # SetGravity
@@ -456,7 +412,7 @@ TrussMe_FEM := module()
     out := NULL;
     for i from 1 to nops(objs) do
       if evalb(objs[i]["id"] = id) then
-        out := [op(out), `if`(position, i, eval(objs[i]))]; # Do not remove eval: eval(table)
+        out := `if`(position, i, eval(objs[i])); # Do not remove eval: eval(table)
         break;
       end if;
     end do;

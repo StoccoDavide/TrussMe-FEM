@@ -26,6 +26,17 @@ end proc: # IsNODE
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+export IsNODES::static := proc(
+  var::anything,
+  $)::boolean;
+
+  description "Check if the variable <var> is of NODES type.";
+
+  return type(var, list(NODE));
+end proc: # IsNODES
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 export IsSUPPORT::static := proc(
   var::anything,
   $)::boolean;
@@ -34,6 +45,17 @@ export IsSUPPORT::static := proc(
 
   return type(var, NODE) and has(map(has, var["dofs"], 0), true);
 end proc: # IsSUPPORT
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export IsSUPPORTS::static := proc(
+  var::anything,
+  $)::boolean;
+
+  description "Check if the variable <var> is of SUPPORTS type.";
+
+  return type(var, list(SUPPORT));
+end proc: # IsSUPPORTS
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -52,16 +74,16 @@ end proc: # IsDOFS
 export MakeNode::static := proc(
   name::string,
   coords::{list, POINT, VECTOR},
-  RF::FRAME := Matrix(4, shape = identity),
   {
+  frame::FRAME                   := Matrix(4, shape = identity),
   dofs::DOFS                     := [1, 1, 1, 1, 1, 1],
   displacements::list(algebraic) := [0, 0, 0, 0, 0, 0]
   }, $)::NODE;
 
   description "Create a node with name <name> at coordinates <coords> in the "
-    "reference frame <RF>. The constraints on dofs are specified by <dofs>, "
+    "reference frame <frame>. The constraints on dofs are specified by <dofs>, "
     "where 1 means free and 0 means that the dof is constrained to the ground "
-    "in the direction given from <RF>.";
+    "in the direction given from <frame>.";
 
   local coords_tmp;
 
@@ -83,7 +105,7 @@ export MakeNode::static := proc(
     "type"                 = NODE,
     "name"                 = name,
     "id"                   = TrussMe_FEM:-GenerateId(),
-    "frame"                = RF,
+    "frame"                = frame,
     "coordinates"          = coords_tmp,
     "dofs"                 = dofs,
     "displacements"        = displacements,
@@ -94,29 +116,34 @@ end proc: # MakeNode
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeCompliantNode := proc(
+export MakeCompliantNode::static := proc(
   name::string,
   coords::{list, POINT, VECTOR},
-  RF::FRAME := Matrix(4, shape = identity),
   {
-  dofs::DOFS := [1, 1, 1, 1, 1, 1],
+  frame::FRAME                    := Matrix(4, shape = identity),
+  dofs::DOFS                      := [1, 1, 1, 1, 1, 1],
   K::{algebraic, list(algebraic)} := 0,
   T::{algebraic, list(algebraic)} := 0
   }, $)::NODE, ELEMENT, NODE;
 
   description "Create a node with name <name> at coordinates <coords> in the "
-    "reference frame <RF>. The constraints on dofs are specified by <dofs>, "
+    "reference frame <frame>. The constraints on dofs are specified by <dofs>, "
     "where 1 means free and 0 means that the dof is constrained to the ground "
-    "in the direction given from <RF>. The node is also connected to a "
+    "in the direction given from <frame>. The node is also connected to a "
     "compliant spring element with traslational stiffness <K> and torsional "
     "stiffness <T>.";
 
   local fixed, spring, compliant;
 
-  fixed     := TrussMe_FEM:-MakeNode(name, coords, RF, parse("dofs") = dofs);
-  compliant := TrussMe_FEM:-MakeNode(cat(name, "_compliant"), coords, RF);
+  fixed := TrussMe_FEM:-MakeNode(
+    name, coords, parse("frame") = frame, parse("dofs") = dofs
+  );
+  compliant := TrussMe_FEM:-MakeNode(
+    cat(name, "_compliant"), coords, parse("frame") = frame
+  );
   spring    := TrussMe_FEM:-MakeSpring(
-    cat(name, "_spring"), RF, fixed, compliant, parse("K") = K, parse("T") = T
+    cat(name, "_spring"), fixed, compliant,
+    parse("frame") = frame, parse("K") = K, parse("T") = T
   );
   return fixed, spring, compliant;
 end proc: # MakeCompliantNode
@@ -152,7 +179,7 @@ export GetSpringStiffness::static := proc(
   elif type(K, algebraic) then
     K_x := K; K_y := K; K_z := K;
   else
-    error "<K> must be a list of 3 elements or a single element.";
+    error("<K> must be a list of 3 elements or a single element.");
   end if;
 
   if type(T, list(algebraic)) and evalb(nops(T) = 3) then
@@ -160,7 +187,7 @@ export GetSpringStiffness::static := proc(
   elif type(T, algebraic) then
     T_x := T; T_y := T; T_z := T;
   else
-    error "<T> must be a list of 3 elements or a single element.";
+    error("<T> must be a list of 3 elements or a single element.");
   end if;
 
   return Matrix(
@@ -253,16 +280,28 @@ end proc: # IsELEMENT
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+export IsELEMENTS::static := proc(
+  var::anything,
+  $)::boolean;
+
+  description "Check if the variable <var> is of ELEMENTS type.";
+
+  return type(var, list(ELEMENT));
+end proc: # IsELEMENTS
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 export MakeElement::static := proc(
   name::string,
-  RF::FRAME,
   N1::{NODE, list({NODE, DOFS})},
   N2::{NODE, list({NODE, DOFS})},
-  K::STIFFNESS,{
+  K::STIFFNESS,
+  {
+  frame::FRAME        := TrussMe_FEM:-GenerateGenericFrame(name),
   distance::algebraic := -1
   }, $)::ELEMENT;
 
-  description "Make an element with name <name> on reference frame <RF>, "
+  description "Make an element with name <name> on reference frame <frame>, "
     "connecting the dofs <N1_dofs> on node 1 <[N1, N1_dofs]>, connecting "
     "the dofs <N2_dofs> on node 2 <[N2, N2_dofs]> with stiffness <K>. "
     "Optional nodes distance <distance> can be specified.";
@@ -296,7 +335,7 @@ export MakeElement::static := proc(
   end if;
 
   Q := Matrix(12, storage = sparse);
-  R := TrussMe_FEM:-Rotation(RF);
+  R := TrussMe_FEM:-Rotation(frame);
   Q[1..3,   1..3  ] := R;
   Q[4..6,   4..6  ] := R;
   Q[7..9,   7..9  ] := R;
@@ -306,7 +345,7 @@ export MakeElement::static := proc(
     "type"      = ELEMENT,
     "name"      = name,
     "id"        = TrussMe_FEM:-GenerateId(),
-    "frame"     = RF,
+    "frame"     = frame,
     "node_1"    = node_1["id"],
     "dofs_1"    = dofs_1,
     "node_2"    = node_2["id"],
@@ -321,23 +360,24 @@ end proc: # MakeElement
 
 export MakeSpring::static := proc(
   name::string,
-  RF::FRAME,
   N1::{NODE, list({NODE, DOFS})},
   N2::{NODE, list({NODE, DOFS})},
   {
   K::{algebraic, list(algebraic)} := 0,
   T::{algebraic, list(algebraic)} := 0,
+  frame::FRAME                    := TrussMe_FEM:-GenerateGenericFrame(name),
   distance::algebraic             := -1
   }, $)::ELEMENT;
 
-  description "Make a spring element with name <name> on reference frame <RF>, "
+  description "Make a spring element with name <name> on reference frame <frame>, "
     "connecting the dofs <N1_dofs> on node 1 <[N1, N1_dofs]>, connecting "
     "the dofs <N2_dofs> on node 2 <[N2, N2_dofs]> with translational "
     "stiffnesses <K> or <K_x, K_y, K_z>, and torsional stiffnesses <T> or "
     "<T_x, T_y, T_z>. Optional nodes distance <distance> can be specified.";
 
-  return TrussMe_FEM:-MakeElement(name, RF, N1, N2,
-    TrussMe_FEM:-GetSpringStiffness(K, T), parse("distance") = distance
+  return TrussMe_FEM:-MakeElement(
+    name, N1, N2, TrussMe_FEM:-GetSpringStiffness(K, T),
+    parse("frame") = frame, parse("distance") = distance
   );
 end proc: # MakeSpring
 
@@ -345,17 +385,17 @@ end proc: # MakeSpring
 
 export MakeRod::static := proc(
   name::string,
-  RF::FRAME,
   N1::{NODE, list({NODE, DOFS})},
   N2::{NODE, list({NODE, DOFS})},
   {
   material::MATERIAL       := TrussMe_FEM:-MakeCarbonSteel(),
   area::algebraic          := 0,
   inertia::list(algebraic) := [0, 0, 0],
+  frame::FRAME             := TrussMe_FEM:-GenerateGenericFrame(name),
   distance::algebraic      := -1
   }, $)::ELEMENT;
 
-  description "Make a rod element with name <name> on reference frame <RF>, "
+  description "Make a rod element with name <name> on reference frame <frame>, "
     "connecting the dofs <N1_dofs> on node 1 <[N1, N1_dofs]>, connecting "
     "the dofs <N2_dofs> on node 2 <[N2, N2_dofs]> with material <material> and "
     "cross-section area <area> and inertia <inertia>. Optional nodes distance "
@@ -376,26 +416,26 @@ export MakeRod::static := proc(
     end if;
   end if;
 
-  return TrussMe_FEM:-MakeElement(name, RF, N1, N2, TrussMe_FEM:-GetRodStiffness(
+  return TrussMe_FEM:-MakeElement(name, N1, N2, TrussMe_FEM:-GetRodStiffness(
     area, material["elastic_modulus"], material["shear_modulus"], L, op(inertia)
-  ), parse("distance") = distance);
+  ), parse("frame") = frame, parse("distance") = distance);
 end proc: # MakeRod
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 export MakeBeam::static := proc(
   name::string,
-  RF::FRAME,
   N1::{NODE, list({NODE, DOFS})},
   N2::{NODE, list({NODE, DOFS})},
   {
   material::MATERIAL       := TrussMe_FEM:-MakeCarbonSteel(),
   area::algebraic          := 0,
   inertia::list(algebraic) := [0, 0, 0],
+  frame::FRAME             := TrussMe_FEM:-GenerateGenericFrame(name),
   distance::algebraic      := -1
   }, $)::ELEMENT;
 
-  description "Make a beam element with name <name> on reference frame <RF>, "
+  description "Make a beam element with name <name> on reference frame <frame>, "
     "connecting the dofs <N1_dofs> on node 1 <[N1, N1_dofs]>, connecting "
     "the dofs <N2_dofs> on node 2 <[N2, N2_dofs]> with material <material> and "
     "cross-section area <area> and inertia <inertia>. Optional nodes distance "
@@ -416,9 +456,9 @@ export MakeBeam::static := proc(
     end if;
   end if;
 
-  return TrussMe_FEM:-MakeElement(name, RF, N1, N2, TrussMe_FEM:-GetBeamStiffness(
+  return TrussMe_FEM:-MakeElement(name, N1, N2, TrussMe_FEM:-GetBeamStiffness(
     area, material["elastic_modulus"], material["shear_modulus"], L, op(inertia)
-  ), parse("distance") = distance);
+  ), parse("frame") = frame, parse("distance") = distance);
 end proc: # MakeBeam
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -429,16 +469,16 @@ export IsSTRUCTURE::static := proc(
 
   description "Check if the variable <var> is of STRUCTURE type.";
 
-  return type(var[1], list(NODE)) and type(var[2], list(ELEMENT));
+  return type(var[1], NODES) and type(var[2], ELEMENTS);
 end proc: # IsSTRUCTURE
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export GetNodesDofs::static := proc(
-  nodes::list(NODE),
-  $)::list;
+export GetNodalDofs::static := proc(
+  nodes::NODES,
+  $)::Vector;
 
-  description "Get the list of dofs of nodes <nodes>.";
+  description "Get the vector of nodal dofs of nodes <nodes>.";
 
   local dofs, i;
 
@@ -448,16 +488,16 @@ export GetNodesDofs::static := proc(
       dofs := [op(dofs), op(i["dofs"])];
     end if;
   end do;
-  return dofs;
-end proc: # GetNodesDofs
+  return convert(dofs, Vector);
+end proc: # GetNodalDofs
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export GetNodesDiplacements::static := proc(
-  nodes::list(NODE),
-  $)::list;
+export GetNodalDisplacements::static := proc(
+  nodes::NODES,
+  $)::Vector;
 
-  description "Get the list of dofs of nodes <nodes>.";
+  description "Get the vector of nodal displacements of nodes <nodes>.";
 
   local displacements, i;
 
@@ -467,13 +507,13 @@ export GetNodesDiplacements::static := proc(
       displacements := [op(displacements), op(i["displacements"])];
     end if;
   end do;
-  return displacements;
-end proc: # GetNodesDofs
+  return convert(displacements, Vector);
+end proc: # GetNodalDisplacements
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 export StiffnessTransformation::static := proc(
-  nodes::list(NODE),
+  nodes::NODES,
   $)::Matrix;
 
   description "Compute the transformation matrix of the nodes <nodes>.";
@@ -492,8 +532,8 @@ end proc: # StiffnessTransformation
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 export GlobalStiffness::static := proc(
-  nodes::list(NODE),
-  elements::list(ELEMENT),
+  nodes::NODES,
+  elements::ELEMENTS,
   $)::Matrix;
 
   description "Compute the global stiffness matrix of the nodes <nodes> and "
@@ -504,15 +544,17 @@ export GlobalStiffness::static := proc(
   K := Matrix(6 * nops(nodes), storage = sparse);
   for i from 1 to nops(elements) do
     # Nodes positions
-    j := TrussMe_FEM:-GetObjById(nodes, i["node_1"], parse("position") = true);
-    k := TrussMe_FEM:-GetObjById(nodes, i["node_2"], parse("position") = true);
+    j := TrussMe_FEM:-GetObjById(nodes, elements[i]["node_1"], parse("position") = true);
+    k := TrussMe_FEM:-GetObjById(nodes, elements[i]["node_2"], parse("position") = true);
     # Element stiffness contribution selecting only constrained dofs (= 0)
-    element_k := i["stiffness"].<seq(<op(i["dofs_1"]), op(i["dofs_2"])>, mn = 1..12)>;
-    element_k := element_k.i["rotation"];
+    element_k := elements[i]["stiffness"].LinearAlgebra:-DiagonalMatrix(
+      <op(elements[i]["dofs_1"]), op(elements[i]["dofs_2"])>
+    );
+    element_k := element_k.elements[i]["rotation"];
     K[6*j-5..6*j, 6*j-5..6*j] := K[6*j-5..6*j, 6*j-5..6*j] + element_k[1..6,  1..6 ];
-    K[6*j-5..6*j, 6*k-5..6*k] := K[6*j-5..6*j, 6*k-5..6*k] + element_k[1..6,  6..12];
-    K[6*k-5..6*k, 6*j-5..6*j] := K[6*k-5..6*k, 6*j-5..6*j] + element_k[6..12, 1..6 ];
-    K[6*k-5..6*k, 6*k-5..6*k] := K[6*k-5..6*k, 6*k-5..6*k] + element_k[6..12, 6..12];
+    K[6*j-5..6*j, 6*k-5..6*k] := K[6*j-5..6*j, 6*k-5..6*k] + element_k[1..6,  7..12];
+    K[6*k-5..6*k, 6*j-5..6*j] := K[6*k-5..6*k, 6*j-5..6*j] + element_k[7..12, 1..6 ];
+    K[6*k-5..6*k, 6*k-5..6*k] := K[6*k-5..6*k, 6*k-5..6*k] + element_k[7..12, 7..12];
   end do;
   return K;
 end proc: # GlobalStiffness
@@ -520,8 +562,8 @@ end proc: # GlobalStiffness
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 export GlobalStiffnessPrime::static := proc(
-  nodes::list(NODE),
-  elements::list(ELEMENT),
+  nodes::NODES,
+  elements::ELEMENTS,
   $)::Matrix;
 
   description "Compute the global stiffness matrix of the nodes <nodes> and "
@@ -548,9 +590,9 @@ end proc: # IsFEM
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 export GenerateFEM::static := proc(
-  nodes::list(NODE),
-  elements::list(ELEMENT),
-  loads::list(algebraic),
+  nodes::NODES,
+  elements::ELEMENTS,
+  loads::LOADS,
   $)::FEM;
 
   description "Generate a FEM structure from the nodes <nodes>, elements "
@@ -560,10 +602,10 @@ export GenerateFEM::static := proc(
     "type"                 = FEM,
     "nodes"                = map(x -> x["id"], nodes),
     "elements"             = map(x -> x["id"], elements),
-    "dofs"                 = TrussMe_FEM:-GetNodesDofs(nodes),
-    "displacements"        = TrussMe_FEM:-GetNodesDisplacements(nodes),
+    "dofs"                 = TrussMe_FEM:-GetNodalDofs(nodes),
+    "displacements"        = TrussMe_FEM:-GetNodalDisplacements(nodes),
     "stiffness"            = TrussMe_FEM:-GlobalStiffnessPrime(nodes, elements),
-    "loads"                = TrussMe_FEM:-GetNodesLoads(nodes, loads),
+    "loads"                = TrussMe_FEM:-GetNodalLoads(nodes, loads),
     "output_reactions"     = [], # Output reactions in the ground frame
     "output_displacements" = []  # Output displacements in the ground frame
   ]);
@@ -571,13 +613,59 @@ end proc: # GenerateFEM
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+export CheckNodes::static := proc(
+  fem::FEM,
+  nodes::NODES,
+  $)::boolean;
+
+  description "Check if the nodes <nodes> associated to the FEM structure "
+    "<fem> are valid (subset of fem['nodes']).";
+
+  local fem_nodes, set_nodes;
+
+  fem_nodes := convert(fem["nodes"], set);
+  set_nodes := map(x -> x["id"], nodes);
+
+  if not evalb(nops(set_nodes union fem_nodes) <> nops(fem_nodes)) then
+    return false;
+  else
+    return true;
+  end if;
+end proc: # CheckNodes
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export CheckElements::static := proc(
+  fem::FEM,
+  elements::ELEMENTS,
+  $)::boolean;
+
+  description "Check if the elements <elements> associated to the FEM structure "
+    "<fem> are valid (subset of fem['elements']).";
+
+  local fem_elements, set_elements;
+
+  fem_elements := convert(fem["elements"], set);
+  set_elements := map(x -> x["id"], elements);
+
+  if not evalb(nops(set_elements union fem_elements) <> nops(fem_elements)) then
+    return false;
+  else
+    return true;
+  end if;
+end proc: # CheckElements
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 export SolveFEM::static := proc(
   fem::FEM,
-  $)::nothing;
+  {
+  store::boolean := true
+  }, $)
 
   description "Solve the FEM structure <fem>.";
 
-  local dofs, d, K, f, permutation, n, K_ff, K_fs, K_sf, K_ss, f_f, f_s;
+  local dofs, d, K, f, perm, mrep, n, K_ff, K_fs, K_sf, K_ss, d_f, d_s, f_f, f_s;
 
   # Retrieve fem data
   dofs := fem["dofs"];
@@ -586,10 +674,10 @@ export SolveFEM::static := proc(
   f := fem["loads"];
 
   # Apply permutation to stiffness and loads to split free and constrained dofs
-  permutation := sort(dofs, `>`, output = 'permutation');
-  d := d[permutation];
-  K := K[1..-1, permutation];
-  f := f[permutation];
+  perm := sort(dofs, `>`, output = 'permutation');
+  d := d[perm];
+  K := K[1..-1, perm];
+  f := f[perm];
 
   # Compute output displacements
   n := add(dofs);
@@ -597,11 +685,42 @@ export SolveFEM::static := proc(
   K_fs := K[1..n, n+1..-1];
   K_sf := K[n+1..-1, 1..n];
   K_ss := K[n+1..-1, n+1..-1];
+  d_s  := d[n+1..-1];
   f_f  := f[1..n];
-  f_s  := f[n+1..-1];
-  fem["output_displacements"] := LinearAlgebra:-LinearSolve(K_ff, f_f - K_fs.d);
-  fem["output_reactions"]     := K_sf.fem["output_displacements"] + K_ss.f_s;
+  d_f := LinearAlgebra:-LinearSolve(K_ff, f_f - K_fs.d_s);
+  f_s := K_sf.d_f + K_ss.d_s;
+
+  # Store output displacements and reactions and restore initial permutation
+  mrep := [seq(i, i = 1..nops(perm))][perm];
+  fem["output_displacements"] := (<d_f, d_s>)[mrep];
+  fem["output_reactions"]     := (<f_f, f_s>)[mrep];
+
   return NULL;
 end proc: # SolveFEM
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export StoreFEM := proc(
+  fem::FEM,
+  nodes::NODES,
+  $)
+
+  description "Store the FEM structure <fem> in the nodes <nodes>.";
+
+  local i;
+
+  if not TrussMe_FEM:-CheckNodes(fem, nodes) then
+    error("invalid nodes detected.");
+  end if;
+
+  for i from 1 to nops(nodes) do
+    if type(nodes[i], NODE) then
+      # FIXME: transform in node frame
+      nodes[i]["output_displacements"] := fem["output_displacements"][6*i-5..6*i];
+      nodes[i]["output_reactions"]     := fem["output_reactions"][6*i-5..6*i];
+    end if;
+  end do;
+  return NULL;
+end proc: # StoreFEM
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

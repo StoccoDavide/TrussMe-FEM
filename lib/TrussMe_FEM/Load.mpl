@@ -21,7 +21,7 @@ export IsLOAD::static := proc(
 
   description "Check if the variable <var> is of LOAD type.";
 
-  return type(var, LOAD);
+  return type(var, table) and var["type"] = LOAD;
 end proc: # IsLOAD
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -39,28 +39,29 @@ end proc: # IsCOMPONENTS
 
 export MakeLoad::static := proc(
   name::string,
-  RF::FRAME,
   node::NODE,
   components::COMPONENTS,
-  $)::LOAD;
+  {
+  frame::FRAME := node["frame"]
+  }, $)::LOAD;
 
   description "Create a load with name <name> acting on the node (or its id) "
-    "<node> on the frame <RF> with components <components>.";
+    "<node> on the frame <frame> with components <components>.";
 
   if evalb(nops(components) <> 6) then
     error("<displacements> must be a list of 6 elements.");
-  elif evalb(add(-(dofs-2) *~ components) <> 0) then
+  elif evalb(add(-(node["dofs"] -~ 1) *~ components) <> 0) then
     error("<displacements> must be defined only for constrained dofs.");
   end if;
 
-  return table(
+  return table([
     "type"       = LOAD,
     "name"       = name,
     "id"         = TrussMe_FEM:-GenerateId(),
-    "frame"      = RF,
+    "frame"      = frame,
     "node"       = node["id"],
     "components" = components
-  );
+  ]);
 end proc: # MakeLoad
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -76,14 +77,26 @@ end proc: # IsLOADS
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export GetLocalLoads::static := proc(
-  RF::FRAME,
-  node::NODE,
-  $)::LOADS;
+export GetNodalLoads::static := proc(
+  nodes::NODES,
+  loads::LOADS,
+  $)::Vector;
 
-  description "Get the loads acting on the node (or its id) <node> on the "
-    "frame <RF>.";
+  description "Get the vector of nodal loads <loads> of nodes <nodes>.";
 
-end proc: # GetLocalLoads
+  local F, i, j, R;
+
+  F := Vector(6 * nops(nodes), storage = sparse);
+  for i from 1 to nops(loads) do
+    # Node position
+    j := TrussMe_FEM:-GetObjById(nodes, loads[i]["node"], parse("position") = true);
+    # Node loads in node frame
+    R := (LinearAlgebra:-Transpose(nodes[j]["frame"]).loads[i]["frame"])[1..3, 1..3];
+    F[6*j-5..6*j] := <
+      R.<op(loads[i]["components"][1..3])>, R.<op(loads[i]["components"][4..6])>
+    >;
+  end do;
+  return convert(F, Vector);
+end proc: # GetNodalLoads
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
