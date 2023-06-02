@@ -13,35 +13,29 @@
 #
 # License: BSD 3-Clause License
 
-unprotect('TrussMe_FEM');
 TrussMe_FEM := module()
 
   description "A Maple package for symbolic FEM structural analysis.";
 
-  option object;
+  option package,
+         load   = ModuleLoad,
+         unload = ModuleUnload;
 
-  local m_ground        := NULL;
-  local m_gravity       := NULL;
-  local m_earth         := NULL;
-  local m_VerboseMode   := false;
-  local m_WarningMode   := true;
-  local m_TimeLimit     := 5;
-  local m_StoredData    := [];
-
-  # Colors
-  local m_NodeColor     := "MediumSeaGreen";
-  local m_SupportColor  := "DarkOrange";
-  local m_ElementColor  := "SteelBlue";
-  local m_ForceColor    := "Firebrick";
-  local m_MomentColor   := "Indigo";
-
-  # Tokens
+  local m_gravity      := <0, 0, 0, 0>;
+  local m_VerboseMode  := false;
+  local m_WarningMode  := true;
+  local m_TimeLimit    := 5.0;
+  local m_NodeColor    := "MediumSeaGreen";
+  local m_SupportColor := "DarkOrange";
+  local m_ElementColor := "SteelBlue";
+  local m_ForceColor   := "Firebrick";
+  local m_MomentColor  := "Indigo";
   local m_NodeToken    := solidsphere;
   local m_SupportToken := solidbox;
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  export Info::static := proc()
+  export Info := proc()
 
     description "Print 'TrussMe_FEM' module information.";
 
@@ -57,7 +51,7 @@ TrussMe_FEM := module()
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  export ModuleLoad::static := proc()
+  export ModuleLoad := proc()
 
     description "'TrussMe_FEM' module load procedure.";
 
@@ -77,7 +71,6 @@ TrussMe_FEM := module()
     TypeTools:-AddType('FRAME',      TrussMe_FEM:-IsFRAME);      protect('FRAME');
     TypeTools:-AddType('VECTOR',     TrussMe_FEM:-IsVECTOR);     protect('VECTOR');
     TypeTools:-AddType('POINT',      TrussMe_FEM:-IsPOINT);      protect('POINT');
-    #TypeTools:-AddType('EARTH',      TrussMe_FEM:-IsEARTH);      protect('EARTH');
     TypeTools:-AddType('MATERIAL',   TrussMe_FEM:-IsMATERIAL);   protect('MATERIAL');
     TypeTools:-AddType('DOFS',       TrussMe_FEM:-IsDOFS);       protect('DOFS');
     TypeTools:-AddType('NODE',       TrussMe_FEM:-IsNODE);       protect('NODE');
@@ -98,7 +91,7 @@ TrussMe_FEM := module()
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  export ModuleUnload::static := proc()
+  export ModuleUnload := proc()
 
     description "TrussMe_FEM' module unload procedure.";
 
@@ -106,7 +99,6 @@ TrussMe_FEM := module()
       'FRAME',
       'VECTOR',
       'POINT',
-      'EARTH',
       'MATERIAL',
       'DOFS',
       'NODE',
@@ -128,250 +120,89 @@ TrussMe_FEM := module()
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  export ModuleCopy::static := proc(
-    _self::TrussMe_FEM,
-    proto::TrussMe_FEM,
-    $)
-
-    description "Copy the 'TrussMe_FEM' object <proto> into <self>.";
-
-
-  end proc: # ModuleCopy
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export Initialize::static := proc(
-    _self::TrussMe_FEM,
+  export SetModuleOptions := proc(
     {
-    gruond::FRAME   := Matrix(4, shape = identity),
-    gravity::VECTOR := Vector(3)
-    }, $)
-
-    description "TrussMe_FEM' module initialization.";
-
-    _self:-m_ground  := ground;
-    _self:-m_gravity := gravity;
-    _self:-m_earth   := table([
-      "type"   = EARTH,
-      "name"   = "earth",
-      "frame"  = ground
-    ]):
-    return NULL;
-  end proc: # Initialize
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export SetOptions::static := proc(
-    _self::TrussMe_FEM,
-    {
-      VerboseMode::{boolean, nothing}   := NULL,
-      WarningMode::{boolean, nothing}   := NULL,
-      TimeLimit::{nonnegative, nothing} := NULL
+    VerboseMode::{boolean, nothing}   := NULL,
+    WarningMode::{boolean, nothing}   := NULL,
+    TimeLimit::{nonnegative, nothing} := NULL,
+    NodeColor::{string, nothing}      := NULL,
+    SupportColor::{string, nothing}   := NULL,
+    ElementColor::{string, nothing}   := NULL,
+    ForceColor::{string, nothing}     := NULL,
+    MomentColor::{string, nothing}    := NULL,
+    NodeToken::{string, nothing}      := NULL,
+    SupportToken::{string, nothing}   := NULL
     }, $)
 
     description "Set the module options: verbose mode <VerboseMode>, warning "
-      "mode <WarningMode>, and time limit <TimeLimit>.";
+      "mode <WarningMode>, time limit <TimeLimit>, node color <NodeColor>, "
+      "support color <SupportColor>, element color <ElementColor>, force color "
+      "<ForceColor>, moment color <MomentColor>, node token <NodeToken>, "
+      "support token <SupportToken>.";
 
     if (VerboseMode <> NULL) then
-      _self:-SetVerboseMode(_self, VerboseMode);
+      TrussMe_FEM:-m_VerboseMode := VerboseMode;
     end if;
 
     if (WarningMode <> NULL) then
-      _self:-SetWarningMode(_self, WarningMode);
+      TrussMe_FEM:-m_WarningMode := WarningMode;
     end if;
 
     if (TimeLimit <> NULL) then
-      _self:-SetTimeLimit(_self, TimeLimit);
+      TrussMe_FEM:-m_TimeLimit := TimeLimit;
     end if;
+
+    if (NodeColor <> NULL) then
+      TrussMe_FEM:-m_NodeColor := NodeColor;
+    end if;
+
+    if (SupportColor <> NULL) then
+      TrussMe_FEM:-m_SupportColor := SupportColor;
+    end if;
+
+    if (ElementColor <> NULL) then
+      TrussMe_FEM:-m_ElementColor := ElementColor;
+    end if;
+
+    if (ForceColor <> NULL) then
+      TrussMe_FEM:-m_ForceColor := ForceColor;
+    end if;
+
+    if (MomentColor <> NULL) then
+      TrussMe_FEM:-m_MomentColor := MomentColor;
+    end if;
+
+    if (NodeToken <> NULL) then
+      TrussMe_FEM:-m_NodeToken := NodeToken;
+    end if;
+
+    if (SupportToken <> NULL) then
+      TrussMe_FEM:-m_SupportToken := SupportToken;
+    end if;
+
     return NULL;
   end proc: # SetModuleOptions
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  export EnableVerboseMode::static := proc(
-    _self::TrussMe_FEM,
-    $)
-
-    description "Enable the verbose mode of the module.";
-
-    _self:-m_VerboseMode := true;
-    return NULL;
-  end proc: # EnableVerboseMode
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export DisableVerboseMode::static := proc(
-    _self::TrussMe_FEM,
-    $)
-
-    description "Disable the verbose mode of the module.";
-
-    _self:-m_VerboseMode := false;
-    return NULL;
-  end proc: # DisableVerboseMode
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export GetVerboseMode::static := proc(
-    _self::TrussMe_FEM,
-    $)::boolean;
-
-    description "Get the verbose mode of the module.";
-
-    return _self:-m_VerboseMode;
-  end proc: # GetVerboseMode
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export SetVerboseMode::static := proc(
-    _self::TrussMe_FEM,
-    verbose_mode::boolean,
-    $)
-
-    description "Set the verbose mode of the module to <verbose_mode>.";
-
-    _self:-m_VerboseMode := verbose_mode;
-    return NULL;
-  end proc: # SetVerboseMode
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export EnableWarningMode::static := proc(
-    _self::TrussMe_FEM,
-    $)
-
-    description "Enable the warning mode of the module.";
-
-    _self:-m_WarningMode := true;
-    return NULL;
-  end proc: # EnableWarningMode
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export DisableWarningMode::static := proc(
-    _self::TrussMe_FEM,
-    $)
-
-    description "Disable the warning mode of the module.";
-
-    _self:-m_WarningMode := false;
-    return NULL;
-  end proc: # DisableWarningMode
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export GetWarningMode::static := proc(
-    _self::TrussMe_FEM,
-    $)::boolean;
-
-    description "Get the warning mode of the module.";
-
-    return _self:-m_WarningMode;
-  end proc: # GetWarningMode
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export SetWarningMode::static := proc(
-    _self::TrussMe_FEM,
-    warning_mode::boolean,
-    $)
-
-    description "Set the warning mode of the module to <warning_mode>.";
-
-    _self:-m_WarningMode := warning_mode;
-    return NULL;
-  end proc: # SetWarningMode
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export GetTimeLimit::static := proc(
-    _self::TrussMe_FEM,
-    $)::nonnegative;
-
-    description "Get the time limit of the module.";
-
-    return _self:-m_TimeLimit;
-  end proc: # GetTimeLimit
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export SetTimeLimit::static := proc(
-    _self::TrussMe_FEM,
-    time_limit::nonnegative,
-    $)
-
-    description "Set the time limit of the module to <time_limit>.";
-
-    _self:-m_TimeLimit := time_limit;
-    return NULL;
-  end proc: # SetTimeLimit
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export SetGround::static := proc(
-    _self::TrussMe_FEM,
-    ground::FRAME,
-    $)
-
-    description "Set ground reference frame to <ground>.";
-
-    _self:-m_ground := ground;
-    if _self:-WarningMode then
-      WARNING("ground reference is changed.");
-    end if;
-    _self:-m_earth["frame"] := ground;
-    return NULL;
-  end proc: # SetGround
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export GetGround::static := proc(
-    _self::TrussMe_FEM,
-    $)::FRAME;
-
-    description "Get ground reference frame.";
-
-    return _self:-m_ground;
-  end proc: # GetGround
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export SetGravity::static := proc(
-    _self::TrussMe_FEM,
+  export SetGravity := proc(
     g::VECTOR,
     $)
 
     description "Set gravity vector with [x, y, z]^T components of <vec>.";
 
-    if evalb(LinearAlgebra:-Dimension(g) = 3) then
-      m_gravity := g;
-    else
-      error("invalid gravity vector dimension.");
-    end if;
+    TrussMe_FEM:-m_gravity := g;
     return NULL;
   end proc: # SetGravity
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  export GetGravity::static := proc(
-    _self::TrussMe_FEM,
-    $)::VECTOR;
+  export GetGravity := proc( $ )::VECTOR;
 
     description "Get gravity vector.";
 
-    return _self:-m_gravity;
+    return TrussMe_FEM:-m_gravity;
   end proc: # GetGravity
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export IsEARTH::static := proc(
-    var::anything,
-    $)::boolean;
-
-    description "Check if the variable <var> is of EARTH type.";
-
-    return type(var, table) and evalb(var["type"] = EARTH);
-  end proc: # IsEARTH
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -456,8 +287,7 @@ TrussMe_FEM := module()
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  export Simplify::static := proc(
-    _self::TrussMe_FEM,
+  export Simplify := proc(
     var::anything,
     opt::anything := NULL,
     $)::anything;
@@ -472,7 +302,7 @@ TrussMe_FEM := module()
         simplify(var, opt)
       );
     catch "time expired":
-      if _self:-WarningMode then
+      if TrussMe_FEM:-m_WarningMode then
         WARNING("time limit of exceeded, raw solutions is returned.");
       end if;
       return var;
@@ -486,7 +316,7 @@ TrussMe_FEM := module()
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  export Norm2::static := proc(
+  export Norm2 := proc(
     x::{list, Vector},
     $)::algebraic;
 
@@ -497,7 +327,7 @@ TrussMe_FEM := module()
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  export GenerateId::static := proc({
+  export GenerateId := proc({
       size::positive := 5,
       opts::symbol   := 'alnum'
     }, $)::string;
@@ -507,7 +337,7 @@ TrussMe_FEM := module()
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  export Spy::static := proc(
+  export Spy := proc(
     A::Matrix,
     $)::anything;
 

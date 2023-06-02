@@ -15,7 +15,7 @@
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsMATERIAL::static := proc(
+export IsMATERIAL := proc(
   var::anything,
   $)::boolean;
 
@@ -26,7 +26,7 @@ end proc: # IsMATERIAL
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeMaterial::static := proc({
+export MakeMaterial := proc({
   name::string               := "Undefined",
   elastic_modulus::algebraic := 0,
   poisson_ratio::algebraic   := 0,
@@ -51,7 +51,7 @@ end proc: # MakeMaterial
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeCarbonSteel::static := proc( $ )::MATERIAL;
+export MakeCarbonSteel := proc( $ )::MATERIAL;
 
   description "Get default steel material with 'CarbonSteel' name, elastic "
     "modulus E = 210.0e+09 (Pa), Poisson's ratio nu = 0.3 (-), shear modulus"
@@ -67,7 +67,7 @@ end proc: # CarbonSteel
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeInoxSteel::static := proc( $ )::MATERIAL;
+export MakeInoxSteel := proc( $ )::MATERIAL;
 
     description "Get default steel material with 'InoxSteel' name, elastic "
       "modulus E = 200.0e+09 (Pa), Poisson's ratio nu = 0.3 (-), shear modulus"
@@ -83,7 +83,7 @@ export MakeInoxSteel::static := proc( $ )::MATERIAL;
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeTitanium::static := proc( $ )::MATERIAL;
+export MakeTitanium := proc( $ )::MATERIAL;
 
   description "Get default titanium material with 'Titanium' name, elastic "
     "modulus E = 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
@@ -99,7 +99,7 @@ end proc: # Titanium
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeCopper::static := proc( $ )::MATERIAL;
+export MakeCopper := proc( $ )::MATERIAL;
 
   description "Get default copper material with 'Copper' name, elastic "
     "modulus E = 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
@@ -115,7 +115,7 @@ end proc: # Copper
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeBrass::static := proc( $ )::MATERIAL;
+export MakeBrass := proc( $ )::MATERIAL;
 
   description "Get default brass material with 'Brass' name, elastic "
     "modulus E = 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
@@ -131,7 +131,7 @@ end proc: # Brass
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeBronze::static := proc( $ )::MATERIAL;
+export MakeBronze := proc( $ )::MATERIAL;
 
   description "Get default bronze material with 'Bronze' name, elastic "
     "modulus E = 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
@@ -147,7 +147,7 @@ end proc: # Bronze
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeLead::static := proc( $ )::MATERIAL;
+export MakeLead := proc( $ )::MATERIAL;
 
   description "Get default lead material with 'Lead' name, elastic "
     "modulus E = 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
@@ -163,7 +163,7 @@ end proc: # Lead
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeZinc::static := proc( $ )::MATERIAL;
+export MakeZinc := proc( $ )::MATERIAL;
 
   description "Get default zinc material with 'Zinc' name, elastic "
     "modulus E = 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
@@ -179,7 +179,7 @@ end proc: # Zinc
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeMagnesium ::static := proc( $ )::MATERIAL;
+export MakeMagnesium  := proc( $ )::MATERIAL;
 
   description "Get default magnesium material with 'Magnesium' name, elastic "
     "modulus E = 45.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
@@ -195,7 +195,7 @@ end proc: # Magnesium
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeAlluminium::static := proc( $ )::MATERIAL;
+export MakeAlluminium := proc( $ )::MATERIAL;
 
   description "Get default alluminium material with 'Alluminium' name, elastic "
     "modulus E = 69.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
@@ -211,7 +211,7 @@ end proc: # Alluminium
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeAvional::static := proc( $ )::MATERIAL;
+export MakeAvional := proc( $ )::MATERIAL;
 
   description "Get default avional material with 'Avional' name, elastic "
     "modulus E = 70.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
@@ -227,7 +227,7 @@ end proc: # Avional
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakePeraluman::static := proc( $ )::MATERIAL;
+export MakePeraluman := proc( $ )::MATERIAL;
 
   description "Get default peraluman material with 'Peraluman' name, elastic "
     "modulus E = 70.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
@@ -243,7 +243,7 @@ end proc: # Peraluman
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeAnticorodal::static := proc( $ )::MATERIAL;
+export MakeAnticorodal := proc( $ )::MATERIAL;
 
   description "Get default anticorodal material with 'Anticorodal' name, elastic "
     "modulus E = 69.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
@@ -259,7 +259,7 @@ end proc: # Anticorodal
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeCarpental::static := proc( $ )::MATERIAL;
+export MakeCarpental := proc( $ )::MATERIAL;
 
   description "Get default carpental material with 'Carpental' name, elastic "
     "modulus E = 72.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
@@ -275,7 +275,7 @@ end proc: # Carpental
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeErgal::static := proc( $ )::MATERIAL;
+export MakeErgal := proc( $ )::MATERIAL;
 
   description "Get default ergal material with 'Ergal' name, elastic "
     "modulus E = 72.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"

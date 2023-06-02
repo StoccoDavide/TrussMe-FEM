@@ -15,7 +15,7 @@
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsNODE::static := proc(
+export IsNODE := proc(
   var::anything,
   $)::boolean;
 
@@ -26,7 +26,7 @@ end proc: # IsNODE
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsNODES::static := proc(
+export IsNODES := proc(
   var::anything,
   $)::boolean;
 
@@ -37,7 +37,7 @@ end proc: # IsNODES
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsSUPPORT::static := proc(
+export IsSUPPORT := proc(
   var::anything,
   $)::boolean;
 
@@ -48,7 +48,7 @@ end proc: # IsSUPPORT
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsSUPPORTS::static := proc(
+export IsSUPPORTS := proc(
   var::anything,
   $)::boolean;
 
@@ -59,7 +59,7 @@ end proc: # IsSUPPORTS
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsDOFS::static := proc(
+export IsDOFS := proc(
   var::anything,
   $)::boolean;
 
@@ -71,7 +71,7 @@ end proc: # IsDOFS
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeNode::static := proc(
+export MakeNode := proc(
   name::string,
   coordinates::{list, POINT, VECTOR},
   {
@@ -116,7 +116,7 @@ end proc: # MakeNode
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeCompliantNode::static := proc(
+export MakeCompliantNode := proc(
   name::string,
   coordinates::{list, POINT, VECTOR},
   {
@@ -150,7 +150,7 @@ end proc: # MakeCompliantNode
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsSTIFFNESS::static := proc(
+export IsSTIFFNESS := proc(
   var::anything,
   $)::boolean;
 
@@ -163,7 +163,7 @@ end proc: # IsSTIFFNESS
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export GetSpringStiffness::static := proc(
+export GetSpringStiffness := proc(
   K::{algebraic, list(algebraic)},
   T::{algebraic, list(algebraic)},
   $)::STIFFNESS;
@@ -208,7 +208,7 @@ end proc: # GetSpringStiffness
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export GetRodStiffness::static := proc(
+export GetRodStiffness := proc(
   A::algebraic,
   E::algebraic,
   G::algebraic,
@@ -229,7 +229,7 @@ end proc: # GetRodStiffness
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export GetBeamStiffness::static := proc(
+export GetBeamStiffness := proc(
   A::algebraic,
   E::algebraic,
   G::algebraic,
@@ -269,7 +269,7 @@ end proc: # GetBeamStiffness
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsELEMENT::static := proc(
+export IsELEMENT := proc(
   var::anything,
   $)::boolean;
 
@@ -280,7 +280,7 @@ end proc: # IsELEMENT
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsELEMENTS::static := proc(
+export IsELEMENTS := proc(
   var::anything,
   $)::boolean;
 
@@ -291,7 +291,7 @@ end proc: # IsELEMENTS
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeElement::static := proc(
+export MakeElement := proc(
   name::string,
   N1::{NODE, list({NODE, DOFS})},
   N2::{NODE, list({NODE, DOFS})},
@@ -358,7 +358,7 @@ end proc: # MakeElement
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeSpring::static := proc(
+export MakeSpring := proc(
   name::string,
   N1::{NODE, list({NODE, DOFS})},
   N2::{NODE, list({NODE, DOFS})},
@@ -383,7 +383,7 @@ end proc: # MakeSpring
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeRod::static := proc(
+export MakeRod := proc(
   name::string,
   N1::{NODE, list({NODE, DOFS})},
   N2::{NODE, list({NODE, DOFS})},
@@ -423,7 +423,7 @@ end proc: # MakeRod
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeBeam::static := proc(
+export MakeBeam := proc(
   name::string,
   N1::{NODE, list({NODE, DOFS})},
   N2::{NODE, list({NODE, DOFS})},
@@ -463,7 +463,7 @@ end proc: # MakeBeam
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsSTRUCTURE::static := proc(
+export IsSTRUCTURE := proc(
   var::anything,
   $)::boolean;
 
@@ -474,7 +474,7 @@ end proc: # IsSTRUCTURE
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export GetNodalDofs::static := proc(
+export GetNodalDofs := proc(
   nodes::NODES,
   $)::Vector;
 
@@ -495,7 +495,7 @@ end proc: # GetNodalDofs
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export GetNodalDisplacements::static := proc(
+export GetNodalDisplacements := proc(
   nodes::NODES,
   $)::Vector;
 
@@ -514,7 +514,7 @@ end proc: # GetNodalDisplacements
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export StiffnessTransformation::static := proc(
+export StiffnessTransformation := proc(
   nodes::NODES,
   $)::Matrix;
 
@@ -532,7 +532,7 @@ end proc: # StiffnessTransformation
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export GlobalStiffness::static := proc(
+export GlobalStiffness := proc(
   nodes::NODES,
   elements::ELEMENTS,
   $)::Matrix;
@@ -564,7 +564,7 @@ end proc: # GlobalStiffness
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export GlobalStiffnessPrime::static := proc(
+export GlobalStiffnessPrime := proc(
   nodes::NODES,
   elements::ELEMENTS,
   $)::Matrix;
@@ -583,7 +583,7 @@ end proc: # GlobalStiffnessPrime
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsFEM::static := proc(
+export IsFEM := proc(
   var::anything,
   $)::boolean;
 
@@ -594,7 +594,7 @@ end proc: # IsFEM
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export GenerateFEM::static := proc(
+export GenerateFEM := proc(
   nodes::NODES,
   elements::ELEMENTS,
   loads::LOADS,
@@ -618,7 +618,7 @@ end proc: # GenerateFEM
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export CheckNodes::static := proc(
+export CheckNodes := proc(
   fem::FEM,
   nodes::NODES,
   $)::boolean;
@@ -636,7 +636,7 @@ end proc: # CheckNodes
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export CheckElements::static := proc(
+export CheckElements := proc(
   fem::FEM,
   elements::ELEMENTS,
   $)::boolean;
@@ -654,7 +654,7 @@ end proc: # CheckElements
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsSYSTEM::static := proc(
+export IsSYSTEM := proc(
   var::anything,
   $)::boolean;
 
@@ -665,7 +665,7 @@ end proc: # IsSYSTEM
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export SplitFEM::static := proc(
+export SplitFEM := proc(
   fem::FEM,
   $)::SYSTEM;
 
@@ -696,7 +696,7 @@ end proc: # SplitFEM
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 (*
-export StripFEM::static := proc(
+export StripFEM := proc(
   fem::FEM,
   $)::SYSTEM
 
@@ -730,7 +730,7 @@ end proc: # StripFEM
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export SolveFEM::static := proc(
+export SolveFEM := proc(
   fem::FEM,
   $)
 
@@ -767,7 +767,7 @@ end proc: # SolveFEM
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export StoreFEM::static := proc(
+export StoreFEM := proc(
   fem::FEM,
   nodes::NODES,
   $)

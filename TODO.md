@@ -18,4 +18,6 @@
 - [ ] Test MakeCompliantNode
 - [ ] Uniformare liste e vettori interni per ottimizzare performance
 - [ ] Testare quando origine frame nodo e coordinate del nodo stesso non coincidono
-- [ ] Object-orient o pacchetto tradizionale?
+- [x] Object-orient o pacchetto tradizionale? -> pacchetto tradizionale
+- [ ] Eliminare i metodi Project e Simplify?
+- [x] Semplificato setting opzioni

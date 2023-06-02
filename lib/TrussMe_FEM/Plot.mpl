@@ -15,7 +15,7 @@
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export ObjectColor::static := proc(
+export ObjectColor := proc(
   obj::{NODE, SUPPORT, ELEMENT, LOAD},
   $)::string;
 
@@ -36,7 +36,7 @@ end proc: # ObjectColor
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export StructureGraph::static := proc(
+export StructureGraph := proc(
   nodes::NODES,
   elements::ELEMENTS,
   loads::LOADS := [],
@@ -106,7 +106,7 @@ end proc: # StructureGraph
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export PlotNode::static := proc(
+export PlotNode := proc(
   p::POINT,
   {
   data::{list(`=`), set(`=`)} := [],
@@ -132,7 +132,7 @@ end proc: # PlotNode
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export PlotElement::static := proc(
+export PlotElement := proc(
   p_1::POINT,
   p_2::POINT,
   {
@@ -157,7 +157,7 @@ end proc: # PlotElement
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export PlotLoad::static := proc(
+export PlotLoad := proc(
   p_1::POINT,
   p_2::POINT,
   {
@@ -183,7 +183,7 @@ end proc: # PlotLoad
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export PlotStructure::static := proc(
+export PlotStructure := proc(
   nodes::NODES       := [],
   elements::ELEMENTS := [],
   loads::LOADS       := [],

@@ -15,7 +15,7 @@
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsLOAD::static := proc(
+export IsLOAD := proc(
   var::anything,
   $)::boolean;
 
@@ -26,7 +26,7 @@ end proc: # IsLOAD
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsCOMPONENTS::static := proc(
+export IsCOMPONENTS := proc(
   var::anything,
   $)::boolean;
 
@@ -37,7 +37,7 @@ end proc: # IsCOMPONENTS
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export MakeLoad::static := proc(
+export MakeLoad := proc(
   name::string,
   node::NODE,
   components::COMPONENTS,
@@ -66,7 +66,7 @@ end proc: # MakeLoad
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsLOADS::static := proc(
+export IsLOADS := proc(
   var::anything,
   $)::boolean;
 
@@ -77,7 +77,7 @@ end proc: # IsLOADS
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export GetNodalLoads::static := proc(
+export GetNodalLoads := proc(
   nodes::NODES,
   loads::LOADS,
   $)::Vector;

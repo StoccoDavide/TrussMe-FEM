@@ -15,7 +15,7 @@
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsFRAME::static := proc(
+export IsFRAME := proc(
   var::anything,
   $)::boolean;
 
@@ -30,7 +30,7 @@ end proc: # IsFRAME
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export GenerateFrame::static := proc(
+export GenerateFrame := proc(
   p_1::{list, VECTOR, POINT},
   p_2::{list, VECTOR, POINT},
   p_3::{list, VECTOR, POINT},
@@ -82,7 +82,7 @@ end proc: # GenerateFrame
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export GenerateGenericFrame::static := proc(
+export GenerateGenericFrame := proc(
   label::string := "",
   {
   e := "e",
@@ -119,7 +119,7 @@ end proc:
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export InverseFrame::static := proc(
+export InverseFrame := proc(
   RF::FRAME,
   $)::FRAME;
 
@@ -132,7 +132,7 @@ end proc: # InverseFrame
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export Translate::static := proc(
+export Translate := proc(
   x::algebraic,
   y::algebraic,
   z::algebraic,
@@ -149,7 +149,7 @@ end proc: # Translate
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export  Translation::static := proc(
+export  Translation := proc(
   RF::FRAME,
   $)::Vector;
 
@@ -160,7 +160,7 @@ end proc: # Translation
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export Rotate::static := proc(
+export Rotate := proc(
   axis::{symbol, string},
   angle::algebraic,
   $)::FRAME;
@@ -190,7 +190,7 @@ end proc: # Rotate
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export Rotation::static := proc(
+export Rotation := proc(
   RF::FRAME,
   $)::Matrix;
 
@@ -201,7 +201,7 @@ end proc: # Rotation
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsVECTOR::static := proc(
+export IsVECTOR := proc(
   var::anything,
   $)::boolean;
 
@@ -213,7 +213,7 @@ end proc: # IsVECTOR
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export IsPOINT::static := proc(
+export IsPOINT := proc(
   var::anything,
   $)::boolean;
 
@@ -225,7 +225,7 @@ end proc: # IsPOINT
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export Origin::static := proc(
+export Origin := proc(
   RF::FRAME,
   $)::POINT;
 
@@ -236,7 +236,7 @@ end proc: # Origin
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export CompX::static := proc(
+export CompX := proc(
   x::{VECTOR, POINT},
   $)::algebraic;
 
@@ -247,7 +247,7 @@ end proc: # CompX
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export CompY::static := proc(
+export CompY := proc(
   x::{VECTOR, POINT},
   $)::algebraic;
 
@@ -258,7 +258,7 @@ end proc: # CompY
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export CompZ::static := proc(
+export CompZ := proc(
   x::{VECTOR, POINT},
   $)::algebraic;
 
@@ -269,7 +269,7 @@ end proc: # CompZ
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export CompXYZ::static := proc(
+export CompXYZ := proc(
   x::{VECTOR, POINT},
   $)::algebraic, algebraic, algebraic;
 
@@ -281,7 +281,7 @@ end proc: # CompXYZ
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export UvecX::static := proc(
+export UvecX := proc(
   RF::FRAME := Matrix(4, shape = identity),
   $)::VECTOR;
 
@@ -292,7 +292,7 @@ end proc: # UvecX
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export UvecY::static := proc(
+export UvecY := proc(
   RF::FRAME,
   $)::VECTOR;
 
@@ -303,7 +303,7 @@ end proc: # UvecY
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export UvecZ::static := proc(
+export UvecZ := proc(
   RF::FRAME := Matrix(4, shape = identity),
   $)::VECTOR;
 
@@ -314,7 +314,7 @@ end proc: # UvecZ
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export UvecXYZ::static := proc(
+export UvecXYZ := proc(
   RF::FRAME := Matrix(4, shape = identity),
   $)::VECTOR, VECTOR, VECTOR;
 
@@ -326,7 +326,7 @@ end proc: # UvecXYZ
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export Project::static := proc(
+export Project := proc(
   x::{VECTOR, POINT},
   RF_ini::FRAME,
   RF_end::FRAME,
