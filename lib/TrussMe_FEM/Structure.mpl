@@ -478,7 +478,7 @@ export GetNodalDofs::static := proc(
   nodes::NODES,
   $)::Vector;
 
-  description "Get the vector of nodal dofs of nodes <nodes>.";
+  description "Get nodal dofs of nodes <nodes>.";
 
   local dofs, i;
 
@@ -654,9 +654,22 @@ end proc: # CheckElements
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+export IsSYSTEM::static := proc(
+  var::anything,
+  $)::boolean;
+
+  description "Check if the variable <var> is of SYSTEM type.";
+
+  return type(var, table) and evalb(var["type"] = SYSTEM);
+end proc: # IsSYSTEM
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 export SplitFEM::static := proc(
   fem::FEM,
-  $)
+  $)::SYSTEM;
+
+  description "Split the FEM structure <fem> in free and constrained dofs.";
 
   local d, K, f, perm, n, K_ff, K_fs, K_sf, K_ss, d_s, f_f;
 
@@ -669,6 +682,7 @@ export SplitFEM::static := proc(
   # Compute output displacements and reactions
   n := add(fem["dofs"]);
   return table([
+    "type" = SYSTEM,
     "perm" = perm,
     "K_ff" = K[1..n, 1..n],
     "K_fs" = K[1..n, n+1..-1],
@@ -678,6 +692,41 @@ export SplitFEM::static := proc(
     "f_f"  = f[1..n]
   ]);
 end proc: # SplitFEM
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+(*
+export StripFEM::static := proc(
+  fem::FEM,
+  $)::SYSTEM
+
+  description "Strip the FEM structure <fem> from free dofs.";
+
+  local K, d, f, i;
+
+  # Retrieve system matrices and vectors
+  K := fem["stiffness"];
+  d := fem["displacements"];
+  f := fem["loads"];
+
+  # Find zero rows and columns
+  non_zero := [];
+  for i from 1 to LinearAlgebra:-RowDimension(K) do
+    if evalb(add(K[i, 1..-1]) <> 0) then
+      non_zero := [op(non_zero), i];
+    end if;
+  end do;
+
+  # Strip system matrices and vectors
+  fem["total_stiffness"]
+  fem["total_displacements"]
+  fem["total_loads"]
+  K := K[non_zero, non_zero];
+  d := d[non_zero];
+  f := f[non_zero];
+
+end proc: # StripFEM
+*)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

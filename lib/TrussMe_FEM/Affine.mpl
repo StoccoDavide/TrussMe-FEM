@@ -227,11 +227,11 @@ end proc: # IsPOINT
 
 export Origin::static := proc(
   RF::FRAME,
-  $)::VECTOR;
+  $)::POINT;
 
   description "Extract the origin point of the reference frame <RF>.";
 
-  return <RF[1..3, 4], 1>;
+  return convert(<RF[1..3, 4], 1>, Vector);
 end proc: # Origin
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

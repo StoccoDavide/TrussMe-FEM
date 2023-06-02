@@ -5,13 +5,17 @@
 - [ ] Matrice rotazione Q si può elinimare forse
 - [ ] Calcolo gdl
 - [ ] Controllare compatibilità con aree e inerze definite come proc
-- [ ] Plots struttura e struttura deformata
-- [ ] Grafo struttura
+- [x] Plots struttura indeformata
+- [ ] Plots struttura deformata
+- [x] Grafo struttura
 - [ ] Mettere print di stato avanazamento
 - [ ] Code generation
 - [ ] Inserire LAST LU
 - [ ] Optimize sperm?
 - [ ] Test MakeBeam
 - [ ] Test MakeRod
-- [ ] Generate Timoshenk stiffness matrix
+- [ ] Generate Timoshenko stiffness matrix?
 - [ ] Test MakeCompliantNode
+- [ ] Uniformare liste e vettori interni per ottimizzare performance
+- [ ] Testare quando origine frame nodo e coordinate del nodo stesso non coincidono
+- [ ] Object-orient o pacchetto tradizionale?

@@ -32,7 +32,7 @@ export IsCOMPONENTS::static := proc(
 
   description "Check if the variable <var> is of COMPONENTS type.";
 
-  return type(var, list({algebraic, procedure})) and evalb(nops(var) = 6);
+  return type(var, list(algebraic)) and evalb(nops(var) = 6);
 end proc: # IsCOMPONENTS
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,7 +86,7 @@ export GetNodalLoads::static := proc(
 
   local F, i, j, R;
 
-  printf("TrussMe_FEM:-GetNodalLoads() ... ");
+  printf("TrussMe_FEM:-GetNodalLoads(...) ... ");
   F := Vector(6 * nops(nodes), storage = sparse);
   for i from 1 to nops(loads) do
     # Node position
@@ -102,7 +102,7 @@ export GetNodalLoads::static := proc(
     >;
   end do;
   printf("DONE\n");
-  return convert(F, Vector);
+  return F;
 end proc: # GetNodalLoads
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

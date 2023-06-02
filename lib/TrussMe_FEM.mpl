@@ -20,21 +20,24 @@ TrussMe_FEM := module()
 
   option object;
 
-  local m_ground                := NULL;
-  local m_gravity               := NULL;
-  local m_earth                 := NULL;
-  local m_VerboseMode           := false;
-  local m_WarningMode           := true;
-  local m_TimeLimit             := 5;
-  local m_StoredData            := [];
-  local m_BeamColor             := "SteelBlue";
-  local m_RodColor              := "Niagara DarkOrchid";
-  local m_RigidBodyColor        := "Indigo";
-  local m_CompliantSupportColor := "DarkGreen";
-  local m_SupportColor          := "DarkOrange";
-  local m_CompliantJointColor   := "LightSalmon";
-  local m_JointColor            := "MediumSeaGreen";
-  local m_EarthColor            := "Firebrick";
+  local m_ground        := NULL;
+  local m_gravity       := NULL;
+  local m_earth         := NULL;
+  local m_VerboseMode   := false;
+  local m_WarningMode   := true;
+  local m_TimeLimit     := 5;
+  local m_StoredData    := [];
+
+  # Colors
+  local m_NodeColor     := "MediumSeaGreen";
+  local m_SupportColor  := "DarkOrange";
+  local m_ElementColor  := "SteelBlue";
+  local m_ForceColor    := "Firebrick";
+  local m_MomentColor   := "Indigo";
+
+  # Tokens
+  local m_NodeToken    := solidsphere;
+  local m_SupportToken := solidbox;
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -89,6 +92,7 @@ TrussMe_FEM := module()
     TypeTools:-AddType('LOAD',       TrussMe_FEM:-IsLOAD);       protect('LOAD');
     TypeTools:-AddType('LOADS',      TrussMe_FEM:-IsLOADS);      protect('LOADS');
     TypeTools:-AddType('FEM',        TrussMe_FEM:-IsFEM);        protect('FEM');
+    TypeTools:-AddType('SYSTEM',     TrussMe_FEM:-IsSYSTEM);     protect('SYSTEM');
     return NULL;
   end proc: # ModuleLoad
 
@@ -116,7 +120,8 @@ TrussMe_FEM := module()
       'COMPONENTS',
       'LOAD',
       'LOADS',
-      'FEM'
+      'FEM',
+      'SYSTEM'
     );
     return NULL;
   end proc: # ModuleUnload
@@ -502,10 +507,22 @@ TrussMe_FEM := module()
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+  export Spy::static := proc(
+    A::Matrix,
+    $)::anything;
+
+    description "Plot of non-zero values of the matrix <A>.";
+
+    return plots:-sparsematrixplot(A, 'matrixview');
+  end proc: # Spy
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 $include "./lib/TrussMe_FEM/Affine.mpl"
 $include "./lib/TrussMe_FEM/Material.mpl"
 $include "./lib/TrussMe_FEM/Structure.mpl"
 $include "./lib/TrussMe_FEM/Load.mpl"
+$include "./lib/TrussMe_FEM/Plot.mpl"
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
