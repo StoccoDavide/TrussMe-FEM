@@ -12,11 +12,11 @@
 - [ ] Code generation
 - [ ] Inserire LAST LU
 - [ ] Optimize sperm?
-- [ ] Test MakeBeam
-- [ ] Test MakeRod
+- [x] Test MakeBeam
+- [x] Test MakeRod
 - [ ] Generate Timoshenko stiffness matrix?
 - [ ] Test MakeCompliantNode
-- [ ] Uniformare liste e vettori interni per ottimizzare performance
+- [x] Uniformare liste e vettori interni per ottimizzare performance
 - [ ] Testare quando origine frame nodo e coordinate del nodo stesso non coincidono
 - [x] Object-orient o pacchetto tradizionale? -> pacchetto tradizionale
 - [ ] Eliminare i metodi Project e Simplify?

@@ -65,7 +65,7 @@ export IsDOFS := proc(
 
   description "Check if the variable <var> is of DOFS type.";
 
-  return type(var, list) and evalb(nops(var) = 6) and
+  return type(var, Vector) and evalb(LinearAlgebra:-Dimension(var) = 6) and
     not has(map(has, var, {0, 1}), false);
 end proc: # IsDOFS
 
@@ -73,11 +73,11 @@ end proc: # IsDOFS
 
 export MakeNode := proc(
   name::string,
-  coordinates::{list, POINT, VECTOR},
+  coordinates::{Vector, POINT, VECTOR},
   {
-  frame::FRAME                   := Matrix(4, shape = identity),
-  dofs::DOFS                     := [1, 1, 1, 1, 1, 1],
-  displacements::list(algebraic) := [0, 0, 0, 0, 0, 0]
+  frame::FRAME                     := Matrix(4, shape = identity),
+  dofs:: DOFS                      := <1, 1, 1, 1, 1, 1>,
+  displacements::Vector(algebraic) := <0, 0, 0, 0, 0, 0>
   }, $)::NODE;
 
   description "Create a node with name <name> at coordinates <coordinates> in the "
@@ -85,19 +85,25 @@ export MakeNode := proc(
     "where 1 means free and 0 means that the dof is constrained to the ground "
     "in the direction given from <frame>.";
 
-  local coordinates_tmp;
+  local coordinates_tmp, displacements_tmp;
 
-  if type(coordinates, list) and evalb(nops(coordinates) = 3) then
+  if type(coordinates, Vector) and
+    evalb(LinearAlgebra:-Dimension(coordinates) = 3) then
     coordinates_tmp := coordinates;
   elif type(coordinates, POINT) or type(coordinates, VECTOR) then
-    coordinates_tmp := [TrussMe_FEM:-CompXYZ(coordinates)];
+    coordinates_tmp := coordinates[1..3];
   else
-    error("<coordinates> must be a list of 3 elements, a POINT or a VECTOR.");
+    error("<coordinates> must have 3 elements.");
   end if;
 
-  if evalb(nops(displacements) <> 6) then
-    error("<displacements> must be a list of 6 elements.");
-  elif evalb(add(dofs *~ displacements) <> 0) then
+  if type(displacements, Vector) and
+    evalb(LinearAlgebra:-Dimension(displacements) = 6) then
+    displacements_tmp := displacements;
+  else
+    error("<displacements> must have 6 elements.");
+  end if;
+
+  if evalb(add(dofs_tmp *~ displacements_tmp) <> 0) then
     error("<displacements> must be defined only for constrained dofs.");
   end if;
 
@@ -108,7 +114,7 @@ export MakeNode := proc(
     "frame"                = frame,
     "coordinates"          = coordinates_tmp,
     "dofs"                 = dofs,
-    "displacements"        = displacements,
+    "displacements"        = displacements_tmp,
     "output_reactions"     = [], # Output reactions in the node frame
     "output_displacements" = []  # Output displacements in the node frame
   ]);
@@ -118,10 +124,10 @@ end proc: # MakeNode
 
 export MakeCompliantNode := proc(
   name::string,
-  coordinates::{list, POINT, VECTOR},
+  coordinates::{Vector, POINT, VECTOR},
   {
   frame::FRAME                    := Matrix(4, shape = identity),
-  dofs::DOFS                      := [1, 1, 1, 1, 1, 1],
+  dofs:: DOFS                     := <1, 1, 1, 1, 1, 1>,
   K::{algebraic, list(algebraic)} := 0,
   T::{algebraic, list(algebraic)} := 0
   }, $)::NODE, ELEMENT, NODE;
@@ -141,7 +147,7 @@ export MakeCompliantNode := proc(
   compliant := TrussMe_FEM:-MakeNode(
     cat(name, "_compliant"), coordinates, parse("frame") = frame
   );
-  spring    := TrussMe_FEM:-MakeSpring(
+  spring := TrussMe_FEM:-MakeSpring(
     cat(name, "_spring"), fixed, compliant,
     parse("frame") = frame, parse("K") = K, parse("T") = T
   );
@@ -190,7 +196,7 @@ export GetSpringStiffness := proc(
     error("<T> must be a list of 3 elements or a single element.");
   end if;
 
-  return Matrix(
+  return
     <<K_x, 0, 0, 0, 0, 0, -K_x, 0, 0, 0, 0, 0>|
      <0, K_y, 0, 0, 0, 0, 0, -K_y, 0, 0, 0, 0>|
      <0, 0, K_z, 0, 0, 0, 0, 0, -K_z, 0, 0, 0>|
@@ -202,8 +208,7 @@ export GetSpringStiffness := proc(
      <0, 0, -K_z, 0, 0, 0, 0, 0, K_z, 0, 0, 0>|
      <0, 0, 0, -T_x, 0, 0, 0, 0, 0, T_x, 0, 0>|
      <0, 0, 0, 0, -T_y, 0, 0, 0, 0, 0, T_y, 0>|
-     <0, 0, 0, 0, 0, -T_z, 0, 0, 0, 0, 0, T_z>>,
-    storage = sparse);
+     <0, 0, 0, 0, 0, -T_z, 0, 0, 0, 0, 0, T_z>>;
 end proc: # GetSpringStiffness
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -251,7 +256,7 @@ export GetBeamStiffness := proc(
   EIy_L := E*I_y/L; EIy_L2 := E*I_y/L^2; EIy_L3 := E*I_y/L^3;
   EIz_L := E*I_z/L; EIz_L2 := E*I_z/L^2; EIz_L3 := E*I_z/L^3;
 
-  return Matrix(
+  return
     <<EA_L, 0, 0, 0, 0, 0, -EA_L, 0, 0, 0, 0, 0>|
      <0, 12*EIz_L3, 0, 0, 0, 6*EIz_L2, 0, -12*EIz_L3, 0, 0, 0, 6*EIz_L2>|
      <0, 0, 12*EIy_L3, 0, -6*EIy_L2, 0, 0, 0, -12*EIy_L3, 0, -6*EIy_L2, 0>|
@@ -263,8 +268,7 @@ export GetBeamStiffness := proc(
      <0, 0, -12*EIy_L3, 0, 6*EIy_L2, 0, 0, 0, 12*EIy_L3, 0, 6*EIy_L2, 0>|
      <0, 0, 0, -GJ_L, 0, 0, 0, 0, 0, GJ_L, 0, 0>|
      <0, 0, -6*EIy_L2, 0, 2*EIy_L, 0, 0, 0, 6*EIy_L2, 0, 4*EIy_L, 0>|
-     <0, 6*EIz_L2, 0, 0, 0, 2*EIz_L, 0, -6*EIz_L2, 0, 0, 0, 4*EIz_L>>,
-    storage = sparse);
+     <0, 6*EIz_L2, 0, 0, 0, 2*EIz_L, 0, -6*EIz_L2, 0, 0, 0, 4*EIz_L>>;
 end proc: # GetBeamStiffness
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -293,8 +297,8 @@ end proc: # IsELEMENTS
 
 export MakeElement := proc(
   name::string,
-  N1::{NODE, list({NODE, DOFS})},
-  N2::{NODE, list({NODE, DOFS})},
+  N1::{NODE, list({NODE, DOFS}), Vector({NODE, DOFS})},
+  N2::{NODE, list({NODE, DOFS}), Vector({NODE, DOFS})},
   K::STIFFNESS,
   {
   frame::FRAME        := TrussMe_FEM:-GenerateGenericFrame(name),
@@ -308,9 +312,9 @@ export MakeElement := proc(
 
   local node_1, node_2, dofs_1, dofs_2, L, R, Q;
 
-  if evalb(nops(N1) = 1) and type(N1, NODE) then
+  if type(N1, NODE) then
     node_1 := N1;
-    dofs_1 := [0, 0, 0, 0, 0, 0];
+    dofs_1 := <0, 0, 0, 0, 0, 0>;
   elif evalb(nops(N1) = 2) and type(N1[1], NODE) and type(N1[2], DOFS) then
     node_1 := N1[1];
     dofs_1 := N1[2];
@@ -318,9 +322,9 @@ export MakeElement := proc(
     error("invalid node 1 detected.");
   end if;
 
-  if evalb(nops(N2) = 1) and type(N2, NODE) then
+  if type(N2, NODE) then
     node_2 := N2;
-    dofs_2 := [0, 0, 0, 0, 0, 0];
+    dofs_2 := <0, 0, 0, 0, 0, 0>;
   elif evalb(nops(N2) = 2) and type(N2[1], NODE) and type(N2[2], DOFS) then
     node_2 := N2[1];
     dofs_2 := N2[2];
@@ -385,8 +389,8 @@ end proc: # MakeSpring
 
 export MakeRod := proc(
   name::string,
-  N1::{NODE, list({NODE, DOFS})},
-  N2::{NODE, list({NODE, DOFS})},
+  N1::{NODE, list({NODE, DOFS}), Vector({NODE, DOFS})},
+  N2::{NODE, list({NODE, DOFS}), Vector({NODE, DOFS})},
   {
   material::MATERIAL       := TrussMe_FEM:-MakeCarbonSteel(),
   area::algebraic          := 0,
@@ -401,19 +405,26 @@ export MakeRod := proc(
     "cross-section area <area> and inertia <inertia>. Optional nodes distance "
     "<distance> can be specified.";
 
-  local L;
+  local L, coordinates_1, coordinates_2;
 
   if evalb(distance <> -1) then
     L := distance;
   else
-    if type(N1, NODE) and type(N2, NODE) then
-      L := TrussMe_FEM:-Norm2(N1["coordinates"] - N2["coordinates"]);
-    elif evalb(nops(N1) = 2) and type(N1[1], NODE) and type(N1[2], DOFS) and
-        evalb(nops(N2) = 2) and type(N2[1], NODE) and type(N2[2], DOFS) then
-      L := TrussMe_FEM:-Norm2(N1[1]["coordinates"] - N2[2]["coordinates"]);
+    if type(N1, NODE) then
+      coordinates_1 := N1["coordinates"];
+    elif evalb(nops(N1) = 2) and type(N1[1], NODE) and type(N1[2], DOFS) then
+      coordinates_1 := N1[1]["coordinates"];
     else
-      error("invalid nodes detected.");
+      error("invalid node 1 detected.");
     end if;
+    if type(N2, NODE) then
+      coordinates_2 := N2["coordinates"];
+    elif evalb(nops(N2) = 2) and type(N2[1], NODE) and type(N2[2], DOFS) then
+      coordinates_2 := N2[1]["coordinates"];
+    else
+      error("invalid node 2 detected.");
+    end if;
+    L := TrussMe_FEM:-Norm2(coordinates_2 - coordinates_1);
   end if;
 
   return TrussMe_FEM:-MakeElement(name, N1, N2, TrussMe_FEM:-GetRodStiffness(
@@ -425,8 +436,8 @@ end proc: # MakeRod
 
 export MakeBeam := proc(
   name::string,
-  N1::{NODE, list({NODE, DOFS})},
-  N2::{NODE, list({NODE, DOFS})},
+  N1::{NODE, list({NODE, DOFS}), Vector({NODE, DOFS})},
+  N2::{NODE, list({NODE, DOFS}), Vector({NODE, DOFS})},
   {
   material::MATERIAL       := TrussMe_FEM:-MakeCarbonSteel(),
   area::algebraic          := 0,
@@ -441,19 +452,26 @@ export MakeBeam := proc(
     "cross-section area <area> and inertia <inertia>. Optional nodes distance "
     "<distance> can be specified.";
 
-  local L;
+  local L, coordinates_1, coordinates_2;
 
   if evalb(distance <> -1) then
     L := distance;
   else
-    if type(N1, NODE) and type(N2, NODE) then
-      L := TrussMe_FEM:-Norm2(N1["coordinates"] - N2["coordinates"]);
-    elif evalb(nops(N1) = 2) and type(N1[1], NODE) and type(N1[2], DOFS) and
-        evalb(nops(N2) = 2) and type(N2[1], NODE) and type(N2[2], DOFS) then
-      L := TrussMe_FEM:-Norm2(N1[1]["coordinates"] - N2[2]["coordinates"]);
+    if type(N1, NODE) then
+      coordinates_1 := N1["coordinates"];
+    elif evalb(nops(N1) = 2) and type(N1[1], NODE) and type(N1[2], DOFS) then
+      coordinates_1 := N1[1]["coordinates"];
     else
-      error("invalid nodes detected.");
+      error("invalid node 1 detected.");
     end if;
+    if type(N2, NODE) then
+      coordinates_2 := N2["coordinates"];
+    elif evalb(nops(N2) = 2) and type(N2[1], NODE) and type(N2[2], DOFS) then
+      coordinates_2 := N2[1]["coordinates"];
+    else
+      error("invalid node 2 detected.");
+    end if;
+    L := TrussMe_FEM:-Norm2(coordinates_2 - coordinates_1);
   end if;
 
   return TrussMe_FEM:-MakeElement(name, N1, N2, TrussMe_FEM:-GetBeamStiffness(
@@ -482,15 +500,11 @@ export GetNodalDofs := proc(
 
   local dofs, i;
 
-  printf("TrussMe_FEM:-GetNodalDofs() ... ");
-  dofs := [];
-  for i in nodes do
-    if type(i, NODE) then
-      dofs := [op(dofs), op(i["dofs"])];
-    end if;
+  dofs := Vector(6 * nops(nodes));
+  for i from 1 to nops(nodes) do
+    dofs[6*i-5..6*i] := nodes[i]["dofs"];
   end do;
-  printf("DONE\n");
-  return convert(dofs, Vector);
+  return dofs;
 end proc: # GetNodalDofs
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -503,13 +517,11 @@ export GetNodalDisplacements := proc(
 
   local displacements, i;
 
-  displacements := [];
-  for i in nodes do
-    if type(i, NODE) then
-      displacements := [op(displacements), op(i["displacements"])];
-    end if;
+  displacements := Vector(6 * nops(nodes));
+  for i from 1 to nops(nodes) do
+    displacements[6*i-5..6*i] := nodes[i]["displacements"];
   end do;
-  return convert(displacements, Vector);
+  return displacements;
 end proc: # GetNodalDisplacements
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -522,7 +534,7 @@ export StiffnessTransformation := proc(
 
   local T, i;
 
-  T := Matrix(6*nops(nodes), (i,j) -> `if`(evalb(i=j), 1, 0), storage = sparse);
+  T := Matrix(6 * nops(nodes), (i,j) -> `if`(evalb(i=j), 1, 0), storage = sparse);
   for i from 1 to nops(nodes) do
     T[6*i-5..6*i-3, 6*i-5..6*i-3] := nodes[i]["frame"][1..3, 1..3];
     T[6*i-2..6*i,   6*i-2..6*i]   := nodes[i]["frame"][1..3, 1..3];
@@ -543,14 +555,14 @@ export GlobalStiffness := proc(
   local K, element_k, i, j, k;
 
   printf("TrussMe_FEM:-GlobalStiffness() ... ");
-  K := Matrix(6*nops(nodes), storage = sparse);
+  K := Matrix(6 * nops(nodes), storage = sparse);
   for i from 1 to nops(elements) do
     # Nodes positions
     j := TrussMe_FEM:-GetObjById(nodes, elements[i]["node_1"], parse("position") = true);
     k := TrussMe_FEM:-GetObjById(nodes, elements[i]["node_2"], parse("position") = true);
     # Element stiffness contribution selecting only constrained dofs (= 0)
     element_k := elements[i]["stiffness"].LinearAlgebra:-DiagonalMatrix(
-      <op(-(elements[i]["dofs_1"] -~ 1)), op(-(elements[i]["dofs_2"] -~ 1))>
+      <-(elements[i]["dofs_1"] -~ 1), -(elements[i]["dofs_2"] -~ 1)>
     );
     element_k := elements[i]["rotation"].element_k;
     K[6*j-5..6*j, 6*j-5..6*j] := K[6*j-5..6*j, 6*j-5..6*j] + element_k[1..6,  1..6 ];

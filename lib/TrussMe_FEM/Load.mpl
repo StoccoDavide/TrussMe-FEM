@@ -32,7 +32,7 @@ export IsCOMPONENTS := proc(
 
   description "Check if the variable <var> is of COMPONENTS type.";
 
-  return type(var, list(algebraic)) and evalb(nops(var) = 6);
+  return type(var, Vector) and evalb(LinearAlgebra:-Dimension(var) = 6);
 end proc: # IsCOMPONENTS
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -47,12 +47,11 @@ export MakeLoad := proc(
 
   description "Create a load with name <name> acting on the node (or its id) "
     "<node> on the frame <frame> with components <components>.";
-
-  if evalb(nops(components) <> 6) then
-    error("<displacements> must be a list of 6 elements.");
-  elif evalb(add(-(node["dofs"] -~ 1) *~ components) <> 0) then
-    error("<displacements> must be defined only for constrained dofs.");
+print("aa");
+  if evalb(add(-(node["dofs"] -~ 1) *~ components) <> 0) then
+    error("components must be defined only for constrained dofs.");
   end if;
+print("aa");
 
   return table([
     "type"       = LOAD,
@@ -86,22 +85,20 @@ export GetNodalLoads := proc(
 
   local F, i, j, R;
 
-  printf("TrussMe_FEM:-GetNodalLoads(...) ... ");
   F := Vector(6 * nops(nodes), storage = sparse);
   for i from 1 to nops(loads) do
     # Node position
     j := TrussMe_FEM:-GetObjById(nodes, loads[i]["node"], parse("position") = true);
     # Node loads in node frame
     if evalb(loads[i]["frame"] = nodes[j]["id"]) then
-      R := LinearAlgebra:-IdentityMatrix(3);
+      R := Matrix(3, shape = identity);
     else
       R := (LinearAlgebra:-Transpose(nodes[j]["frame"]).loads[i]["frame"])[1..3, 1..3];
     end if;
     F[6*j-5..6*j] := <
-      R.<op(loads[i]["components"][1..3])>, R.<op(loads[i]["components"][4..6])>
+      R.loads[i]["components"][1..3], R.loads[i]["components"][4..6]
     >;
   end do;
-  printf("DONE\n");
   return F;
 end proc: # GetNodalLoads
 

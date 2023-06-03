@@ -201,7 +201,7 @@ export PlotStructure := proc(
   # Plot the nodes
   disp_nodes := [seq(i, i = 1..nops(nodes))];
   for i from 1 to nops(nodes) do
-    p_1 := nodes[i]["frame"].<op(nodes[i]["coordinates"]), 1>;
+    p_1 := convert(nodes[i]["frame"].<nodes[i]["coordinates"], 1>, Vector);
     disp_nodes[i] := TrussMe_FEM:-PlotNode(
       p_1, parse("data")  = data,
       parse("color") = `if`(
@@ -222,8 +222,8 @@ export PlotStructure := proc(
     k := TrussMe_FEM:-GetObjById(
       nodes, elements[i]["node_2"], parse("position") = true
     );
-    p_1 := nodes[j]["frame"].<op(nodes[j]["coordinates"]), 1>;
-    p_2 := nodes[k]["frame"].<op(nodes[k]["coordinates"]), 1>;
+    p_1 := convert(nodes[j]["frame"].<nodes[j]["coordinates"], 1>, Vector);
+    p_2 := convert(nodes[k]["frame"].<nodes[k]["coordinates"], 1>, Vector);
     disp_elements[i] := TrussMe_FEM:-PlotElement(
       p_1, p_2, parse("data") = data, parse("color") = TrussMe_FEM:-m_ElementColor
     );
@@ -233,26 +233,28 @@ export PlotStructure := proc(
   disp_loads := [seq(i, i = 1..2*nops(loads))];
   for i from 1 to nops(loads) do
     j := TrussMe_FEM:-GetObjById(nodes, loads[i]["node"], parse("position") = true);
-    p_2 := nodes[j]["frame"].<op(nodes[j]["coordinates"]), 1>;
+    p_2 := nodes[j]["frame"].<nodes[j]["coordinates"], 1>;
 
     # Plot forces
     if type(loads[i]["frame"], string) then
-      p_1 := p_2 - nodes[j]["frame"].<op(scaling*loads[i]["components"])[1..3], 0>;
+      p_1 := p_2 - nodes[j]["frame"].<scaling * loads[i]["components"][1..3], 0>;
     else
-      p_1 := p_2 - loads[i]["frame"].<op(scaling*loads[i]["components"])[1..3], 0>;
+      p_1 := p_2 - loads[i]["frame"].<scaling * loads[i]["components"][1..3], 0>;
     end if;
     disp_loads[2*i-1] := TrussMe_FEM:-PlotLoad(
-      p_1, p_2, parse("data") = data, parse("color") = TrussMe_FEM:-m_ForceColor
+      convert(p_1, Vector), convert(p_2, Vector),
+      parse("data") = data, parse("color") = TrussMe_FEM:-m_ForceColor
     );
 
     # Plot moments
     if type(loads[i]["frame"], string) then
-      p_1 := p_2 - nodes[j]["frame"].<op(scaling*loads[i]["components"])[4..6], 0>;
+      p_1 := p_2 - nodes[j]["frame"].<scaling * loads[i]["components"][4..6], 0>;
     else
-      p_1 := p_2 - loads[i]["frame"].<op(scaling*loads[i]["components"])[4..6], 0>;
+      p_1 := p_2 - loads[i]["frame"].<scaling * loads[i]["components"][4..6], 0>;
     end if;
     disp_loads[2*i] := TrussMe_FEM:-PlotLoad(
-      p_1, p_2, parse("data") = data, parse("color") = TrussMe_FEM:-m_MomentColor
+      convert(p_1, Vector), convert(p_2, Vector),
+      parse("data") = data, parse("color") = TrussMe_FEM:-m_MomentColor
     );
   end do;
 
