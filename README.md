@@ -1,6 +1,6 @@
 # TrussMe FEM
 
-A package for symbolic FEM structural analysis.
+A package for hybrid symbolic-numerical FEM structural analysis
 
 ## Authors
 

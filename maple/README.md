@@ -1,6 +1,4 @@
-# TrussMe FEM
-
-A package for symbolic FEM structural analysis.
+# Maple package
 
 ## Installation
 
@@ -39,4 +37,3 @@ In case you have no time to read the description and realize how it should or sh
   Department of Industrial Engineering,
   University of Trento \
   email: matteo.larcher@unitn.it
-
