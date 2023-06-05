@@ -82,8 +82,8 @@ export MakeNode := proc(
 
   description "Create a node with name <name> at coordinates <coordinates> in the "
     "reference frame <frame>. The constraints on dofs are specified by <dofs>, "
-    "where 1 means free and 0 means that the dof is constrained to the ground "
-    "in the direction given from <frame>.";
+    "where 1 means free and 0 means that the dof is constrained in the "
+    "direction given from (global to local) <frame>.";
 
   local coordinates_tmp, displacements_tmp;
 
@@ -101,10 +101,6 @@ export MakeNode := proc(
     displacements_tmp := displacements;
   else
     error("<displacements> must have 6 elements.");
-  end if;
-
-  if evalb(add(dofs_tmp *~ displacements_tmp) <> 0) then
-    error("<displacements> must be defined only for constrained dofs.");
   end if;
 
   return table([
@@ -126,23 +122,25 @@ export MakeCompliantNode := proc(
   name::string,
   coordinates::{Vector, POINT, VECTOR},
   {
-  frame::FRAME                    := Matrix(4, shape = identity),
-  dofs:: DOFS                     := <1, 1, 1, 1, 1, 1>,
-  K::{algebraic, list(algebraic)} := 0,
-  T::{algebraic, list(algebraic)} := 0
+  frame::FRAME                     := Matrix(4, shape = identity),
+  dofs:: DOFS                      := <1, 1, 1, 1, 1, 1>,
+  displacements::Vector(algebraic) := <0, 0, 0, 0, 0, 0>,
+  K::{algebraic, list(algebraic)}  := 0,
+  T::{algebraic, list(algebraic)}  := 0
   }, $)::NODE, ELEMENT, NODE;
 
   description "Create a node with name <name> at coordinates <coordinates> in the "
     "reference frame <frame>. The constraints on dofs are specified by <dofs>, "
-    "where 1 means free and 0 means that the dof is constrained to the ground "
-    "in the direction given from <frame>. The node is also connected to a "
-    "compliant spring element with traslational stiffness <K> and torsional "
+    "where 1 means free and 0 means that the dof is constrained in the "
+    "direction given from (global to local) <frame>. The node is also connected "
+    "to a compliant spring element with traslational stiffness <K> and torsional "
     "stiffness <T>.";
 
   local fixed, spring, compliant;
 
   fixed := TrussMe_FEM:-MakeNode(
-    name, coordinates, parse("frame") = frame, parse("dofs") = dofs
+    name, coordinates, parse("frame") = frame, parse("dofs") = dofs,
+    parse("displacements") = displacements
   );
   compliant := TrussMe_FEM:-MakeNode(
     cat(name, "_compliant"), coordinates, parse("frame") = frame
@@ -370,7 +368,7 @@ export MakeSpring := proc(
   K::{algebraic, list(algebraic)} := 0,
   T::{algebraic, list(algebraic)} := 0,
   frame::FRAME                    := TrussMe_FEM:-GenerateGenericFrame(name),
-  distance::algebraic             := -1
+  distance::algebraic             := 0
   }, $)::ELEMENT;
 
   description "Make a spring element with name <name> on reference frame <frame>, "
@@ -561,16 +559,22 @@ export GlobalStiffness := proc(
     j := TrussMe_FEM:-GetObjById(nodes, elements[i]["node_1"], parse("position") = true);
     k := TrussMe_FEM:-GetObjById(nodes, elements[i]["node_2"], parse("position") = true);
     # Element stiffness contribution selecting only constrained dofs (= 0)
+    printf("a1\n");
     element_k := elements[i]["stiffness"].LinearAlgebra:-DiagonalMatrix(
       <-(elements[i]["dofs_1"] -~ 1), -(elements[i]["dofs_2"] -~ 1)>
     );
+    printf("a2\n");
     element_k := elements[i]["rotation"].element_k;
+    printf("a3\n");
     K[6*j-5..6*j, 6*j-5..6*j] := K[6*j-5..6*j, 6*j-5..6*j] + element_k[1..6,  1..6 ];
+    printf("a4\n");
     K[6*j-5..6*j, 6*k-5..6*k] := K[6*j-5..6*j, 6*k-5..6*k] + element_k[1..6,  7..12];
+    printf("a5\n");
     K[6*k-5..6*k, 6*j-5..6*j] := K[6*k-5..6*k, 6*j-5..6*j] + element_k[7..12, 1..6 ];
+    printf("a6\n");
     K[6*k-5..6*k, 6*k-5..6*k] := K[6*k-5..6*k, 6*k-5..6*k] + element_k[7..12, 7..12];
+    printf("a7\n");
   end do;
-  printf("DONE\n");
   return K;
 end proc: # GlobalStiffness
 
@@ -623,8 +627,8 @@ export GenerateFEM := proc(
     "displacements"        = TrussMe_FEM:-GetNodalDisplacements(nodes),
     "stiffness"            = TrussMe_FEM:-GlobalStiffnessPrime(nodes, elements),
     "loads"                = TrussMe_FEM:-GetNodalLoads(nodes, loads),
-    "output_reactions"     = [], # Output reactions in the ground frame
-    "output_displacements" = []  # Output displacements in the ground frame
+    "output_reactions"     = [], # Output reactions in the frame
+    "output_displacements" = []  # Output displacements in the global frame
   ]);
 end proc: # GenerateFEM
 
@@ -701,7 +705,8 @@ export SplitFEM := proc(
     "K_sf" = K[n+1..-1, 1..n],
     "K_ss" = K[n+1..-1, n+1..-1],
     "d_s"  = d[n+1..-1],
-    "f_f"  = f[1..n]
+    "f_f"  = f[1..n],
+    "f_fs" = f[n+1..-1]
   ]);
 end proc: # SplitFEM
 
@@ -744,23 +749,44 @@ end proc: # StripFEM
 
 export SolveFEM := proc(
   fem::FEM,
-  $)
+  {
+  last::boolean   := false,
+  unveil::boolean := false
+  }, $)
 
-  description "Solve the FEM structure <fem>.";
+  description "Solve the FEM structure <fem> and optionally use LAST LU "
+    "decompostion <last> and unveil the expressions <unveil>.";
 
-  local split_FEM, i, mrep;
+  local split_FEM, LAST_obj, LEM_obj, i, mrep;
 
   # Split free and constrained dofs
   split_FEM := TrussMe_FEM:-SplitFEM(fem);
 
   # Solve free dofs
-  split_FEM["d_f"] := LinearAlgebra:-LinearSolve(
-    split_FEM["K_ff"], split_FEM["f_f"] - split_FEM["K_fs"].split_FEM["d_s"]
-  );
+  if last then
+    try
+      LAST_obj := Object(LAST);
+      LAST_obj:-InitLEM(LAST_obj, "V");
+      LEM_obj := LAST_obj:-GetLEM(LAST_obj);
+    catch:
+      error("LAST or LEM package not installed.");
+    end try;
+    LAST_obj:-LU(LAST_obj, split_FEM["K_ff"]);
+    split_FEM["d_f"] := LAST_obj:-SolveLinearSystem(
+      LAST_obj, split_FEM["f_f"] - split_FEM["K_fs"].split_FEM["d_s"]
+    );
+    split_FEM["veils"] := LEM_obj:-VeilList(LEM_obj);
+  else
+    split_FEM["d_f"] := LinearAlgebra:-LinearSolve(
+      split_FEM["K_ff"], split_FEM["f_f"] - split_FEM["K_fs"].split_FEM["d_s"]
+    );
+    split_FEM["veils"] := [];
+  end if;
 
   # Solve reactions
-  split_FEM["f_s"] :=
-    split_FEM["K_sf"].split_FEM["d_f"] - split_FEM["K_ss"].split_FEM["d_s"];
+  split_FEM["f_s"] := split_FEM["K_sf"].split_FEM["d_f"] -
+                      split_FEM["K_ss"].split_FEM["d_s"] -
+                      split_FEM["f_fs"];
 
   # Store output displacements and reactions and restore initial permutation
   mrep := [seq(i, i = 1..nops(split_FEM["perm"]))];

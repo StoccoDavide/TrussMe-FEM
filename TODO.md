@@ -1,16 +1,17 @@
 # TODO
 
-- [ ] Riportare la matrice di rigidezza nel caso delle molla
+- [ ] Riportare la matrice di rigidezza nel caso delle molla (effetto della distanza tra elementi collegati)
 - [ ] Capire come fare con i rod (strippare il sistema o mettere infinito)
 - [ ] Matrice rotazione Q si può elinimare forse
 - [ ] Calcolo gdl
 - [ ] Controllare compatibilità con aree e inerze definite come proc
 - [x] Plots struttura indeformata
-- [ ] Plots struttura deformata
+- [x] Plots struttura deformata
+- [ ] Debug plots
 - [x] Grafo struttura
 - [ ] Mettere print di stato avanazamento
 - [ ] Code generation
-- [ ] Inserire LAST LU
+- [x] Inserire LAST LU
 - [ ] Optimize sperm?
 - [x] Test MakeBeam
 - [x] Test MakeRod

@@ -47,11 +47,6 @@ export MakeLoad := proc(
 
   description "Create a load with name <name> acting on the node (or its id) "
     "<node> on the frame <frame> with components <components>.";
-print("aa");
-  if evalb(add(-(node["dofs"] -~ 1) *~ components) <> 0) then
-    error("components must be defined only for constrained dofs.");
-  end if;
-print("aa");
 
   return table([
     "type"       = LOAD,
