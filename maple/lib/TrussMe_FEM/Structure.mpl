@@ -107,12 +107,12 @@ export MakeNode := proc(
     "type"                 = NODE,
     "name"                 = name,
     "id"                   = TrussMe_FEM:-GenerateId(),
-    "frame"                = frame,
-    "coordinates"          = coordinates_tmp,
-    "dofs"                 = dofs,
-    "displacements"        = displacements_tmp,
-    "output_reactions"     = [], # Output reactions in the node frame
-    "output_displacements" = []  # Output displacements in the node frame
+    "frame"                = frame, # Reference frame from global to local
+    "coordinates"          = coordinates_tmp, # Coordinates in the global frame
+    "dofs"                 = dofs, # Constrained dofs in the local frame
+    "displacements"        = displacements_tmp, # Displacements in the local frame
+    "output_reactions"     = [], # Output reactions in the local frame
+    "output_displacements" = []  # Output displacements in the local frame
   ]);
 end proc: # MakeNode
 
@@ -347,13 +347,13 @@ export MakeElement := proc(
     "type"      = ELEMENT,
     "name"      = name,
     "id"        = TrussMe_FEM:-GenerateId(),
-    "frame"     = frame,
+    "frame"     = frame, # Reference frame from global to local
     "node_1"    = node_1["id"],
-    "dofs_1"    = dofs_1,
+    "dofs_1"    = dofs_1, # Constrained dofs on node 1 in local frame
     "node_2"    = node_2["id"],
-    "dofs_2"    = dofs_2,
+    "dofs_2"    = dofs_2, # Constrained dofs on node 2 in local frame
     "length"    = L,
-    "stiffness" = K,
+    "stiffness" = K, # Stiffness matrix in local frame
     "rotation"  = Q
   ]);
 end proc: # MakeElement

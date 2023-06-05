@@ -52,9 +52,9 @@ export MakeLoad := proc(
     "type"       = LOAD,
     "name"       = name,
     "id"         = TrussMe_FEM:-GenerateId(),
-    "frame"      = frame,
+    "frame"      = frame, # Reference frame from global to local or node id
     "node"       = node["id"],
-    "components" = components
+    "components" = components # Components in the local frame
   ]);
 end proc: # MakeLoad
 
@@ -90,9 +90,7 @@ export GetNodalLoads := proc(
     else
       R := (LinearAlgebra:-Transpose(nodes[j]["frame"]).loads[i]["frame"])[1..3, 1..3];
     end if;
-    F[6*j-5..6*j] := <
-      R.loads[i]["components"][1..3], R.loads[i]["components"][4..6]
-    >;
+    F[6*j-5..6*j] := <R.loads[i]["components"][1..3], R.loads[i]["components"][4..6]>;
   end do;
   return F;
 end proc: # GetNodalLoads
