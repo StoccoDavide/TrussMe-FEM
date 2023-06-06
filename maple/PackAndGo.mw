@@ -184,6 +184,10 @@ end proc:
 <Group hide-input="false" labelreference="L256902" drawlabel="true" applyint="true" applyrational="true" applyexponent="false">
 <Input><Text-field style="Text" layout="Normal">Generate module</Text-field><Text-field prompt="&gt; " style="Maple Input" layout="Normal">GEN(MODULE_NAME);</Text-field>
 </Input>
+<Output><Text-field style="HyperlinkWarning" layout="HyperlinkWarning"><Hyperlink linktarget="http://www.maplesoft.com/support/help/errors/view.aspx?path=Warning,%20(in%20TrussMe_FEM%3A-PlotDeformedStructure)%20%60d_1%60%20is%20implicitly%20declared%20local%20%7Clib%2FTrussMe_FEM%2FPlot.mpl%3A378%7C" hyperlink="true"><Font style="HyperlinkWarning">Warning, (in TrussMe_FEM:-PlotDeformedStructure) `d_1` is implicitly declared local |lib/TrussMe_FEM/Plot.mpl:378|</Font></Hyperlink></Text-field>
+</Output>
+<Output><Text-field style="HyperlinkWarning" layout="HyperlinkWarning"><Hyperlink linktarget="http://www.maplesoft.com/support/help/errors/view.aspx?path=Warning,%20(in%20TrussMe_FEM%3A-PlotDeformedStructure)%20%60d_2%60%20is%20implicitly%20declared%20local%20%7Clib%2FTrussMe_FEM%2FPlot.mpl%3A379%7C" hyperlink="true"><Font style="HyperlinkWarning">Warning, (in TrussMe_FEM:-PlotDeformedStructure) `d_2` is implicitly declared local |lib/TrussMe_FEM/Plot.mpl:379|</Font></Hyperlink></Text-field>
+</Output>
 </Group>
 <Group hide-input="false" labelreference="L256910" drawlabel="true" applyint="true" applyrational="true" applyexponent="false">
 <Input><Text-field prompt="&gt; " style="Maple Input" layout="Normal">whattype(NULL)</Text-field>

@@ -33,13 +33,13 @@ end proc: # IsFRAME
 export GenerateFrame := proc(
   p_1::{list, Vector, VECTOR, POINT},
   p_2::{list, Vector, VECTOR, POINT},
-  p_3::{list, Vector, VECTOR, POINT},
+  vec::{list, Vector, VECTOR},
   $)::FRAME;
 
   description "Generate a reference frame matrix from three points or vectors "
-    "<p_1>, <p_2> and <p_3>.";
+    "<p_1>, <p_2> and vector <vec> ortogonal to XY-plane <vec>";
 
-  local p_1_tmp, p_2_tmp, p_3_tmp, e_x, e_y, e_z;
+  local p_1_tmp, p_2_tmp, vec_tmp, e_x, e_y, e_z;
 
   if type(p_1, Vector) and evalb(LinearAlgebra:-Dimension(p_1) = 3) then
     p_1_tmp := p_1;
@@ -61,12 +61,12 @@ export GenerateFrame := proc(
     error("invalid y-axis vector or point detected.");
   end if;
 
-  if type(p_3, Vector) and evalb(LinearAlgebra:-Dimension(p_3) = 3) then
-    p_3_tmp := p_3;
-  elif type(p_3, list) and evalb(nops(p_3) = 3) then
-    p_3_tmp := convert(p_3, Vector);
-  elif type(p_3, VECTOR) or type(p_3, POINT) then
-    p_3_tmp := p_3[1..3];
+  if type(vec, Vector) and evalb(LinearAlgebra:-Dimension(vec) = 3) then
+    vec_tmp := vec;
+  elif type(vec, list) and evalb(nops(vec) = 3) then
+    vec_tmp := convert(vec, Vector);
+  elif type(vec, VECTOR) or type(vec, POINT) then
+    vec_tmp := vec[1..3];
   else
     error("invalid z-axis vector or point detected.");
   end if;
@@ -74,11 +74,11 @@ export GenerateFrame := proc(
   e_x := p_2_tmp - p_1_tmp;
   e_x := e_x / TrussMe_FEM:-Norm2(e_x);
 
-  e_z := LinearAlgebra:-CrossProduct(e_x, p_3_tmp - p_1_tmp);
-  e_z := e_z / TrussMe_FEM:-Norm2(e_z);
-
-  e_y := LinearAlgebra:-CrossProduct(e_z, e_x);
+  e_y := LinearAlgebra:-CrossProduct(vec_tmp, e_x);
   e_y := e_y / TrussMe_FEM:-Norm2(e_y);
+
+  e_z := LinearAlgebra:-CrossProduct(e_x, e_y);
+  e_z := e_z / TrussMe_FEM:-Norm2(e_z);
 
   return <<e_x,     0>|
           <e_y,     0>|
