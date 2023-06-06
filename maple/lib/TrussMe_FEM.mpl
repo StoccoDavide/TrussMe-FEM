@@ -33,6 +33,9 @@ TrussMe_FEM := module()
   local m_NodeToken    := solidsphere;
   local m_SupportToken := solidbox;
 
+  local m_CodegenOptions;
+  local m_WorkingDirectory;
+
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   export Info := proc()
@@ -86,6 +89,18 @@ TrussMe_FEM := module()
     TypeTools:-AddType('LOADS',      TrussMe_FEM:-IsLOADS);      protect('LOADS');
     TypeTools:-AddType('FEM',        TrussMe_FEM:-IsFEM);        protect('FEM');
     TypeTools:-AddType('SYSTEM',     TrussMe_FEM:-IsSYSTEM);     protect('SYSTEM');
+
+    # Codegen options
+    TrussMe_FEM:-m_CodegenOptions := table([
+      optimize          = true,
+      digits            = 30,
+      deducereturn      = false,
+      coercetypes       = false,
+      deducetypes       = false,
+      reduceanalysis    = true,
+      defaulttype       = numeric,
+      functionprecision = double
+    ]);
     return NULL;
   end proc: # ModuleLoad
 
@@ -352,6 +367,7 @@ $include "./lib/TrussMe_FEM/Affine.mpl"
 $include "./lib/TrussMe_FEM/Material.mpl"
 $include "./lib/TrussMe_FEM/Structure.mpl"
 $include "./lib/TrussMe_FEM/Load.mpl"
+$include "./lib/TrussMe_FEM/Codegen.mpl"
 $include "./lib/TrussMe_FEM/Plot.mpl"
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

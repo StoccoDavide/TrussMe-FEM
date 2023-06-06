@@ -30,18 +30,18 @@ f_r = obj.f_r();
 f   = obj.f();
 
 % Compute displacements
-d_fc = obj.compute_d_f([]);
-d_c  = obj.compute_d([]);
+d_fc = obj.compute_d_f([], []);
+d_c  = obj.compute_d([], []);
 
 % Compute force vectors
-f_sc = obj.compute_f_s([]);
-f_c  = obj.compute_f([]);
+f_sc = obj.compute_f_s([], []);
+f_c  = obj.compute_f([], []);
 
 % Check size of matrices and vectors
-obj.check_size([]);
+obj.check_size([], []);
 
 % Check symmetry of stiffness matrices
-obj.check_symmetry([]);
+obj.check_symmetry([], []);
 
 % Check deformation solution
 assert(norm(d_c - d) < 1.0e-04, 'TrussMe - Test_00: Failed to compute displacements.');

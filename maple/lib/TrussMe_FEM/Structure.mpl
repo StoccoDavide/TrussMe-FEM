@@ -336,6 +336,7 @@ export MakeElement := proc(
     L := TrussMe_FEM:-Norm2(node_1["coordinates"] - node_2["coordinates"]);
   end if;
 
+  # Transformation matrix of elment from global to local
   Q := Matrix(12, storage = sparse);
   R := TrussMe_FEM:-Rotation(frame);
   Q[1..3,   1..3  ] := R;
@@ -392,7 +393,6 @@ export MakeRod := proc(
   {
   material::MATERIAL       := TrussMe_FEM:-MakeCarbonSteel(),
   area::algebraic          := 0,
-  inertia::list(algebraic) := [0, 0, 0],
   frame::FRAME             := TrussMe_FEM:-GenerateGenericFrame(name),
   distance::algebraic      := -1
   }, $)::ELEMENT;
@@ -400,8 +400,8 @@ export MakeRod := proc(
   description "Make a rod element with name <name> on reference frame <frame>, "
     "connecting the dofs <N1_dofs> on node 1 <[N1, N1_dofs]>, connecting "
     "the dofs <N2_dofs> on node 2 <[N2, N2_dofs]> with material <material> and "
-    "cross-section area <area> and inertia <inertia>. Optional nodes distance "
-    "<distance> can be specified.";
+    "cross-section area <area>. Optional nodes distance <distance> can be "
+    "specified.";
 
   local L, coordinates_1, coordinates_2;
 
@@ -426,7 +426,7 @@ export MakeRod := proc(
   end if;
 
   return TrussMe_FEM:-MakeElement(name, N1, N2, TrussMe_FEM:-GetRodStiffness(
-    area, material["elastic_modulus"], material["shear_modulus"], L, op(inertia)
+    area, material["elastic_modulus"], material["shear_modulus"], L, 0, 0, 0
   ), parse("frame") = frame, parse("distance") = distance);
 end proc: # MakeRod
 
@@ -559,21 +559,14 @@ export GlobalStiffness := proc(
     j := TrussMe_FEM:-GetObjById(nodes, elements[i]["node_1"], parse("position") = true);
     k := TrussMe_FEM:-GetObjById(nodes, elements[i]["node_2"], parse("position") = true);
     # Element stiffness contribution selecting only constrained dofs (= 0)
-    printf("a1\n");
     element_k := elements[i]["stiffness"].LinearAlgebra:-DiagonalMatrix(
       <-(elements[i]["dofs_1"] -~ 1), -(elements[i]["dofs_2"] -~ 1)>
     );
-    printf("a2\n");
-    element_k := elements[i]["rotation"].element_k;
-    printf("a3\n");
+    element_k := LinearAlgebra:-Transpose(elements[i]["rotation"]).element_k.elements[i]["rotation"];
     K[6*j-5..6*j, 6*j-5..6*j] := K[6*j-5..6*j, 6*j-5..6*j] + element_k[1..6,  1..6 ];
-    printf("a4\n");
     K[6*j-5..6*j, 6*k-5..6*k] := K[6*j-5..6*j, 6*k-5..6*k] + element_k[1..6,  7..12];
-    printf("a5\n");
     K[6*k-5..6*k, 6*j-5..6*j] := K[6*k-5..6*k, 6*j-5..6*j] + element_k[7..12, 1..6 ];
-    printf("a6\n");
     K[6*k-5..6*k, 6*k-5..6*k] := K[6*k-5..6*k, 6*k-5..6*k] + element_k[7..12, 7..12];
-    printf("a7\n");
   end do;
   return K;
 end proc: # GlobalStiffness

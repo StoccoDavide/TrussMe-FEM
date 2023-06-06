@@ -1,4 +1,4 @@
-%% Test_01 Run: 6 x 6 matrix
+%% Test_03 Run: 15 x 15 matrix
 
 % Clear workspace
 clear all; %#ok<CLALL>
@@ -6,10 +6,10 @@ close all;
 clc;
 
 % Test title
-disp('TrussMe - Test_01: Running...');
+disp('TrussMe - Test_03: Running...');
 
 % Create an object
-obj = Test_01();
+obj = Test_03();
 
 % Evaluate stiffness matrices
 K_ff = obj.K_ff();
@@ -44,12 +44,12 @@ obj.check_size([], []);
 obj.check_symmetry([], []);
 
 % Check deformation solution
-assert(norm(d_c - d) < 1.0e-04, 'TrussMe - Test_01: Failed to compute displacements.');
+assert(norm(d_c - d) < 2.0e-04, 'TrussMe - Test_03: Failed to compute displacements.');
 
 % Check force solution
-assert(norm(f_c - f) < 3.0e-00, 'TrussMe - Test_01: Failed to compute forces.');
+assert(norm(f_c - f + [f_r; 0; 0; 0; 0]) < 1.0e-00, 'TrussMe - Test_01: Failed to compute forces.');
 
 % Test passed
-disp('TrussMe - Test_01: Passed.');
+disp('TrussMe - Test_03: Passed.');
 
 % That's All Folks!
