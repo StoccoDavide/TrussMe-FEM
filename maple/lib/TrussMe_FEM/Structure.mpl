@@ -614,8 +614,8 @@ export GenerateFEM := proc(
 
   return table([
     "type"                 = FEM,
-    "nodes"                = map(x -> x["id"], nodes),
-    "elements"             = map(x -> x["id"], elements),
+    "nodes"                = nodes,
+    "elements"             = elements,
     "dofs"                 = TrussMe_FEM:-GetNodalDofs(nodes),
     "displacements"        = TrussMe_FEM:-GetNodalDisplacements(nodes),
     "stiffness"            = TrussMe_FEM:-GlobalStiffnessPrime(nodes, elements),

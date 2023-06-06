@@ -132,7 +132,7 @@ export PlotNode := proc(
     plottools:-point(
       subs(op(data), p_tmp),
       parse("symbol")     = token,
-      parse("symbolsize") = 20
+      parse("symbolsize") = 15
     ),
     parse("linestyle") = solid,
     parse("color")     = color,

@@ -1,6 +1,6 @@
 # TODO
 
-- [ ] Riportare la matrice di rigidezza nel caso delle molla (effetto della distanza tra elementi collegati)
+- [ ] Riportare la matrice di rigidezza nel caso delle molla (effetto della distanza tra elementi collegati) -> risolto (molla non può essere usata con elementi di lunghezza non nulla, altrimenti -> beam)
 - [ ] Capire come fare con i rod (strippare il sistema o mettere infinito)
 - [ ] Matrice rotazione Q si può elinimare forse
 - [ ] Calcolo gdl
