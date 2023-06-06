@@ -242,27 +242,28 @@ export PlotDeformedElement := proc(
        TrussMe_FEM:-Norm2(p1p2_unit[2..3]) +
        (d_1_tmp[6]*(xi-xi^2)*(1-xi) + d_2_tmp[6]*(xi^2-xi^3)*xi) *
        TrussMe_FEM:-Norm2(p1p2_unit[2..3]) -
-       (d_1_tmp[5]*(xi-xi^2)*(1-xi) - d_2_tmp[5]*(xi^2-xi^3)*xi) *
+       (d_1_tmp[5]*(xi-xi^2)*(1-xi) + d_2_tmp[5]*(xi^2-xi^3)*xi) *
        TrussMe_FEM:-Norm2(p1p2_unit[2..3]);
   y := (d_1_tmp[2]*(1-xi) + d_2_tmp[2]*xi) * p1p2_unit[2] +
        (d_1_tmp[2]*(1-3*xi^2+2*xi^3) + d_2_tmp[2]*(3*xi^2-2*xi^3)) *
        TrussMe_FEM:-Norm2(p1p2_unit[[1,3]]) -
-       (d_1_tmp[6]*(xi-xi^2)*(1-xi) - d_2_tmp[6]*(xi^2-xi^3)*xi) *
+       (d_1_tmp[6]*(xi-xi^2)*(1-xi) + d_2_tmp[6]*(xi^2-xi^3)*xi) *
        TrussMe_FEM:-Norm2(p1p2_unit[[1,3]]) +
        (d_1_tmp[4]*(xi-xi^2)*(1-xi) + d_2_tmp[4]*(xi^2-xi^3)*xi) *
        TrussMe_FEM:-Norm2(p1p2_unit[[1,3]]);
   z := (d_1_tmp[3]*(1-xi) + d_2_tmp[3]*xi) * p1p2_unit[3] +
        (d_1_tmp[3]*(1-3*xi^2+2*xi^3) + d_2_tmp[3]*(3*xi^2-2*xi^3)) *
        TrussMe_FEM:-Norm2(p1p2_unit[1..2]) -
-       (d_1_tmp[4]*(xi-xi^2)*(1-xi) - d_2_tmp[4]*(xi^2-xi^3)*xi) *
+       (d_1_tmp[4]*(xi-xi^2)*(1-xi) + d_2_tmp[4]*(xi^2-xi^3)*xi) *
        TrussMe_FEM:-Norm2(p1p2_unit[1..2]) +
        (d_1_tmp[5]*(xi-xi^2)*(1-xi) + d_2_tmp[5]*(xi^2-xi^3)*(xi)) *
        TrussMe_FEM:-Norm2(p1p2_unit[1..2]);
 
-  deformed_element := (magnify *~ <x, y, z, 0> + p_1_tmp + p1p2 *~ xi);
+  deformed_element := magnify *~ <x, y, z, 0> + p_1_tmp + p1p2 *~ xi;
 
   return plots:-display(
-    plots:-spacecurve( subs(op(data), convert(deformed_element, list)[1..3]), xi = 0..1,
+    plots:-spacecurve(
+      subs(op(data), convert(deformed_element, list)[1..3]), xi = 0..1,
       parse("thickness") = 6
     ),
     parse("linestyle") = solid,
