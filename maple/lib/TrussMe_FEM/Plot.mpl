@@ -37,9 +37,7 @@ end proc: # ObjectColor
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 export StructureGraph := proc(
-  nodes::NODES,
-  elements::ELEMENTS,
-  loads::LOADS := [],
+  fem::FEM,
   {
   id::boolean   := false,
   disp::boolean := true
@@ -48,27 +46,32 @@ export StructureGraph := proc(
   description "Return the graph of the structure given a list of nodes "
     "<nodes> and elements <elements>.";
 
-  local i, vertex_name, vertex_id, vertex_color, G;
+  local nodes, elements, loads, obj, i, vertex_name, vertex_id, vertex_color, G;
 
   if m_VerboseMode then
     printf("TrussMe:-StructureGraph(...): checking structure connections... ");
   end if;
 
+  # Extract the nodes, elements and loads from <fem> object
+  nodes    := fem["nodes"];
+  elements := fem["elements"];
+  loads    := fem["loads"];
+
   # Retrieve the objects names, ids and colors
   vertex_name := [
-    seq(nodes[i]["name"],    i = 1..nops(nodes)),
-    seq(elements[i]["name"], i = 1..nops(elements)),
-    seq(loads[i]["name"],    i = 1..nops(loads))
+    seq(obj["name"], obj = nodes),
+    seq(obj["name"], obj = elements),
+    seq(obj["name"], obj = loads)
   ];
   vertex_id := [
-    seq(nodes[i]["id"],    i = 1..nops(nodes)),
-    seq(elements[i]["id"], i = 1..nops(elements)),
-    seq(loads[i]["id"],    i = 1..nops(loads))
+    seq(obj["id"], obj = nodes),
+    seq(obj["id"], obj = elements),
+    seq(obj["id"], obj = loads)
   ];
   vertex_color := [
-    seq(TrussMe_FEM:-ObjectColor(nodes[i]), i = 1..nops(nodes)),
-    seq(TrussMe_FEM:-ObjectColor(elements[i]), i = 1..nops(elements)),
-    seq(TrussMe_FEM:-ObjectColor(loads[i]), i = 1..nops(loads))
+    seq(TrussMe_FEM:-ObjectColor(obj), obj = nodes),
+    seq(TrussMe_FEM:-ObjectColor(obj), obj = elements),
+    seq(TrussMe_FEM:-ObjectColor(obj), obj = loads)
   ];
 
   # Build the graph
@@ -76,14 +79,14 @@ export StructureGraph := proc(
   GraphTheory:-HighlightVertex(G, vertex_id, vertex_color);
 
   # Connect the nodes with the elements
-  for i from 1 to nops(elements) do
-    GraphTheory:-AddEdge(G, {elements[i]["id"], elements[i]["node_1"]});
-    GraphTheory:-AddEdge(G, {elements[i]["id"], elements[i]["node_2"]});
+  for obj in elements do
+    GraphTheory:-AddEdge(G, {obj["id"], obj["node_1"]});
+    GraphTheory:-AddEdge(G, {obj["id"], obj["node_2"]});
   end do;
 
   # Connect the nodes with the loads
-  for i from 1 to nops(loads) do
-    GraphTheory:-AddEdge(G, {loads[i]["id"], loads[i]["node"]});
+  for obj in loads do
+    GraphTheory:-AddEdge(G, {obj["id"], obj["node"]});
   end do;
 
   # Relabel with vertex names
@@ -191,15 +194,16 @@ export PlotDeformedElement := proc(
   d_1::{list(algebraic), Vector(algebraic)},
   d_2::{list(algebraic), Vector(algebraic)},
   {
-  magnify::nonnegative        := 1.0,
-  data::{list(`=`), set(`=`)} := [],
-  color::string               := TrussMe_FEM:-m_ElementColor
+  deformation_scaling::nonnegative := 1.0,
+  data::{list(`=`), set(`=`)}      := [],
+  color::string                    := TrussMe_FEM:-m_ElementColor
   }, $)::function;
 
   description "Plot the element from diplacements <d_1> and <d_2> given a list "
     "or set of data for substitution <data> and a display color <color>.";
 
-  local d_1_tmp, d_2_tmp, p_1_tmp, p_2_tmp, p1p2, p1p2_unit, x, y, z, deformed_element;
+  local d_1_tmp, d_2_tmp, p_1_tmp, p_2_tmp, p1p2, p1p2_unit, x, y, z,
+    deformed_element;
 
   if type(d_1, list) and evalb(nops(d_1) = 6) then
     d_1_tmp := convert(d_1, Vector);
@@ -259,7 +263,7 @@ export PlotDeformedElement := proc(
        (d_1_tmp[5]*(xi-xi^2)*(1-xi) + d_2_tmp[5]*(xi^2-xi^3)*(xi)) *
        TrussMe_FEM:-Norm2(p1p2_unit[1..2]);
 
-  deformed_element := magnify *~ <x, y, z, 0> + p_1_tmp + p1p2 *~ xi;
+  deformed_element := deformation_scaling *~ <x, y, z, 0> + p_1_tmp + p1p2 *~ xi;
 
   return plots:-display(
     plots:-spacecurve(
@@ -320,19 +324,22 @@ end proc: # PlotLoad
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 export PlotStructure := proc(
-  nodes::NODES       := [],
-  elements::ELEMENTS := [],
-  loads::LOADS       := [],
+  fem::FEM,
   {
-  load_scaling::numeric            := 1,
+  load_scaling::numeric       := 1,
   data::{list(`=`), set(`=`)} := []
   }, $)::{function, list(function)};
 
-  description "Plot the undeformed structure made by <nodes>, <elements> and "
-    "<loads> given a list or set of substitution data <data>, and a loads "
-    "scaling factor <scaling>.";
+  description"Plot the undeformed <fem> structure given a list or set of "
+    "substitution data <data>, and a loads scaling factor <scaling>.";
 
-  local i, j, k, p_1, p_2, disp_nodes, disp_elements, disp_loads;
+  local nodes, elements, loads, i, j, k, p_1, p_2, disp_nodes, disp_elements,
+    disp_loads;
+
+  # Extract the nodes, elements and loads from <fem> object
+  nodes    := fem["nodes"];
+  elements := fem["elements"];
+  loads    := fem["loads"];
 
   # Plot the nodes
   disp_nodes := [seq(i, i = 1..nops(nodes))];
@@ -405,28 +412,32 @@ end proc: # PlotStructure
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 export PlotDeformedStructure := proc(
-  nodes::NODES       := [],
-  elements::ELEMENTS := [],
-  loads::LOADS       := [],
+  fem::FEM,
   {
-  interpolate::boolean        := true,
-  magnify::numeric            := 1,
-  load_scaling::numeric       := 1,
-  data::{list(`=`), set(`=`)} := []
+  interpolate::boolean         := true,
+  deformation_scaling::numeric := 1,
+  load_scaling::numeric        := 1,
+  data::{list(`=`), set(`=`)}  := []
   }, $)::{function, list(function)};
 
-  description "Plot the undeformed structure made by <nodes>, <elements> and "
-    "<loads> given a list or set of substitution data <data>, a loads scaling "
-    "factor <scaling>, and a deformation magnification factor <magnify>.";
+  description "Plot the deformed <fem> structure given a list or set of "
+    "substitution data <data>, a loads scaling factor <load_scaling>, and a "
+    "deformation magnification factor <deformation_scaling>.";
 
-  local i, j, k, p_1, p_2, d_1, d_2, disp_nodes, disp_elements, disp_loads;
+  local nodes, elements, loads, i, j, k, p_1, p_2, d_1, d_2, disp_nodes,
+    disp_elements, disp_loads;
+
+  # Extract the nodes, elements and loads from <fem> object
+  nodes    := fem["nodes"];
+  elements := fem["elements"];
+  loads    := fem["loads"];
 
   # Plot the deformed nodes
   disp_nodes := [seq(i, i = 1..nops(nodes))];
   for i from 1 to nops(nodes) do
     p_1 := convert(
       <convert(nodes[i]["coordinates"], Matrix) +
-        magnify *~ nodes[i]["frame"][1..3, 1..3].nodes[i]["output_displacements"][1..3], 1>,
+        deformation_scaling *~ nodes[i]["frame"][1..3, 1..3].nodes[i]["output_displacements"][1..3], 1>,
       Vector
     );
     disp_nodes[i] := TrussMe_FEM:-PlotNode(
@@ -447,9 +458,9 @@ export PlotDeformedStructure := proc(
     k := TrussMe_FEM:-GetObjById(nodes, elements[i]["node_2"], parse("position") = true);
     if not interpolate then
       p_1 := <convert(nodes[j]["coordinates"], Matrix) +
-        magnify *~ nodes[j]["frame"][1..3, 1..3].nodes[j]["output_displacements"][1..3], 1>;
+        deformation_scaling *~ nodes[j]["frame"][1..3, 1..3].nodes[j]["output_displacements"][1..3], 1>;
       p_2 := <convert(nodes[k]["coordinates"], Matrix) +
-        magnify *~ nodes[k]["frame"][1..3, 1..3].nodes[k]["output_displacements"][1..3], 1>;
+        deformation_scaling *~ nodes[k]["frame"][1..3, 1..3].nodes[k]["output_displacements"][1..3], 1>;
       disp_elements[i] := TrussMe_FEM:-PlotElement(
         convert(p_1, Vector), convert(p_2, Vector),
         parse("data") = data, parse("color") = TrussMe_FEM:-m_ElementColor
@@ -464,7 +475,7 @@ export PlotDeformedStructure := proc(
       disp_elements[i] := TrussMe_FEM:-PlotDeformedElement(
         convert(p_1, Vector), convert(p_2, Vector), convert(d_1, Vector), convert(d_2, Vector),
         parse("data") = data, parse("color") = TrussMe_FEM:-m_ElementColor,
-        parse("magnify") = magnify
+        parse("deformation_scaling") = deformation_scaling
       );
     end if;
   end do;
@@ -474,7 +485,7 @@ export PlotDeformedStructure := proc(
   for i from 1 to nops(loads) do
     j := TrussMe_FEM:-GetObjById(nodes, loads[i]["node"], parse("position") = true);
     p_2 := <convert(nodes[j]["coordinates"], Matrix) +
-      magnify *~ nodes[j]["output_displacements"][1..3], 1>;
+      deformation_scaling *~ nodes[j]["output_displacements"][1..3], 1>;
 
     # Plot forces
     if type(loads[i]["frame"], string) then

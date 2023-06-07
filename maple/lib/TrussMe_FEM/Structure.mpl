@@ -103,6 +103,10 @@ export MakeNode := proc(
     error("<displacements> must have 6 elements.");
   end if;
 
+  if evalb(add(dofs *~ displacements_tmp) <> 0) then
+    error("<displacements> must be defined only for constrained dofs.");
+  end if;
+
   return table([
     "type"                 = NODE,
     "name"                 = name,
@@ -268,6 +272,36 @@ export GetBeamStiffness := proc(
      <0, 0, -6*EIy_L2, 0, 2*EIy_L, 0, 0, 0, 6*EIy_L2, 0, 4*EIy_L, 0>|
      <0, 6*EIz_L2, 0, 0, 0, 2*EIz_L, 0, -6*EIz_L2, 0, 0, 0, 4*EIz_L>>;
 end proc: # GetBeamStiffness
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export GetOutputDisplacements := proc(
+  fem::FEM,
+  $)::Matrix;
+
+  description "Get the output displacements of a solved and stored FEMstructure "
+    "<fem>.";
+
+  return <<fem["info"][1..-1, 1]> |
+          <fem["info"][1..-1, 2]> |
+          <fem["info"][1..-1, 3]> |
+          fem["output_displacements"]>;
+end proc: # GetOutputDisplacements
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export GetOutputReactions := proc(
+  fem::FEM,
+  $)::Matrix;
+
+  description "Get the output reactions of a solved and stored FEMstructure "
+    "<fem>.";
+
+  return <<fem["info"][1..-1, 1]> |
+          <fem["info"][1..-1, 2]> |
+          <fem["info"][1..-1, 3]> |
+          fem["output_reactions"]>;
+end proc: # GetOutputReactions
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -550,7 +584,7 @@ export GlobalStiffness := proc(
   description "Compute the global stiffness matrix of the nodes <nodes> and "
     "elements <elements>.";
 
-  local K, element_k, i, j, k;
+  local K, element_k, i, j, k, d;
 
   printf("TrussMe_FEM:-GlobalStiffness() ... ");
   K := Matrix(6 * nops(nodes), storage = sparse);
@@ -559,10 +593,9 @@ export GlobalStiffness := proc(
     j := TrussMe_FEM:-GetObjById(nodes, elements[i]["node_1"], parse("position") = true);
     k := TrussMe_FEM:-GetObjById(nodes, elements[i]["node_2"], parse("position") = true);
     # Element stiffness contribution selecting only constrained dofs (= 0)
-    element_k := elements[i]["stiffness"].LinearAlgebra:-DiagonalMatrix(
-      <-(elements[i]["dofs_1"] -~ 1), -(elements[i]["dofs_2"] -~ 1)>
-    );
-    element_k := LinearAlgebra:-Transpose(elements[i]["rotation"]).element_k.elements[i]["rotation"];
+    d := <(1 -~ elements[i]["dofs_1"]), (1 -~ elements[i]["dofs_2"])>;
+    element_k := elements[i]["stiffness"].LinearAlgebra:-DiagonalMatrix();
+    element_k := elements[i]["rotation"].element_k.LinearAlgebra:-Transpose(elements[i]["rotation"]);
     K[6*j-5..6*j, 6*j-5..6*j] := K[6*j-5..6*j, 6*j-5..6*j] + element_k[1..6,  1..6 ];
     K[6*j-5..6*j, 6*k-5..6*k] := K[6*j-5..6*j, 6*k-5..6*k] + element_k[1..6,  7..12];
     K[6*k-5..6*k, 6*j-5..6*j] := K[6*k-5..6*k, 6*j-5..6*j] + element_k[7..12, 1..6 ];
@@ -612,131 +645,100 @@ export GenerateFEM := proc(
   description "Generate a FEM structure from the nodes <nodes>, elements "
     "<elements>, and loads <loads>.";
 
+  local dir;
+
   return table([
-    "type"                 = FEM,
-    "nodes"                = nodes,
-    "elements"             = elements,
-    "dofs"                 = TrussMe_FEM:-GetNodalDofs(nodes),
-    "displacements"        = TrussMe_FEM:-GetNodalDisplacements(nodes),
-    "stiffness"            = TrussMe_FEM:-GlobalStiffnessPrime(nodes, elements),
-    "loads"                = TrussMe_FEM:-GetNodalLoads(nodes, loads),
-    "output_reactions"     = [], # Output reactions in the frame
-    "output_displacements" = []  # Output displacements in the global frame
+    "type"     = FEM,
+    "nodes"    = nodes,
+    "elements" = elements,
+    "loads"    = loads,
+    "info"     = map(x -> seq([x["name"], x["id"], dir], dir = ["tx", "ty", "tz", "rx", "ry", "rz"]), nodes)
   ]);
 end proc: # GenerateFEM
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export CheckNodes := proc(
-  fem::FEM,
-  nodes::NODES,
-  $)::boolean;
-
-  description "Check if the nodes <nodes> associated to the FEM structure "
-    "<fem> are valid (subset of fem['nodes']).";
-
-  local fem_nodes, set_nodes;
-
-  fem_nodes := convert(fem["nodes"], set);
-  set_nodes := convert(map(x -> x["id"], nodes), set);
-
-  return evalb(nops(set_nodes union fem_nodes) = nops(fem_nodes));
-end proc: # CheckNodes
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-export CheckElements := proc(
-  fem::FEM,
-  elements::ELEMENTS,
-  $)::boolean;
-
-  description "Check if the elements <elements> associated to the FEM structure "
-    "<fem> are valid (subset of fem['elements']).";
-
-  local fem_elements, set_elements;
-
-  fem_elements := convert(fem["elements"], set);
-  set_elements := convert(map(x -> x["id"], elements), set);
-
-  return evalb(nops(set_elements union fem_elements) = nops(fem_elements));
-end proc: # CheckElements
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-export IsSYSTEM := proc(
-  var::anything,
-  $)::boolean;
-
-  description "Check if the variable <var> is of SYSTEM type.";
-
-  return type(var, table) and evalb(var["type"] = SYSTEM);
-end proc: # IsSYSTEM
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 export SplitFEM := proc(
   fem::FEM,
-  $)::SYSTEM;
+  $)
 
   description "Split the FEM structure <fem> in free and constrained dofs.";
 
-  local d, K, f, perm, n, K_ff, K_fs, K_sf, K_ss, d_s, f_f;
+  local d, K, f, n, dofs, i;
 
-  # Apply permutation to stiffness and loads to split free and constrained dofs
-  perm := sort(fem["dofs"], `>`, output = 'permutation');
-  K := fem["stiffness"][perm, perm];
-  d := fem["displacements"][perm];
-  f := fem["loads"][perm];
+  # Get permutation and unpermutation vectors
+  dofs          := TrussMe_FEM:-GetNodalDofs(fem["nodes"]);
+  fem["perm"]   := sort(dofs, `>`, output = 'permutation');
+  fem["unperm"] := [seq(i, i = 1..nops(fem["perm"]))];
+  for i from 1 to nops(fem["unperm"]) do
+    fem["unperm"][fem["perm"][i]] := i;
+  end do;
 
-  # Compute output displacements and reactions
-  n := add(fem["dofs"]);
-  return table([
-    "type" = SYSTEM,
-    "perm" = perm,
-    "K_ff" = K[1..n, 1..n],
-    "K_fs" = K[1..n, n+1..-1],
-    "K_sf" = K[n+1..-1, 1..n],
-    "K_ss" = K[n+1..-1, n+1..-1],
-    "d_s"  = d[n+1..-1],
-    "f_f"  = f[1..n],
-    "f_fs" = f[n+1..-1]
-  ]);
+  # Compute global stiffness matrix, displacements and loads vectors
+  fem["K"] := TrussMe_FEM:-Simplify(TrussMe_FEM:-GlobalStiffnessPrime(fem["nodes"], fem["elements"]));
+  fem["d"] := TrussMe_FEM:-Simplify(TrussMe_FEM:-GetNodalDisplacements(fem["nodes"]));
+  fem["f"] := TrussMe_FEM:-Simplify(TrussMe_FEM:-GetNodalLoads(fem["nodes"], fem["loads"]));
+
+  # Compute permuted system stiffness matrices, displacements and loads vectors
+  K := fem["K"][fem["perm"], fem["perm"]];
+  d := fem["d"][fem["perm"]];
+  f := fem["f"][fem["perm"]];
+  n := add(dofs);
+  fem["info_f"] := fem["info"][fem["perm"]][1..n, 1..-1];
+  fem["info_s"] := fem["info"][fem["perm"]][n+1..-1, 1..-1];
+  fem["K_ff"] := K[1..n, 1..n];
+  fem["K_fs"] := K[1..n, n+1..-1];
+  fem["K_sf"] := K[n+1..-1, 1..n];
+  fem["K_ss"] := K[n+1..-1, n+1..-1];
+  fem["d_f"]  := Vector(0);
+  fem["d_s"]  := d[n+1..-1];
+  fem["f_f"]  := f[1..n];
+  fem["f_s"]  := Vector(0);
+  fem["f_r"]  := f[n+1..-1];
+
+  # Fill the diagonal of stiffness matrix to avoid singularities
+  TrussMe_FEM:-StiffnessFill(fem);
+
+  # Veiling variables
+  fem["veils"] := [];
+  return NULL;
 end proc: # SplitFEM
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-(*
-export StripFEM := proc(
+export StiffnessFill := proc(
   fem::FEM,
-  $)::SYSTEM
+$)
 
-  description "Strip the FEM structure <fem> from free dofs.";
+  description "Fill the diagonal of stiffness matrix <K> to avoid singularities.";
 
-  local K, d, f, i;
+  local i, info_perm, mat_tmp;
 
-  # Retrieve system matrices and vectors
-  K := fem["stiffness"];
-  d := fem["displacements"];
-  f := fem["loads"];
-
-  # Find zero rows and columns
-  non_zero := [];
-  for i from 1 to LinearAlgebra:-RowDimension(K) do
-    if evalb(add(K[i, 1..-1]) <> 0) then
-      non_zero := [op(non_zero), i];
+  mat_tmp := map(x -> `if`(x = 0, 0, 1), fem["K_ff"]);
+  info_perm := fem["info"][fem["perm"]];
+  for i from 1 to LinearAlgebra:-RowDimension(fem["K_ff"]) do
+    if evalb(add(mat_tmp[i, 1..-1]) = 0) then
+      if (fem["f_f"][i] = 0) then
+        fem["K_ff"][i, i] := 1;
+        if TrussMe_FEM:-m_WarningMode then
+          WARNING("Filled stiffness matrix at node [name: %1, id: %2, direction: %3] "
+            "due to unconstrained direction.", info_perm[i][1], info_perm[i][2],
+            info_perm[i][3]);
+        end if;
+      else
+       error("Stiffness matrix is singular, the dof corresponding to node "
+         "[name: %1, id: %2, direction: %3] is unconstrained and has a non-zero "
+         "load [f: %4].", info_perm[i][1], info_perm[i][2], info_perm[i][3],
+         fem["f_f"][i]);
+      end if;
     end if;
   end do;
 
-  # Strip system matrices and vectors
-  fem["total_stiffness"]
-  fem["total_displacements"]
-  fem["total_loads"]
-  K := K[non_zero, non_zero];
-  d := d[non_zero];
-  f := f[non_zero];
-
-end proc: # StripFEM
-*)
+  # Update fem global stiffness matrix
+  fem["K"] := Matrix(<<fem["K_ff"] | fem["K_fs"]>,
+                      <fem["K_sf"] | fem["K_ss"]>>[fem["unperm"], fem["unperm"]],
+    storage = sparse);
+end proc: # StiffnessFill
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -750,10 +752,10 @@ export SolveFEM := proc(
   description "Solve the FEM structure <fem> and optionally use LAST LU "
     "decompostion <last> and unveil the expressions <unveil>.";
 
-  local split_FEM, LAST_obj, LEM_obj, i, mrep;
+  local LAST_obj, LEM_obj, i;
 
   # Split free and constrained dofs
-  split_FEM := TrussMe_FEM:-SplitFEM(fem);
+  TrussMe_FEM:-SplitFEM(fem);
 
   # Solve free dofs
   if last then
@@ -764,57 +766,41 @@ export SolveFEM := proc(
     catch:
       error("LAST or LEM package not installed.");
     end try;
-    LAST_obj:-LU(LAST_obj, split_FEM["K_ff"]);
-    split_FEM["d_f"] := LAST_obj:-SolveLinearSystem(
-      LAST_obj, split_FEM["f_f"] - split_FEM["K_fs"].split_FEM["d_s"]
+    LAST_obj:-LU(LAST_obj, fem["K_ff"]);
+    fem["d_f"] := LAST_obj:-SolveLinearSystem(
+      LAST_obj, fem["f_f"] - fem["K_fs"].fem["d_s"]
     );
-    split_FEM["veils"] := LEM_obj:-VeilList(LEM_obj);
+    fem["veils"] := LEM_obj:-VeilList(LEM_obj);
   else
-    split_FEM["d_f"] := LinearAlgebra:-LinearSolve(
-      split_FEM["K_ff"], split_FEM["f_f"] - split_FEM["K_fs"].split_FEM["d_s"]
+    fem["d_f"] := LinearAlgebra:-LinearSolve(
+      fem["K_ff"], fem["f_f"] - fem["K_fs"].fem["d_s"]
     );
-    split_FEM["veils"] := [];
+    fem["veils"] := [];
   end if;
 
   # Solve reactions
-  split_FEM["f_s"] := split_FEM["K_sf"].split_FEM["d_f"] -
-                      split_FEM["K_ss"].split_FEM["d_s"] -
-                      split_FEM["f_fs"];
+  fem["f_s"] := fem["K_sf"].fem["d_f"] - fem["K_ss"].fem["d_s"] - fem["f_r"];
 
   # Store output displacements and reactions and restore initial permutation
-  mrep := [seq(i, i = 1..nops(split_FEM["perm"]))];
-  for i from 1 to nops(mrep) do
-    mrep[split_FEM["perm"][i]] := i;
-  end do;
-  fem["output_displacements"] := <split_FEM["d_f"], split_FEM["d_s"]>[mrep];
-  fem["output_reactions"]     := <split_FEM["f_f"], split_FEM["f_s"]>[mrep];
+  fem["output_displacements"] := <fem["d_f"], fem["d_s"]>[fem["unperm"]];
+  fem["output_reactions"]     := <fem["f_f"], fem["f_s"]>[fem["unperm"]];
 
-  if evalb(_nresults = 1) then
-    return split_FEM;
-  else
-    return NULL;
-  end if;
+  return NULL;
 end proc: # SolveFEM
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 export StoreFEM := proc(
   fem::FEM,
-  nodes::NODES,
   $)
 
   description "Store the FEM structure <fem> in the nodes <nodes>.";
 
-  local i, tmp;
+  local i;
 
-  if not TrussMe_FEM:-CheckNodes(fem, nodes) then
-    error("invalid nodes detected.");
-  end if;
-
-  for i from 1 to nops(nodes) do
-    tmp := nodes[i];
-    tmp["output_displacements"] := fem["output_displacements"][6*i-5..6*i];
-    tmp["output_reactions"]     := fem["output_reactions"][6*i-5..6*i];
+  for i from 1 to nops(fem["nodes"]) do
+    fem["nodes"][i]["output_displacements"] := fem["output_displacements"][6*i-5..6*i];
+    fem["nodes"][i]["output_reactions"]     := fem["output_reactions"][6*i-5..6*i];
   end do;
   return NULL;
 end proc: # StoreFEM

@@ -1,24 +1,24 @@
 # TODO
 
-- [ ] Riportare la matrice di rigidezza nel caso delle molla (effetto della distanza tra elementi collegati) -> risolto (molla non può essere usata con elementi di lunghezza non nulla, altrimenti -> beam)
-- [ ] Capire come fare con i rod (strippare il sistema o mettere infinito)
+- [x] Riportare la matrice di rigidezza nel caso delle molla (effetto della distanza tra elementi collegati) -> risolto (molla non può essere usata con elementi di lunghezza non nulla, altrimenti -> beam)
+- [x] Capire come fare con i rod (strippare il sistema o mettere infinito)
 - [ ] Matrice rotazione Q si può elinimare forse
-- [ ] Calcolo gdl
-- [ ] Controllare compatibilità con aree e inerze definite come proc
+- [?] Calcolo gdl
+- [x] Controllare compatibilità con aree e inerze definite come proc (Non si può fare con FEM)
 - [x] Plots struttura indeformata
 - [x] Plots struttura deformata
-- [ ] Debug plots
+- [x] Debug plots
 - [x] Grafo struttura
 - [ ] Mettere print di stato avanazamento
-- [ ] Code generation
+- [x] Code generation
 - [x] Inserire LAST LU
-- [ ] Optimize sperm?
+- [x] Optimize sperm?
 - [x] Test MakeBeam
 - [x] Test MakeRod
-- [ ] Generate Timoshenko stiffness matrix?
+- [x] Generate Timoshenko stiffness matrix?
 - [ ] Test MakeCompliantNode
 - [x] Uniformare liste e vettori interni per ottimizzare performance
-- [ ] Testare quando origine frame nodo e coordinate del nodo stesso non coincidono
+- [x] Testare quando origine frame nodo e coordinate del nodo stesso non coincidono
 - [x] Object-orient o pacchetto tradizionale? -> pacchetto tradizionale
 - [ ] Eliminare i metodi Project e Simplify?
 - [x] Semplificato setting opzioni

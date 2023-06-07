@@ -22,9 +22,10 @@ TrussMe_FEM := module()
          unload = ModuleUnload;
 
   local m_gravity      := <0, 0, 0, 0>;
+  local m_IdLength     := 5;
   local m_VerboseMode  := false;
   local m_WarningMode  := true;
-  local m_TimeLimit    := 5.0;
+  local m_TimeLimit    := 2.0;
   local m_NodeColor    := "MediumSeaGreen";
   local m_SupportColor := "DarkOrange";
   local m_ElementColor := "SteelBlue";
@@ -88,7 +89,6 @@ TrussMe_FEM := module()
     TypeTools:-AddType('LOAD',       TrussMe_FEM:-IsLOAD);       protect('LOAD');
     TypeTools:-AddType('LOADS',      TrussMe_FEM:-IsLOADS);      protect('LOADS');
     TypeTools:-AddType('FEM',        TrussMe_FEM:-IsFEM);        protect('FEM');
-    TypeTools:-AddType('SYSTEM',     TrussMe_FEM:-IsSYSTEM);     protect('SYSTEM');
 
     # Codegen options
     TrussMe_FEM:-m_CodegenOptions := table([
@@ -127,8 +127,7 @@ TrussMe_FEM := module()
       'COMPONENTS',
       'LOAD',
       'LOADS',
-      'FEM',
-      'SYSTEM'
+      'FEM'
     );
     return NULL;
   end proc: # ModuleUnload
@@ -140,6 +139,7 @@ TrussMe_FEM := module()
     VerboseMode::{boolean, nothing}   := NULL,
     WarningMode::{boolean, nothing}   := NULL,
     TimeLimit::{nonnegative, nothing} := NULL,
+    IdLength::{positive, nothing}     := NULL,
     NodeColor::{string, nothing}      := NULL,
     SupportColor::{string, nothing}   := NULL,
     ElementColor::{string, nothing}   := NULL,
@@ -150,10 +150,10 @@ TrussMe_FEM := module()
     }, $)
 
     description "Set the module options: verbose mode <VerboseMode>, warning "
-      "mode <WarningMode>, time limit <TimeLimit>, node color <NodeColor>, "
-      "support color <SupportColor>, element color <ElementColor>, force color "
-      "<ForceColor>, moment color <MomentColor>, node token <NodeToken>, "
-      "support token <SupportToken>.";
+      "mode <WarningMode>, time limit <TimeLimit>, id length <IdLength>, "
+      "node color <NodeColor>, support color <SupportColor>, element color "
+      "<ElementColor>, force color <ForceColor>, moment color <MomentColor>, "
+      "node token <NodeToken>, support token <SupportToken>.";
 
     if (VerboseMode <> NULL) then
       TrussMe_FEM:-m_VerboseMode := VerboseMode;
@@ -165,6 +165,10 @@ TrussMe_FEM := module()
 
     if (TimeLimit <> NULL) then
       TrussMe_FEM:-m_TimeLimit := TimeLimit;
+    end if;
+
+    if (IdLength <> NULL) then
+      TrussMe_FEM:-m_IdLength := IdLength;
     end if;
 
     if (NodeColor <> NULL) then
@@ -343,7 +347,7 @@ TrussMe_FEM := module()
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   export GenerateId := proc({
-      size::positive := 5,
+      size::positive := TrussMe_FEM:-m_IdLength,
       opts::symbol   := 'alnum'
     }, $)::string;
 
