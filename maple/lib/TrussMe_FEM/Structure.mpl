@@ -594,7 +594,7 @@ export GlobalStiffness := proc(
     k := TrussMe_FEM:-GetObjById(nodes, elements[i]["node_2"], parse("position") = true);
     # Element stiffness contribution selecting only constrained dofs (= 0)
     d := <(1 -~ elements[i]["dofs_1"]), (1 -~ elements[i]["dofs_2"])>;
-    element_k := elements[i]["stiffness"].LinearAlgebra:-DiagonalMatrix();
+    element_k := elements[i]["stiffness"].LinearAlgebra:-DiagonalMatrix(d);
     element_k := elements[i]["rotation"].element_k.LinearAlgebra:-Transpose(elements[i]["rotation"]);
     K[6*j-5..6*j, 6*j-5..6*j] := K[6*j-5..6*j, 6*j-5..6*j] + element_k[1..6,  1..6 ];
     K[6*j-5..6*j, 6*k-5..6*k] := K[6*j-5..6*j, 6*k-5..6*k] + element_k[1..6,  7..12];
@@ -745,12 +745,17 @@ end proc: # StiffnessFill
 export SolveFEM := proc(
   fem::FEM,
   {
-  last::boolean   := false,
-  unveil::boolean := false
+  use_LAST::boolean     := false,
+  use_LEM::boolean      := true,
+  use_SIG::boolean      := true,
+  factorization::string := "LU",
+  label::string         := "V"
   }, $)
 
   description "Solve the FEM structure <fem> and optionally use LAST LU "
-    "decompostion <last> and unveil the expressions <unveil>.";
+    "decompostion <use_LAST> and veil the expressions <use_LEM> with signature "
+    "mode <use_SIG> and label <label>. Factorization method <factorization> "
+    "can be choosen between 'LU', 'FFLU', 'QR', and Gauss-Jordan 'GJ'.";
 
   local LAST_obj, LEM_obj, i;
 
@@ -758,20 +763,53 @@ export SolveFEM := proc(
   TrussMe_FEM:-SplitFEM(fem);
 
   # Solve free dofs
-  if last then
+  if use_LAST then
     try
       LAST_obj := Object(LAST);
-      LAST_obj:-InitLEM(LAST_obj, "V");
+      LAST_obj:-InitLEM(LAST_obj, label);
       LEM_obj := LAST_obj:-GetLEM(LAST_obj);
     catch:
       error("LAST or LEM package not installed.");
     end try;
-    LAST_obj:-LU(LAST_obj, fem["K_ff"]);
+
+    # Set verbose and warning modes
+    LAST_obj:-SetVerboseMode(LAST_obj, TrussMe_FEM:-m_VerboseMode);
+    LAST_obj:-SetWarningMode(LAST_obj, TrussMe_FEM:-m_WarningMode);
+
+    # Set signature checking
+    if use_SIG then
+      LEM_obj:-EnableSignature(LEM_obj);
+    else
+      LEM_obj:-DisableSignature(LEM_obj);
+    end if;
+
+    # Perform decomposition
+    if evalb(factorization = "LU") then
+      LAST_obj:-LU(LAST_obj, fem["K_ff"]);
+    elif evalb(factorization = "FFLU") then
+      LAST_obj:-FFLU(LAST_obj, fem["K_ff"]);
+    elif evalb(factorization = "QR") then
+      LAST_obj:-QR(LAST_obj, fem["K_ff"]);
+    elif evalb(factorization = "GJ") then
+      LAST_obj:-GJ(LAST_obj, fem["K_ff"]);
+    else
+      error("invalid factorization method.");
+    end if;
+
+    # Solve deformations
     fem["d_f"] := LAST_obj:-SolveLinearSystem(
       LAST_obj, fem["f_f"] - fem["K_fs"].fem["d_s"]
     );
-    fem["veils"] := LEM_obj:-VeilList(LEM_obj);
+
+    # Unveil expressions if required
+    if use_LEM then
+      fem["veils"] := LEM_obj:-VeilList(LEM_obj);
+    else
+      fem["d_f"]   := LEM_obj:-Unveil(LEM_obj, fem["d_f"]);
+      fem["veils"] := [];
+    end if;
   else
+    # Solve deformations
     fem["d_f"] := LinearAlgebra:-LinearSolve(
       fem["K_ff"], fem["f_f"] - fem["K_fs"].fem["d_s"]
     );

@@ -425,12 +425,15 @@ export PlotDeformedStructure := proc(
     "deformation magnification factor <deformation_scaling>.";
 
   local nodes, elements, loads, i, j, k, p_1, p_2, d_1, d_2, disp_nodes,
-    disp_elements, disp_loads;
+    disp_elements, disp_loads, data_tmp;
 
   # Extract the nodes, elements and loads from <fem> object
   nodes    := fem["nodes"];
   elements := fem["elements"];
   loads    := fem["loads"];
+
+  # Add data evaluated and reversed veils to data substitution
+  data_tmp := [op(subs(op(data), ListTools:-Reverse(fem["veils"]))), op(data)];
 
   # Plot the deformed nodes
   disp_nodes := [seq(i, i = 1..nops(nodes))];
@@ -441,7 +444,7 @@ export PlotDeformedStructure := proc(
       Vector
     );
     disp_nodes[i] := TrussMe_FEM:-PlotNode(
-      p_1, parse("data")  = data,
+      p_1, parse("data")  = data_tmp,
       parse("color") = `if`(
         type(nodes[i], SUPPORT), TrussMe_FEM:-m_SupportColor, TrussMe_FEM:-m_NodeColor
       ),
@@ -463,7 +466,7 @@ export PlotDeformedStructure := proc(
         deformation_scaling *~ nodes[k]["frame"][1..3, 1..3].nodes[k]["output_displacements"][1..3], 1>;
       disp_elements[i] := TrussMe_FEM:-PlotElement(
         convert(p_1, Vector), convert(p_2, Vector),
-        parse("data") = data, parse("color") = TrussMe_FEM:-m_ElementColor
+        parse("data") = data_tmp, parse("color") = TrussMe_FEM:-m_ElementColor
       );
     else
       p_1 := <nodes[j]["coordinates"], 1>;
@@ -474,7 +477,7 @@ export PlotDeformedStructure := proc(
         nodes[k]["frame"][1..3, 1..3].nodes[k]["output_displacements"][4..6]>;
       disp_elements[i] := TrussMe_FEM:-PlotDeformedElement(
         convert(p_1, Vector), convert(p_2, Vector), convert(d_1, Vector), convert(d_2, Vector),
-        parse("data") = data, parse("color") = TrussMe_FEM:-m_ElementColor,
+        parse("data") = data_tmp, parse("color") = TrussMe_FEM:-m_ElementColor,
         parse("deformation_scaling") = deformation_scaling
       );
     end if;
@@ -495,7 +498,7 @@ export PlotDeformedStructure := proc(
     end if;
     disp_loads[2*i-1] := TrussMe_FEM:-PlotLoad(
       convert(p_1, Vector), convert(p_2, Vector),
-      parse("data") = data, parse("color") = TrussMe_FEM:-m_ForceColor,
+      parse("data") = data_tmp, parse("color") = TrussMe_FEM:-m_ForceColor,
       parse("scaling") = load_scaling
     );
 
@@ -507,7 +510,7 @@ export PlotDeformedStructure := proc(
     end if;
     disp_loads[2*i] := TrussMe_FEM:-PlotLoad(
       convert(p_1, Vector), convert(p_2, Vector),
-      parse("data") = data, parse("color") = TrussMe_FEM:-m_MomentColor,
+      parse("data") = data_tmp, parse("color") = TrussMe_FEM:-m_MomentColor,
       parse("scaling") = load_scaling
     );
   end do;
