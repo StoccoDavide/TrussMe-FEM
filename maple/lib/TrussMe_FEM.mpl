@@ -110,25 +110,24 @@ TrussMe_FEM := module()
 
     description "TrussMe_FEM' module unload procedure.";
 
-    unprotect(
-      'FRAME',
-      'VECTOR',
-      'POINT',
-      'MATERIAL',
-      'DOFS',
-      'NODE',
-      'NODES',
-      'SUPPORT',
-      'SUPPORTS',
-      'STIFFNESS',
-      'ELEMENT',
-      'ELEMENTS',
-      'STRUCTURE',
-      'COMPONENTS',
-      'LOAD',
-      'LOADS',
-      'FEM'
-    );
+    unprotect('FRAME');      try TypeTools:-RemoveType('FRAME') catch: end try;
+    unprotect('VECTOR');     try TypeTools:-RemoveType('VECTOR') catch: end try;
+    unprotect('POINT');      try TypeTools:-RemoveType('POINT') catch: end try;
+    unprotect('MATERIAL');   try TypeTools:-RemoveType('MATERIAL') catch: end try;
+    unprotect('DOFS');       try TypeTools:-RemoveType('DOFS') catch: end try;
+    unprotect('NODE');       try TypeTools:-RemoveType('NODE') catch: end try;
+    unprotect('NODES');      try TypeTools:-RemoveType('NODES') catch: end try;
+    unprotect('SUPPORT');    try TypeTools:-RemoveType('SUPPORT') catch: end try;
+    unprotect('SUPPORTS');   try TypeTools:-RemoveType('SUPPORTS') catch: end try;
+    unprotect('STIFFNESS');  try TypeTools:-RemoveType('STIFFNESS') catch: end try;
+    unprotect('ELEMENT');    try TypeTools:-RemoveType('ELEMENT') catch: end try;
+    unprotect('ELEMENTS');   try TypeTools:-RemoveType('ELEMENTS') catch: end try;
+    unprotect('STRUCTURE');  try TypeTools:-RemoveType('STRUCTURE') catch: end try;
+    unprotect('COMPONENTS'); try TypeTools:-RemoveType('COMPONENTS') catch: end try;
+    unprotect('LOAD');       try TypeTools:-RemoveType('LOAD') catch: end try;
+    unprotect('LOADS');      try TypeTools:-RemoveType('LOADS') catch: end try;
+    unprotect('FEM');        try TypeTools:-RemoveType('FEM') catch: end try;
+
     return NULL;
   end proc: # ModuleUnload
 

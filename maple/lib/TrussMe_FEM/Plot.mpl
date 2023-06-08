@@ -238,7 +238,7 @@ export PlotDeformedElement := proc(
   end if;
 
   p1p2 := p_2_tmp - p_1_tmp;
-  p1p2_unit := abs(p1p2 /~ TrussMe_FEM:-Norm2(p1p2[1..3]));
+  p1p2_unit := try abs(p1p2 /~ TrussMe_FEM:-Norm2(p1p2[1..3])) catch: [1,0,0] end try;
 
   # Calculate intermediate points through interpolation
   x := (d_1_tmp[1]*(1-xi) + d_2_tmp[1]*xi) * p1p2_unit[1] +
