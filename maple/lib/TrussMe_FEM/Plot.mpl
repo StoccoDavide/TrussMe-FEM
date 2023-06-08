@@ -439,7 +439,7 @@ export PlotDeformedStructure := proc(
   disp_nodes := [seq(i, i = 1..nops(nodes))];
   for i from 1 to nops(nodes) do
     p_1 := convert(
-      <convert(nodes[i]["coordinates"], Matrix) +
+      <nodes[i]["coordinates"] +
         deformation_scaling *~ nodes[i]["frame"][1..3, 1..3].nodes[i]["output_displacements"][1..3], 1>,
       Vector
     );
@@ -460,9 +460,9 @@ export PlotDeformedStructure := proc(
     j := TrussMe_FEM:-GetObjById(nodes, elements[i]["node_1"], parse("position") = true);
     k := TrussMe_FEM:-GetObjById(nodes, elements[i]["node_2"], parse("position") = true);
     if not interpolate then
-      p_1 := <convert(nodes[j]["coordinates"], Matrix) +
+      p_1 := <nodes[j]["coordinates"] +
         deformation_scaling *~ nodes[j]["frame"][1..3, 1..3].nodes[j]["output_displacements"][1..3], 1>;
-      p_2 := <convert(nodes[k]["coordinates"], Matrix) +
+      p_2 := <nodes[k]["coordinates"] +
         deformation_scaling *~ nodes[k]["frame"][1..3, 1..3].nodes[k]["output_displacements"][1..3], 1>;
       disp_elements[i] := TrussMe_FEM:-PlotElement(
         convert(p_1, Vector), convert(p_2, Vector),
@@ -487,7 +487,7 @@ export PlotDeformedStructure := proc(
   disp_loads := [seq(i, i = 1..2*nops(loads))];
   for i from 1 to nops(loads) do
     j := TrussMe_FEM:-GetObjById(nodes, loads[i]["node"], parse("position") = true);
-    p_2 := <convert(nodes[j]["coordinates"], Matrix) +
+    p_2 := <nodes[j]["coordinates"] +
       deformation_scaling *~ nodes[j]["output_displacements"][1..3], 1>;
 
     # Plot forces

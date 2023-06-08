@@ -198,19 +198,16 @@ export GetSpringStiffness := proc(
     error("<T> must be a list of 3 elements or a single element.");
   end if;
 
-  return
-    <<K_x, 0, 0, 0, 0, 0, -K_x, 0, 0, 0, 0, 0>|
-     <0, K_y, 0, 0, 0, 0, 0, -K_y, 0, 0, 0, 0>|
-     <0, 0, K_z, 0, 0, 0, 0, 0, -K_z, 0, 0, 0>|
-     <0, 0, 0, T_x, 0, 0, 0, 0, 0, -T_x, 0, 0>|
-     <0, 0, 0, 0, T_y, 0, 0, 0, 0, 0, -T_y, 0>|
-     <0, 0, 0, 0, 0, T_z, 0, 0, 0, 0, 0, -T_z>|
-     <-K_x, 0, 0, 0, 0, 0, K_x, 0, 0, 0, 0, 0>|
-     <0, -K_y, 0, 0, 0, 0, 0, K_y, 0, 0, 0, 0>|
-     <0, 0, -K_z, 0, 0, 0, 0, 0, K_z, 0, 0, 0>|
-     <0, 0, 0, -T_x, 0, 0, 0, 0, 0, T_x, 0, 0>|
-     <0, 0, 0, 0, -T_y, 0, 0, 0, 0, 0, T_y, 0>|
-     <0, 0, 0, 0, 0, -T_z, 0, 0, 0, 0, 0, T_z>>;
+  K := Matrix(12, storage = sparse);
+  K[1, 1]   :=  K_x; K[2, 2]   :=  K_y; K[3, 3]   :=  K_z;
+  K[4, 4]   :=  T_x; K[5, 5]   :=  T_y; K[6, 6]   :=  T_z;
+  K[7, 7]   :=  K_x; K[8, 8]   :=  K_y; K[9, 9]   :=  K_z;
+  K[10, 10] :=  T_x; K[11, 11] :=  T_y; K[12, 12] :=  T_z;
+  K[1, 7]   := -K_x; K[2, 8]   := -K_y; K[3, 9]   := -K_z;
+  K[7, 1]   := -K_x; K[8, 2]   := -K_y; K[9, 3]   := -K_z;
+  K[4, 10]  := -T_x; K[5, 11]  := -T_y; K[6, 12]  := -T_z;
+  K[10, 4]  := -T_x; K[11, 5]  := -T_y; K[12, 6]  := -T_z;
+  return K;
 end proc: # GetSpringStiffness
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -230,7 +227,7 @@ export GetRodStiffness := proc(
     "modulus <G>, the length <L>, and the cross-section inertia "
     "<I_x>, <I_y> and <I_z>.";
 
-  return TrussMe_FEM:-GetSpringStiffness([E*A/L, 0, 0], [G*(I_x+I_y)/L, 0, 0]);
+  return TrussMe_FEM:-GetSpringStiffness([E*A/L, 0, 0], [G*(I_y+I_z)/L, 0, 0]);
 
 end proc: # GetRodStiffness
 
@@ -246,31 +243,74 @@ export GetBeamStiffness := proc(
   I_z::algebraic,
   $)::STIFFNESS;
 
-  description "Get the stiffness matrix of a rod (only axial-stiffness) "
+  description "Get the stiffness matrix of a lean beam given the cross-section "
+    "area <A>, the Young's modulus <E>, the shear modulus <G>, the length <L>, "
+    "and the inertia of the cross-section <I_x>, <I_y> and <I_z>.";
+
+  local EA_L, GJ_L, EIy_L, EIy_L2, EIy_L3, EIz_L, EIz_L2, EIz_L3, vec, mat;
+
+  EA_L  := E*A/L;
+  GJ_L  := G*(I_y+I_z)/L;
+  EIy_L := E*I_y/L; EIy_L2 := E*I_y/L^2; EIy_L3 := E*I_y/L^3;
+  EIz_L := E*I_z/L; EIz_L2 := E*I_z/L^2; EIz_L3 := E*I_z/L^3;
+
+  K := Matrix(12, storage = sparse);
+  K[1, 1]  := EA_L;       K[1, 7]   := -EA_L;
+  K[2, 2]  := 12*EIz_L3;  K[2, 6]   := 6*EIz_L2;  K[2, 8]  := -12*EIz_L3; K[2, 12]  := 6*EIz_L2;
+  K[3, 3]  := 12*EIy_L3;  K[3, 5]   := -6*EIy_L2; K[3, 9]  := -12*EIy_L3; K[3, 11]  := -6*EIy_L2;
+  K[4, 4]  := GJ_L;       K[4, 10]  := -GJ_L;
+  K[5, 3]  := -6*EIy_L2;  K[5, 5]   := 4*EIy_L;   K[5, 9]  := 6*EIy_L2;   K[5, 11]  := 2*EIy_L;
+  K[6, 2]  := 6*EIz_L2;   K[6, 6]   := 4*EIz_L;   K[6, 8]  := -6*EIz_L2;  K[6, 12]  := 2*EIz_L;
+  K[7, 7]  := EA_L;       K[7, 1]   := -EA_L;
+  K[8, 2]  := -12*EIz_L3; K[8, 6]   := -6*EIz_L2; K[8, 8]  := 12*EIz_L3;  K[8, 12]  := -6*EIz_L2;
+  K[9, 3]  := -12*EIy_L3; K[9, 5]   := 6*EIy_L2;  K[9, 9]  := 12*EIy_L3;  K[9, 11]  := 6*EIy_L2;
+  K[10, 4] := -GJ_L;      K[10, 10] := GJ_L;
+  K[11, 3] := -6*EIy_L2;  K[11, 5]  := 2*EIy_L;   K[11, 9] := 6*EIy_L2;   K[11, 11] := 4*EIy_L;
+  K[12, 2] := 6*EIz_L2;   K[12, 6]  := 2*EIz_L;   K[12, 8] := -6*EIz_L2;  K[12, 12] := 4*EIz_L;
+  return K;
+end proc: # GetBeamStiffness
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export GetTimoshenkoBeamStiffness := proc(
+  A::algebraic,
+  E::algebraic,
+  G::algebraic,
+  L::algebraic,
+  I_x::algebraic,
+  I_y::algebraic,
+  I_z::algebraic,
+  $)::STIFFNESS;
+
+  description "Get the stiffness matrix of a Timoshenko's (thick) beam "
     "given the cross-section area <A>, the Young's modulus <E>, the shear "
     "modulus <G>, the length <L>, and the inertia of the cross-section "
     "<I_x>, <I_y> and <I_z>.";
 
   local EA_L, GJ_L, EIy_L, EIy_L2, EIy_L3, EIz_L, EIz_L2, EIz_L3, vec, mat;
 
-  EA_L  := E*A/L;
-  GJ_L  := G*(I_x+I_y)/L;
-  EIy_L := E*I_y/L; EIy_L2 := E*I_y/L^2; EIy_L3 := E*I_y/L^3;
-  EIz_L := E*I_z/L; EIz_L2 := E*I_z/L^2; EIz_L3 := E*I_z/L^3;
+  Phi_y := 12*E*I_y/(G*A*L^2);
+  Phi_z := 12*E*I_z/(G*A*L^2);
 
-  return
-    <<EA_L, 0, 0, 0, 0, 0, -EA_L, 0, 0, 0, 0, 0>|
-     <0, 12*EIz_L3, 0, 0, 0, 6*EIz_L2, 0, -12*EIz_L3, 0, 0, 0, 6*EIz_L2>|
-     <0, 0, 12*EIy_L3, 0, -6*EIy_L2, 0, 0, 0, -12*EIy_L3, 0, -6*EIy_L2, 0>|
-     <0, 0, 0, GJ_L, 0, 0, 0, 0, 0, -GJ_L, 0, 0>|
-     <0, 0, -6*EIy_L2, 0, 4*EIy_L, 0, 0, 0, 6*EIy_L2, 0, 2*EIy_L, 0>|
-     <0, 6*EIz_L2, 0, 0, 0, 4*EIz_L, 0, -6*EIz_L2, 0, 0, 0, 2*EIz_L>|
-     <-EA_L, 0, 0, 0, 0, 0, EA_L, 0, 0, 0, 0, 0>|
-     <0, -12*EIz_L3, 0, 0, 0, -6*EIz_L2, 0, 12*EIz_L3, 0, 0, 0, -6*EIz_L2>|
-     <0, 0, -12*EIy_L3, 0, 6*EIy_L2, 0, 0, 0, 12*EIy_L3, 0, 6*EIy_L2, 0>|
-     <0, 0, 0, -GJ_L, 0, 0, 0, 0, 0, GJ_L, 0, 0>|
-     <0, 0, -6*EIy_L2, 0, 2*EIy_L, 0, 0, 0, 6*EIy_L2, 0, 4*EIy_L, 0>|
-     <0, 6*EIz_L2, 0, 0, 0, 2*EIz_L, 0, -6*EIz_L2, 0, 0, 0, 4*EIz_L>>;
+  EA_L  := E*A/L;
+  GJ_L  := G*(I_y+I_z)/L;
+  EIy_L := E*I_y/((1+Phi_y)+L); EIy_L2 := E*I_y/((1+Phi_y)+L^2); EIy_L3 := E*I_y/((1+Phi_y)+L^3);
+  EIz_L := E*I_z/((1+Phi_z)+L); EIz_L2 := E*I_z/((1+Phi_z)+L^2); EIz_L3 := E*I_z/((1+Phi_z)+L^3);
+
+  K := Matrix(12, storage = sparse);
+  K[1, 1]  := EA_L;       K[1, 7]   := -EA_L;
+  K[2, 2]  := 12*EIz_L3;  K[2, 6]   := 6*EIz_L2;  K[2, 8]  := -12*EIz_L3; K[2, 12]  := 6*EIz_L2;
+  K[3, 3]  := 12*EIy_L3;  K[3, 5]   := -6*EIy_L2; K[3, 9]  := -12*EIy_L3; K[3, 11]  := -6*EIy_L2;
+  K[4, 4]  := GJ_L;       K[4, 10]  := -GJ_L;
+  K[5, 3]  := -6*EIy_L2;  K[5, 5]   := 4*EIy_L;   K[5, 9]  := 6*EIy_L2;   K[5, 11]  := 2*EIy_L;
+  K[6, 2]  := 6*EIz_L2;   K[6, 6]   := 4*EIz_L;   K[6, 8]  := -6*EIz_L2;  K[6, 12]  := 2*EIz_L;
+  K[7, 7]  := EA_L;       K[7, 1]   := -EA_L;
+  K[8, 2]  := -12*EIz_L3; K[8, 6]   := -6*EIz_L2; K[8, 8]  := 12*EIz_L3;  K[8, 12]  := -6*EIz_L2;
+  K[9, 3]  := -12*EIy_L3; K[9, 5]   := 6*EIy_L2;  K[9, 9]  := 12*EIy_L3;  K[9, 11]  := 6*EIy_L2;
+  K[10, 4] := -GJ_L;      K[10, 10] := GJ_L;
+  K[11, 3] := -6*EIy_L2;  K[11, 5]  := 2*EIy_L;   K[11, 9] := 6*EIy_L2;   K[11, 11] := 4*EIy_L;
+  K[12, 2] := 6*EIz_L2;   K[12, 6]  := 2*EIz_L;   K[12, 8] := -6*EIz_L2;  K[12, 12] := 4*EIz_L;
+  return K;
 end proc: # GetBeamStiffness
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -285,7 +325,7 @@ export GetOutputDisplacements := proc(
   return <<fem["info"][1..-1, 1]> |
           <fem["info"][1..-1, 2]> |
           <fem["info"][1..-1, 3]> |
-          fem["output_displacements"]>;
+          fem["d"]>;
 end proc: # GetOutputDisplacements
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -300,7 +340,7 @@ export GetOutputReactions := proc(
   return <<fem["info"][1..-1, 1]> |
           <fem["info"][1..-1, 2]> |
           <fem["info"][1..-1, 3]> |
-          fem["output_reactions"]>;
+          fem["f"]>;
 end proc: # GetOutputReactions
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -675,9 +715,9 @@ export SplitFEM := proc(
   end do;
 
   # Compute global stiffness matrix, displacements and loads vectors
-  fem["K"] := TrussMe_FEM:-Simplify(TrussMe_FEM:-GlobalStiffnessPrime(fem["nodes"], fem["elements"]));
-  fem["d"] := TrussMe_FEM:-Simplify(TrussMe_FEM:-GetNodalDisplacements(fem["nodes"]));
-  fem["f"] := TrussMe_FEM:-Simplify(TrussMe_FEM:-GetNodalLoads(fem["nodes"], fem["loads"]));
+  fem["K"] := TrussMe_FEM:-GlobalStiffnessPrime(fem["nodes"], fem["elements"]);
+  fem["d"] := TrussMe_FEM:-GetNodalDisplacements(fem["nodes"]);
+  fem["f"] := TrussMe_FEM:-GetNodalLoads(fem["nodes"], fem["loads"]);
 
   # Compute permuted system stiffness matrices, displacements and loads vectors
   K := fem["K"][fem["perm"], fem["perm"]];
@@ -686,20 +726,21 @@ export SplitFEM := proc(
   n := add(dofs);
   fem["info_f"] := fem["info"][fem["perm"]][1..n, 1..-1];
   fem["info_s"] := fem["info"][fem["perm"]][n+1..-1, 1..-1];
-  fem["K_ff"] := K[1..n, 1..n];
-  fem["K_fs"] := K[1..n, n+1..-1];
-  fem["K_sf"] := K[n+1..-1, 1..n];
-  fem["K_ss"] := K[n+1..-1, n+1..-1];
-  fem["d_f"]  := Vector(0);
-  fem["d_s"]  := d[n+1..-1];
-  fem["f_f"]  := f[1..n];
-  fem["f_s"]  := Vector(0);
-  fem["f_r"]  := f[n+1..-1];
+  fem["K_ff"]   := K[1..n, 1..n];
+  fem["K_fs"]   := K[1..n, n+1..-1];
+  fem["K_sf"]   := K[n+1..-1, 1..n];
+  fem["K_ss"]   := K[n+1..-1, n+1..-1];
+  fem["d_f"]    := Vector(0);
+  fem["d_s"]    := d[n+1..-1];
+  fem["f_f"]    := f[1..n];
+  fem["f_s"]    := Vector(0);
+  fem["f_r"]    := f[n+1..-1];
 
   # Fill the diagonal of stiffness matrix to avoid singularities
   TrussMe_FEM:-StiffnessFill(fem);
 
   # Veiling variables
+  fem["label"] := "";
   fem["veils"] := [];
   return NULL;
 end proc: # SplitFEM
@@ -755,7 +796,8 @@ export SolveFEM := proc(
   description "Solve the FEM structure <fem> and optionally use LAST LU "
     "decompostion <use_LAST> and veil the expressions <use_LEM> with signature "
     "mode <use_SIG> and label <label>. Factorization method <factorization> "
-    "can be choosen between 'LU', 'FFLU', 'QR', and Gauss-Jordan 'GJ'.";
+    "can be choosen between 'LU', fraction-free 'FFLU', 'QR', and Gauss-Jordan "
+    "'GJ'.";
 
   local LAST_obj, LEM_obj, i;
 
@@ -777,11 +819,7 @@ export SolveFEM := proc(
     LAST_obj:-SetWarningMode(LAST_obj, TrussMe_FEM:-m_WarningMode);
 
     # Set signature checking
-    if use_SIG then
-      LEM_obj:-EnableSignature(LEM_obj);
-    else
-      LEM_obj:-DisableSignature(LEM_obj);
-    end if;
+    LEM_obj:-SetSignatureMode(LEM_obj, use_SIG);
 
     # Perform decomposition
     if evalb(factorization = "LU") then
@@ -803,9 +841,11 @@ export SolveFEM := proc(
 
     # Unveil expressions if required
     if use_LEM then
+      fem["label"] := label;
       fem["veils"] := LEM_obj:-VeilList(LEM_obj);
     else
       fem["d_f"]   := LEM_obj:-Unveil(LEM_obj, fem["d_f"]);
+      fem["label"] := "";
       fem["veils"] := [];
     end if;
   else
@@ -813,6 +853,7 @@ export SolveFEM := proc(
     fem["d_f"] := LinearAlgebra:-LinearSolve(
       fem["K_ff"], fem["f_f"] - fem["K_fs"].fem["d_s"]
     );
+    fem["label"] := "";
     fem["veils"] := [];
   end if;
 
@@ -820,8 +861,8 @@ export SolveFEM := proc(
   fem["f_s"] := fem["K_sf"].fem["d_f"] - fem["K_ss"].fem["d_s"] - fem["f_r"];
 
   # Store output displacements and reactions and restore initial permutation
-  fem["output_displacements"] := <fem["d_f"], fem["d_s"]>[fem["unperm"]];
-  fem["output_reactions"]     := <fem["f_f"], fem["f_s"]>[fem["unperm"]];
+  fem["d"] := convert(<fem["d_f"], fem["d_s"]>[fem["unperm"]], Vector);
+  fem["f"] := convert(<fem["f_f"], fem["f_s"]>[fem["unperm"]], Vector);
 
   return NULL;
 end proc: # SolveFEM
@@ -837,8 +878,8 @@ export StoreFEM := proc(
   local i;
 
   for i from 1 to nops(fem["nodes"]) do
-    fem["nodes"][i]["output_displacements"] := fem["output_displacements"][6*i-5..6*i];
-    fem["nodes"][i]["output_reactions"]     := fem["output_reactions"][6*i-5..6*i];
+    fem["nodes"][i]["output_displacements"] := fem["d"][6*i-5..6*i];
+    fem["nodes"][i]["output_reactions"]     := fem["f"][6*i-5..6*i];
   end do;
   return NULL;
 end proc: # StoreFEM
