@@ -180,7 +180,7 @@ export GetSpringStiffness := proc(
     "stiffnesses <K> or <K_x, K_y, K_z>, and the torsional stiffnesses <T> or "
     "<T_x, T_y, T_z>.";
 
-  local K_x, K_y, K_z, T_x, T_y, T_z;
+  local K_x, K_y, K_z, T_x, T_y, T_z, out;
 
   if type(K, list(algebraic)) and evalb(nops(K) = 3) then
     K_x := K[1]; K_y := K[2]; K_z := K[3];
@@ -198,16 +198,16 @@ export GetSpringStiffness := proc(
     error("<T> must be a list of 3 elements or a single element.");
   end if;
 
-  K := Matrix(12, storage = sparse);
-  K[1, 1]   :=  K_x; K[2, 2]   :=  K_y; K[3, 3]   :=  K_z;
-  K[4, 4]   :=  T_x; K[5, 5]   :=  T_y; K[6, 6]   :=  T_z;
-  K[7, 7]   :=  K_x; K[8, 8]   :=  K_y; K[9, 9]   :=  K_z;
-  K[10, 10] :=  T_x; K[11, 11] :=  T_y; K[12, 12] :=  T_z;
-  K[1, 7]   := -K_x; K[2, 8]   := -K_y; K[3, 9]   := -K_z;
-  K[7, 1]   := -K_x; K[8, 2]   := -K_y; K[9, 3]   := -K_z;
-  K[4, 10]  := -T_x; K[5, 11]  := -T_y; K[6, 12]  := -T_z;
-  K[10, 4]  := -T_x; K[11, 5]  := -T_y; K[12, 6]  := -T_z;
-  return K;
+  out := Matrix(12, storage = sparse);
+  out[1, 1]   :=  K_x; out[2, 2]   :=  K_y; out[3, 3]   :=  K_z;
+  out[4, 4]   :=  T_x; out[5, 5]   :=  T_y; out[6, 6]   :=  T_z;
+  out[7, 7]   :=  K_x; out[8, 8]   :=  K_y; out[9, 9]   :=  K_z;
+  out[10, 10] :=  T_x; out[11, 11] :=  T_y; out[12, 12] :=  T_z;
+  out[1, 7]   := -K_x; out[2, 8]   := -K_y; out[3, 9]   := -K_z;
+  out[7, 1]   := -K_x; out[8, 2]   := -K_y; out[9, 3]   := -K_z;
+  out[4, 10]  := -T_x; out[5, 11]  := -T_y; out[6, 12]  := -T_z;
+  out[10, 4]  := -T_x; out[11, 5]  := -T_y; out[12, 6]  := -T_z;
+  return out;
 end proc: # GetSpringStiffness
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -818,8 +818,9 @@ export SolveFEM := proc(
     LAST_obj:-SetVerboseMode(LAST_obj, TrussMe_FEM:-m_VerboseMode);
     LAST_obj:-SetWarningMode(LAST_obj, TrussMe_FEM:-m_WarningMode);
 
-    # Set signature checking
+    # Set signature checking and time limit
     LEM_obj:-SetSignatureMode(LEM_obj, use_SIG);
+    LAST_obj:-SetTimeLimit(LAST_obj, TrussMe_FEM:-m_TimeLimit);
 
     # Perform decomposition
     if evalb(factorization = "LU") then
