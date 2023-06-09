@@ -80,6 +80,10 @@ export GetNodalLoads := proc(
 
   local F, i, j, R;
 
+  if TrussMe_FEM:-m_VerboseMode then
+    printf("Getting nodal loads...");
+  end if;
+
   F := Vector(6 * nops(nodes), storage = sparse);
   for i from 1 to nops(loads) do
     # Node position
@@ -88,10 +92,17 @@ export GetNodalLoads := proc(
     if evalb(loads[i]["frame"] = nodes[j]["id"]) then
       R := Matrix(3, shape = identity);
     else
-      R := (LinearAlgebra:-Transpose(nodes[j]["frame"]).loads[i]["frame"])[1..3, 1..3];
+      R := TrussMe_FEM:-Rotation(TrussMe_FEM:-InverseFrame(nodes[j]["frame"]).loads[i]["frame"]);
     end if;
-    F[6*j-5..6*j] := <R.loads[i]["components"][1..3], R.loads[i]["components"][4..6]>;
+    F[6*j-5..6*j] := F[6*j-5..6*j] + convert(
+      <R.loads[i]["components"][1..3], R.loads[i]["components"][4..6]>, Vector
+    );
   end do;
+
+  if TrussMe_FEM:-m_VerboseMode then
+    printf(" DONE\n");
+  end if;
+
   return F;
 end proc: # GetNodalLoads
 

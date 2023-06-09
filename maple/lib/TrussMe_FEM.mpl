@@ -317,7 +317,7 @@ TrussMe_FEM := module()
     try
       return timelimit(
         `if`(procname::indexed, op(procname), TrussMe_FEM:-m_TimeLimit),
-        simplify(var, opt)
+        (simplify(var, opt) assuming real)
       );
     catch "time expired":
       if TrussMe_FEM:-m_WarningMode then

@@ -36,6 +36,28 @@ end proc: # ObjectColor
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+(*
+export DrawFrame := proc(
+  RF::frame,
+  data::{list(`=`),set(`=`)},
+  col,
+  scale,
+  $)
+
+   local p,vX,vY,vZ,RFd:
+   RFd:=subs(data,RF);
+   p := [TrussMe_FEM:-CompXYZ(TrussMe_FEM:-Origin(RFd),ground)]:
+   vX:= [TrussMe_FEM:-CompXYZ((uvec_X)(RFd),ground)]:
+   vY:= [TrussMe_FEM:-CompXYZ((uvec_Y)(RFd),ground)]:
+   vZ:= [TrussMe_FEM:-CompXYZ((uvec_Z)(RFd),ground)]:
+   plots[arrow](p,vX*scale,shape=cylindrical_arrow,color="Red",fringe=col),    #X axis -> color RED
+   plots[arrow](p,vY*scale,shape=cylindrical_arrow,color="Green",fringe=col),  #Y axis -> color GREEN
+   plots[arrow](p,vZ*scale,shape=cylindrical_arrow,color="Blue",fringe=col)    #Z axis -> color BLUE
+end proc: # DrawFrame
+*)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 export StructureGraph := proc(
   fem::FEM,
   {
@@ -49,7 +71,7 @@ export StructureGraph := proc(
   local nodes, elements, loads, obj, i, vertex_name, vertex_id, vertex_color, G;
 
   if m_VerboseMode then
-    printf("TrussMe:-StructureGraph(...): checking structure connections... ");
+    printf("Checking structure connections...");
   end if;
 
   # Extract the nodes, elements and loads from <fem> object
@@ -95,7 +117,7 @@ export StructureGraph := proc(
   end if;
 
   if m_VerboseMode then
-    printf("DONE\n");
+    printf("\tDONE\n");
   end if;
 
   # Plot the graph
@@ -461,9 +483,9 @@ export PlotDeformedStructure := proc(
     k := TrussMe_FEM:-GetObjById(nodes, elements[i]["node_2"], parse("position") = true);
     if not interpolate then
       p_1 := <nodes[j]["coordinates"] +
-        deformation_scaling *~ nodes[j]["frame"][1..3, 1..3].nodes[j]["output_displacements"][1..3], 1>;
+        nodes[j]["frame"][1..3, 1..3].(deformation_scaling *~ nodes[j]["output_displacements"][1..3]), 1>;
       p_2 := <nodes[k]["coordinates"] +
-        deformation_scaling *~ nodes[k]["frame"][1..3, 1..3].nodes[k]["output_displacements"][1..3], 1>;
+        nodes[k]["frame"][1..3, 1..3].(deformation_scaling *~ nodes[k]["output_displacements"][1..3]), 1>;
       disp_elements[i] := TrussMe_FEM:-PlotElement(
         convert(p_1, Vector), convert(p_2, Vector),
         parse("data") = data_tmp, parse("color") = TrussMe_FEM:-m_ElementColor

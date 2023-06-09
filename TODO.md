@@ -1,24 +1,8 @@
 # TODO
 
-- [x] Riportare la matrice di rigidezza nel caso delle molla (effetto della distanza tra elementi collegati) -> risolto (molla non può essere usata con elementi di lunghezza non nulla, altrimenti -> beam)
-- [x] Capire come fare con i rod (strippare il sistema o mettere infinito)
-- [ ] Matrice rotazione Q si può elinimare forse
-- [?] Calcolo gdl
-- [x] Controllare compatibilità con aree e inerze definite come proc (Non si può fare con FEM)
-- [x] Plots struttura indeformata
-- [x] Plots struttura deformata
-- [x] Debug plots
-- [x] Grafo struttura
-- [ ] Mettere print di stato avanazamento
-- [x] Code generation
-- [x] Inserire LAST LU
-- [x] Optimize sperm?
-- [x] Test MakeBeam
-- [x] Test MakeRod
-- [x] Generate Timoshenko stiffness matrix?
-- [ ] Test MakeCompliantNode
-- [x] Uniformare liste e vettori interni per ottimizzare performance
-- [x] Testare quando origine frame nodo e coordinate del nodo stesso non coincidono
-- [x] Object-orient o pacchetto tradizionale? -> pacchetto tradizionale
-- [ ] Eliminare i metodi Project e Simplify?
-- [x] Semplificato setting opzioni
+- [ ] Test Timoshenko stiffness matrix
+- [ ] Test code generation
+- [ ] Debug plots
+- [ ] User-defined element length variation
+- [ ] Understand if stiffness matrix filling is physically correct to be done
+- [ ] Compute total structure dofs
