@@ -191,7 +191,7 @@ export PlotElement := proc(
   elif type(p_1, Vector) and evalb(LinearAlgebra:-Dimension(p_1) = 4) then
     p_1_tmp := convert(subs(op(data), p_1), list)[1..3];
   else
-    error("invalid point vector detected.");
+    error("invalid point 1 vector detected.");
   end if;
 
   if type(p_2, list) and evalb(nops(p_2) = 3) then
@@ -199,7 +199,7 @@ export PlotElement := proc(
   elif type(p_2, Vector) and evalb(LinearAlgebra:-Dimension(p_2) = 4) then
     p_2_tmp := convert(subs(op(data), p_2), list)[1..3];
   else
-    error("invalid point vector detected.");
+    error("invalid point 2 vector detected.");
   end if;
 
   return plots:-display(
@@ -230,35 +230,35 @@ export PlotDeformedElement := proc(
     deformed_element;
 
   if type(d_1, list) and evalb(nops(d_1) = 6) then
-    d_1_tmp := convert(d_1, Vector);
+    d_1_tmp := convert(subs(op(data), d_1), Vector);
   elif type(d_1, Vector) and evalb(LinearAlgebra:-Dimension(d_1) = 6) then
     d_1_tmp := d_1;
   else
-    error("invalid displacement vector detected.");
+    error("invalid displacement 1 vector detected.");
   end if;
 
   if type(d_2, list) and evalb(nops(d_2) = 6) then
-    d_2_tmp := convert(d_2, Vector);
+    d_2_tmp := convert(subs(op(data), d_2), Vector);
   elif type(d_2, Vector) and evalb(LinearAlgebra:-Dimension(d_2) = 6) then
-    d_2_tmp := d_2;
+    d_2_tmp := subs(op(data), d_2);
   else
-    error("invalid displacement vector detected.");
+    error("invalid displacement 2 vector detected.");
   end if;
 
   if type(p_1, list) and evalb(nops(p_1) = 3) then
-    p_1_tmp := <convert(p_1, Vector), 1>;
+    p_1_tmp := <convert(subs(op(data), p_1), Vector), 1>;
   elif type(p_1, Vector) and evalb(LinearAlgebra:-Dimension(p_1) = 4) then
-    p_1_tmp := p_1;
+    p_1_tmp := subs(op(data), p_1);
   else
-    error("invalid point vector detected.");
+    error("invalid point 1 vector detected.");
   end if;
 
   if type(p_2, list) and evalb(nops(p_2) = 3) then
-    p_2_tmp := <convert(p_2, Vector), 1>;
+    p_2_tmp := <convert(subs(op(data), p_2), Vector), 1>;
   elif type(p_2, Vector) and evalb(LinearAlgebra:-Dimension(p_2) = 4) then
-    p_2_tmp := p_2;
+    p_2_tmp := subs(op(data), p_2);
   else
-    error("invalid point vector detected.");
+    error("invalid point 2 vector detected.");
   end if;
 
   p1p2 := p_2_tmp - p_1_tmp;
@@ -291,8 +291,7 @@ export PlotDeformedElement := proc(
 
   return plots:-display(
     plots:-spacecurve(
-      subs(op(data), convert(deformed_element, list)[1..3]), xi = 0..1,
-      parse("thickness") = 6
+      convert(deformed_element, list)[1..3], xi = 0..1, parse("thickness") = 6
     ),
     parse("linestyle") = solid,
     parse("color")     = color,
@@ -384,7 +383,7 @@ export PlotStructure := proc(
   end if;
 
   # Draw nodes frames
-  if evalb(nodes_frame_scaling > 0) then
+  if evalb(nodes_frame_scaling <> 0) then
     disp_nodes_frames := [seq(i, i = 1..nops(nodes))];
     for i from 1 to nops(nodes) do
       disp_nodes_frames[i] := TrussMe_FEM:-DrawFrame(
@@ -396,7 +395,7 @@ export PlotStructure := proc(
   end if;
 
   # Draw elements frames
-  if evalb(elements_frame_scaling > 0) then
+  if evalb(elements_frame_scaling <> 0) then
     disp_elements_frames := [seq(i, i = 1..nops(elements))];
     for i from 1 to nops(elements) do
       disp_elements_frames[i] := TrussMe_FEM:-DrawFrame(
@@ -436,7 +435,7 @@ export PlotStructure := proc(
   end do;
 
   # Plot the loads
-  if evalb(load_scaling > 0) then
+  if evalb(load_scaling <> 0) then
     disp_loads := [seq(i, i = 1..2*nops(loads))];
     for i from 1 to nops(loads) do
       j := TrussMe_FEM:-GetObjById(nodes, loads[i]["node"], parse("position") = true);
@@ -527,7 +526,7 @@ export PlotDeformedStructure := proc(
   end if;
 
   # Draw nodes frames
-  if evalb(nodes_frame_scaling > 0) then
+  if evalb(nodes_frame_scaling <> 0) then
     disp_nodes_frames := [seq(i, i = 1..nops(nodes))];
     for i from 1 to nops(nodes) do
       # TODO: translate and rotate according to node deformations
@@ -540,7 +539,7 @@ export PlotDeformedStructure := proc(
   end if;
 
   # Draw elements frames
-  if evalb(elements_frame_scaling > 0) then
+  if evalb(elements_frame_scaling <> 0) then
     disp_elements_frames := [seq(i, i = 1..nops(elements))];
     for i from 1 to nops(elements) do
       # TODO: translate and rotate according to node deformations
@@ -603,7 +602,7 @@ export PlotDeformedStructure := proc(
   end do;
 
   # Plot the loads
-  if evalb(load_scaling > 0) then
+  if evalb(load_scaling <> 0) then
     disp_loads := [seq(i, i = 1..2*nops(loads))];
     for i from 1 to nops(loads) do
       j := TrussMe_FEM:-GetObjById(nodes, loads[i]["node"], parse("position") = true);
