@@ -293,7 +293,7 @@ export UvecX := proc(
 
   description "Extract the x-axis unit vector of the reference frame <RF>.";
 
-  return <RF[1..3, 1], 0>;
+  return convert(<RF[1..3, 1], 0>, Vector);
 end proc: # UvecX
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -304,7 +304,7 @@ export UvecY := proc(
 
   description "Extract the y-axis unit vector of the reference frame <RF>.";
 
-  return <RF[1..3, 2], 0>;
+  return convert(<RF[1..3, 2], 0>, Vector);
 end proc: # UvecY
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -315,7 +315,7 @@ export UvecZ := proc(
 
   description "Extract the z-axis unit vector of the reference frame <RF>.";
 
-  return <RF[1..3, 3], 0>;
+  return convert(<RF[1..3, 3], 0>, Vector);
 end proc: # UvecZ
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -327,7 +327,9 @@ export UvecXYZ := proc(
   description "Extract the x, y and z-axis unit vectors of the reference "
     "frame <RF>.";
 
-  return <RF[1..3, 1], 0>, <RF[1..3, 2], 0>, <RF[1..3, 3], 0>;
+  return convert(<RF[1..3, 1], 0>, Vector),
+         convert(<RF[1..3, 2], 0>, Vector),
+         convert(<RF[1..3, 3], 0>, Vector);
 end proc: # UvecXYZ
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

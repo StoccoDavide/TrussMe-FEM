@@ -784,10 +784,7 @@ export GlobalStiffness := proc(
     # Element stiffness contribution selecting only constrained dofs (= 0)
     K_i := Q_i.elements[i]["stiffness"].LinearAlgebra:-DiagonalMatrix(
       <(1 -~ elements[i]["dofs_1"]), (1 -~ elements[i]["dofs_2"])>
-    ).LinearAlgebra:-Transpose(Q_i); print(K_i);
-    #K_i := K_i.LinearAlgebra:-DiagonalMatrix(
-    #  <(1 -~ nodes[j]["dofs"]), (1 -~ nodes[k]["dofs"])>
-    #); print(K_i);
+    ).LinearAlgebra:-Transpose(Q_i);
     K[6*j-5..6*j, 6*j-5..6*j] := K[6*j-5..6*j, 6*j-5..6*j] + K_i[1..6,  1..6];
     K[6*j-5..6*j, 6*k-5..6*k] := K[6*j-5..6*j, 6*k-5..6*k] + K_i[1..6,  7..12];
     K[6*k-5..6*k, 6*j-5..6*j] := K[6*k-5..6*k, 6*j-5..6*j] + K_i[7..12, 1..6];
@@ -909,7 +906,7 @@ export SplitFEM := proc(
   end if;
 
   # Fill the diagonal of stiffness matrix to avoid singularities
-  #TrussMe_FEM:-StiffnessFill(fem);
+  TrussMe_FEM:-StiffnessFill(fem);
 
   # Veiling variables
   fem["label"] := "";
