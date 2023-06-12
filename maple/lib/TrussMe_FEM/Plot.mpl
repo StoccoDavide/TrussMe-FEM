@@ -95,7 +95,7 @@ export StructureGraph := proc(
   end if;
 
   if m_VerboseMode then
-    printf("\tDONE\n");
+    printf(" DONE\n");
   end if;
 
   # Plot the graph

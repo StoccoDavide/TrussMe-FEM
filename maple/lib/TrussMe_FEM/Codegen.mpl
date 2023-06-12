@@ -214,22 +214,47 @@ export ExtractElements := proc(
 
   local i, j, idx, lst, out, cur, tmp, str1, str2;
 
-  lst  := [];
-  out  := "";
-  for i from 1 to mul(dims) do
-    cur := [];
-    idx := i-1;
-    for j from 1 to nops(dims) do
-      cur := [op(cur), irem(idx, dims[j], 'idx')+1];
+  lst := [];
+  out := "";
+  if has(map(type, func, numeric), false) then
+
+    # Symbolic entries
+    for i from 1 to mul(dims) do
+      cur := [];
+      idx := i - 1;
+      for j from 1 to nops(dims) do
+        cur := [op(cur), irem(idx, dims[j], 'idx') + 1];
+      end do;
+      tmp := func[op(cur)];
+      if skipnull and evalb(tmp <> 0) then
+        map(x -> (x, "_"), cur); str1 := cat(label, "_", op(%))[1..-2];
+        lst := [op(lst), convert(str1, symbol) = tmp];
+        map(x -> (x, ", "), cur); str2 := cat("", op(%))[1..-3];
+        out := cat(out,
+          indent, "out_", name, "(", str2, ") = ", str1, ";\n"
+        );
+      end if;
     end do;
-    tmp := func[op(cur)];
-    if skipnull and evalb(tmp <> 0) then
-      map(x -> (x, "_"), cur); str1 := cat(label, "_", op(%))[1..-2];
-      lst := [op(lst), convert(str1, symbol) = tmp];
-      map(x -> (x, ", "), cur); str2 := cat("", op(%))[1..-3];
-      out := cat(out, indent, "out_", name, "(", str2, ") = ", str1, ";\n");
-    end if;
-  end do;
+
+  else
+
+    # Numeric entries
+    for i from 1 to mul(dims) do
+      cur := [];
+      idx := i - 1;
+      for j from 1 to nops(dims) do
+        cur := [op(cur), irem(idx, dims[j], 'idx') + 1];
+      end do;
+      tmp := func[op(cur)];
+      if skipnull and evalb(tmp <> 0) then
+        map(x -> (x, ", "), cur); str2 := cat("", op(%))[1..-3];
+        out := cat(out,
+          indent, "out_", name, "(", str2, ") = ", func[op(cur)], ";\n"
+        );
+      end if;
+    end do;
+
+  end if;
   return lst, out;
 end proc: # ExtractElements
 
@@ -336,11 +361,18 @@ export VectorToMatlab := proc(
     "arguments and class properties <data>, function description <info>, "
     "veiling label <label>, and indentation string <indent>.";
 
-  local header, properties, inputs, veils, elements, outputs, dims, lst;
+  local header, properties, inputs, veils, elements, outputs, dims, lst,
+    tmp_data;
+
+  if TrussMe_FEM:-m_VerboseMode then
+    printf("Generating vector function '%s'...", name);
+  end if;
 
   # Extract the function properties
+  tmp_data := convert(data, set) intersect indets(vec, symbol);
+  tmp_data := remove[flatten](j -> not evalb(j in tmp_data), data);
   properties := TrussMe_FEM:-GenerateProperties(
-    data, parse("indent") = indent
+    tmp_data, parse("indent") = indent
   );
 
   # Extract the function elements
@@ -367,6 +399,10 @@ export VectorToMatlab := proc(
 
   # Generate the elements
   elements := TrussMe_FEM:-GenerateElements(lst);
+
+  if TrussMe_FEM:-m_VerboseMode then
+    printf(" DONE\n");
+  end if;
 
   # Generate the generated code
   return TrussMe_FEM:-GenerateBody(
@@ -396,11 +432,18 @@ export MatrixToMatlab := proc(
     "arguments and class properties <data>, function description <info>, "
     "veiling label <label>, and indentation string <indent>.";
 
-  local header, properties, inputs, veils, elements, outputs, dims, lst;
+  local header, properties, inputs, veils, elements, outputs, dims, lst,
+    tmp_data;
+
+  if TrussMe_FEM:-m_VerboseMode then
+    printf("Generating matrix function '%s'...", name);
+  end if;
 
   # Extract the function properties
+  tmp_data := convert(data, set) intersect indets(mat, symbol);
+  tmp_data := remove[flatten](j -> not evalb(j in tmp_data), data);
   properties := TrussMe_FEM:-GenerateProperties(
-    data, parse("indent") = indent
+    tmp_data, parse("indent") = indent
   );
 
   # Extract the function elements
@@ -428,6 +471,10 @@ export MatrixToMatlab := proc(
   # Generate the elements
   elements := TrussMe_FEM:-GenerateElements(lst);
 
+  if TrussMe_FEM:-m_VerboseMode then
+    printf(" DONE\n");
+  end if;
+
   # Store the results
   return TrussMe_FEM:-GenerateBody(
     name, dims,
@@ -437,7 +484,7 @@ export MatrixToMatlab := proc(
   );
 end proc: # MatrixToMatlab
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 export GetVeilSubs := proc(
     veil::{Vector(algebraic), list(algebraic)},
@@ -549,7 +596,7 @@ export SystemToMatlab := proc(
     "data <data>, description <info>, output label <label> and indentation "
     "<indent>.";
 
-  local i, bar, rm_v_deps, data_vars, x, v;
+  local i, bar, rm_v_deps, data_vars, x, v, props_str, check_str;
 
   # Function utilities strings
   i   := indent;
@@ -565,6 +612,26 @@ export SystemToMatlab := proc(
     data_vars := lhs~(data);
   else
     data_vars := [];
+  end if;
+
+  # Prepare a string to check to detect if the system has been solved
+  if fem["solved"] then
+    props_str := "";
+    check_str := "";
+  else
+    props_str := cat(
+      i, "properties (SetAccess = protected, Hidden = true)\n",
+      i, i, "m_solved = ", fem["solved"], ";\n",
+      i, "end\n",
+      i, "%\n"
+    );
+    check_str := cat(
+      i, "\n\n",
+      i, "% Check if the system has been solved\n",
+      i, "if ~this.m_solved\n",
+      i, i, "error('system has not been solved.');\n",
+      i, "end"
+    );
   end if;
 
   # Return output string
@@ -583,6 +650,7 @@ export SystemToMatlab := proc(
     i, "%\n",
     i, "% ", info, "\n",
     i, "%\n",
+    props_str,
     i, "methods\n",
     i, i, "%\n",
     i, i, bar,
@@ -653,7 +721,7 @@ export SystemToMatlab := proc(
       TrussMe_FEM:-VectorToMatlab(
         "d", [x, v], subs(op(rm_v_deps), fem["d"]),
         parse("data") = data_vars,
-        parse("info") = "Evaluate the deformation vector d."
+        parse("info") = cat("Evaluate the deformation vector d.", check_str)
     )),
     i, i, "%\n",
     i, i, bar,
@@ -663,7 +731,7 @@ export SystemToMatlab := proc(
       TrussMe_FEM:-VectorToMatlab(
         "d_f", [x, v], subs(op(rm_v_deps), fem["d_f"]),
         parse("data") = data_vars,
-        parse("info") = "Evaluate the deformation vector d_f."
+        parse("info") = cat("Evaluate the deformation vector d_f.", check_str)
     )),
     i, i, "%\n",
     i, i, bar,
@@ -683,7 +751,7 @@ export SystemToMatlab := proc(
       TrussMe_FEM:-VectorToMatlab(
         "f", [x, v], subs(op(rm_v_deps), fem["f"]),
         parse("data") = data_vars,
-        parse("info") = "Evaluate the force vector f."
+        parse("info") = cat("Evaluate the force vector f.", check_str)
     )),
     i, i, "%\n",
     i, i, bar,
@@ -703,7 +771,7 @@ export SystemToMatlab := proc(
       TrussMe_FEM:-VectorToMatlab(
         "f_s", [x, v], subs(op(rm_v_deps), fem["f_s"]),
         parse("data") = data_vars,
-        parse("info") = "Evaluate the force vector f_s."
+        parse("info") = cat("Evaluate the force vector f_s.", check_str)
     )),
     i, i, "%\n",
     i, i, bar,
@@ -744,7 +812,7 @@ export SystemToMatlab := proc(
         "v", [x], subs(op(rm_v_deps), convert(rhs~(fem["veils"]), Vector)),
         parse("data")  = data_vars,
         parse("label") = fem["label"],
-        parse("info")  = "Evaluate the veiling vector."
+        parse("info")  = cat("Evaluate the veiling vector.", check_str)
     )),
     i, i, "%\n",
     i, i, bar,

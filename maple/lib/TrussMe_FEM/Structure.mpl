@@ -738,7 +738,7 @@ export StiffnessTransformation := proc(
     printf("Computing stiffness transformation matrix...");
   end if;
 
-  T := Matrix(6 * nops(nodes), (i, j) -> `if`(evalb(i = j), 1, 0), storage = sparse);
+  T := Matrix(6 * nops(nodes), (i,j) -> `if`(evalb(i = j), 1, 0), storage = sparse);
   for i from 1 to nops(nodes) do
     R_T := LinearAlgebra:-Transpose(TrussMe_FEM:-Rotation(nodes[i]["frame"]));
     T[6*i-5..6*i-3, 6*i-5..6*i-3] := R_T;
@@ -762,7 +762,7 @@ export GlobalStiffness := proc(
   description "Compute the global stiffness matrix of the nodes <nodes> and "
     "elements <elements>.";
 
-  local K, Q_i, K_i, R_i, i, j, k;
+  local K, Q_i, D_i, K_i, R_i, i, j, k;
 
   if TrussMe_FEM:-m_VerboseMode then
     printf("Computing global stiffness matrix...");
@@ -782,9 +782,10 @@ export GlobalStiffness := proc(
     k := TrussMe_FEM:-GetObjById(nodes, elements[i]["node_2"], parse("position") = true);
 
     # Element stiffness contribution selecting only constrained dofs (= 0)
-    K_i := Q_i.elements[i]["stiffness"].LinearAlgebra:-DiagonalMatrix(
+    D_i := LinearAlgebra:-DiagonalMatrix(
       <(1 -~ elements[i]["dofs_1"]), (1 -~ elements[i]["dofs_2"])>
-    ).LinearAlgebra:-Transpose(Q_i);
+    );
+    K_i := Q_i.(D_i.elements[i]["stiffness"].D_i).LinearAlgebra:-Transpose(Q_i);
     K[6*j-5..6*j, 6*j-5..6*j] := K[6*j-5..6*j, 6*j-5..6*j] + K_i[1..6,  1..6];
     K[6*j-5..6*j, 6*k-5..6*k] := K[6*j-5..6*j, 6*k-5..6*k] + K_i[1..6,  7..12];
     K[6*k-5..6*k, 6*j-5..6*j] := K[6*k-5..6*k, 6*j-5..6*j] + K_i[7..12, 1..6];
@@ -828,42 +829,16 @@ end proc: # IsFEM
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export GenerateFEM := proc(
-  nodes::NODES,
-  elements::ELEMENTS,
-  loads::LOADS,
-  $)::FEM;
-
-  description "Generate a FEM structure from the nodes <nodes>, elements "
-    "<elements>, and loads <loads>.";
-
-  local direction;
-
-  return table([
-    "type"     = FEM,
-    "nodes"    = nodes,
-    "elements" = elements,
-    "loads"    = loads,
-    "info"     = map(
-      x -> seq([x["name"], x["id"], direction],
-      direction = ["tx", "ty", "tz", "rx", "ry", "rz"]
-    ), nodes)
-  ]);
-end proc: # GenerateFEM
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 export SplitFEM := proc(
   fem::FEM,
   $)
 
   description "Split the FEM structure <fem> in free and constrained dofs.";
 
-  local d, K, f, n, dofs, i;
+  local d, K, f, n, i;
 
   # Get permutation and unpermutation vectors
-  dofs          := TrussMe_FEM:-GetNodalDofs(fem["nodes"]);
-  fem["perm"]   := sort(dofs, `>`, output = 'permutation');
+  fem["perm"]   := sort(fem["dofs"], `>`, output = 'permutation');
   fem["unperm"] := [seq(i, i = 1..nops(fem["perm"]))];
   for i from 1 to nops(fem["unperm"]) do
     fem["unperm"][fem["perm"][i]] := i;
@@ -888,7 +863,7 @@ export SplitFEM := proc(
   K := fem["K"][fem["perm"], fem["perm"]];
   d := fem["d"][fem["perm"]];
   f := fem["f"][fem["perm"]];
-  n := add(dofs);
+  n := add(fem["dofs"]);
   fem["info_f"] := fem["info"][fem["perm"]][1..n, 1..-1];
   fem["info_s"] := fem["info"][fem["perm"]][n+1..-1, 1..-1];
   fem["K_ff"]   := K[1..n, 1..n];
@@ -905,60 +880,100 @@ export SplitFEM := proc(
     printf(" DONE\n");
   end if;
 
-  # Fill the diagonal of stiffness matrix to avoid singularities
-  TrussMe_FEM:-StiffnessFill(fem);
-
   # Veiling variables
-  fem["label"] := "";
-  fem["veils"] := [];
+  fem["label"]  := "";
+  fem["veils"]  := [];
+  fem["solved"] := false;
   return NULL;
 end proc: # SplitFEM
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export StiffnessFill := proc(
+export RecastFEM := proc(
   fem::FEM,
-$)
+  $)
 
-  description "Fill the diagonal of stiffness matrix <K> to avoid singularities.";
+  description "Recast the system to avoid singularities.";
 
-  local i, info_perm, mat_tmp;
+  local i, fill_tmp, info_tmp, idx_tmp;
+
+  # Get system fill-in matrix and info
+  fill_tmp := map(x -> `if`(x = 0, 0, 1), fem["K_ff"]);
+  info_tmp := fem["info"][fem["perm"]];
+  idx_tmp  := [];
 
   if TrussMe_FEM:-m_VerboseMode then
-    printf("Filling stiffness matrix...");
+    printf("Looking for singularities...");
   end if;
 
-  mat_tmp := map(x -> `if`(x = 0, 0, 1), fem["K_ff"]);
-  info_perm := fem["info"][fem["perm"]];
+  # Check for empty rows
   for i from 1 to LinearAlgebra:-RowDimension(fem["K_ff"]) do
-    if evalb(add(mat_tmp[i, 1..-1]) = 0) or evalb(add(mat_tmp[1..-1, i]) = 0) then
+    if evalb(add(fill_tmp[i, 1..-1]) = 0) then
       if evalb(fem["f_f"][i] = 0) then
-        fem["K_ff"][i, i] := 1;
+        idx_tmp := [op(idx_tmp), i];
         if TrussMe_FEM:-m_WarningMode then
-          WARNING("filled matrix at node [name: %1, id: %2, direction: %3] "
-            "due to unconstrained direction.", info_perm[i][1], info_perm[i][2],
-            info_perm[i][3]);
+          WARNING("recasting matrix at node, dof = [name: %1, id: %2, direction: "
+            "%3] is unconstrained and has a zero load.", op(info_tmp[i][1..3]));
         end if;
       else
-       error("singular stiffness matrix, the dof corresponding to node "
-         "[name: %1, id: %2, direction: %3] is unconstrained and has a non-zero "
-         "load [f: %4].", info_perm[i][1], info_perm[i][2], info_perm[i][3],
-         fem["f_f"][i]);
+        error("singular stiffness matrix, dof = [name: %1, id: %2, direction: "
+          "%3] is unconstrained and has a non-zero load.", op(info_tmp[i][1..3]));
       end if;
     end if;
   end do;
 
-  # Update fem global stiffness matrix
-  fem["K"] := Matrix(
-    <<fem["K_ff"] | fem["K_fs"]>,
-     <fem["K_sf"] | fem["K_ss"]>>[fem["unperm"], fem["unperm"]],
-    storage = sparse
-  );
-
   if TrussMe_FEM:-m_VerboseMode then
     printf(" DONE\n");
   end if;
-end proc: # StiffnessFill
+
+  # Recast nodal dofs and split fem structure again
+  for i in idx_tmp do
+    fem["dofs"][fem["perm"][i]] := 0;
+  end do;
+  TrussMe_FEM:-SplitFEM(fem);
+  return NULL;
+end proc: # RecastFEM
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export GenerateFEM := proc(
+  nodes::NODES,
+  elements::ELEMENTS,
+  loads::LOADS,
+  {
+  tryhard::boolean := false
+  }, $)::FEM;
+
+  description "Generate a FEM structure from the nodes <nodes>, elements "
+    "<elements>, and loads <loads>. If <tryhard> is enabled, the stiffness "
+    "matrix will be recasted to avoid singularities.";
+
+  local fem, direction;
+
+  # Create FEM structure
+  fem := table([
+    "type"     = FEM,
+    "nodes"    = nodes,
+    "elements" = elements,
+    "loads"    = loads,
+    "info"     = map(
+      x -> seq([x["name"], x["id"], direction],
+      direction = ["tx", "ty", "tz", "rx", "ry", "rz"]
+    ), nodes)
+  ]);
+
+  # Split free and constrained dofs
+  fem["dofs"] := TrussMe_FEM:-GetNodalDofs(fem["nodes"]);
+  TrussMe_FEM:-SplitFEM(fem);
+
+  # Recast the stiffness matrix to avoid singularities
+  if tryhard then
+    TrussMe_FEM:-RecastFEM(fem);
+  end if;
+
+  # Return the FEM structure
+  return fem;
+end proc: # GenerateFEM
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -969,7 +984,8 @@ export SolveFEM := proc(
   use_LEM::boolean      := true,
   use_SIG::boolean      := true,
   factorization::string := "LU",
-  label::string         := "V"
+  label::string         := "V",
+  tryhard::boolean      := false
   }, $)
 
   description "Solve the FEM structure <fem> and optionally use LAST LU "
@@ -978,22 +994,24 @@ export SolveFEM := proc(
     "can be choosen between 'LU', fraction-free 'FFLU', 'QR', and Gauss-Jordan "
     "'GJ'.";
 
-  local LAST_obj, LEM_obj, i;
-
-  # Split free and constrained dofs
-  TrussMe_FEM:-SplitFEM(fem);
-
-  if TrussMe_FEM:-m_VerboseMode then
-    printf("Solving system...");
-  end if;
+  local dofs, LAST_obj, LEM_obj, i;
 
   # Solve free dofs
   if use_LAST then
     try
+      if TrussMe_FEM:-m_VerboseMode then
+        printf("Initializing LAST and LEM objects...");
+      end if;
       LAST_obj := Object(LAST);
       LAST_obj:-InitLEM(LAST_obj, label);
       LEM_obj := LAST_obj:-GetLEM(LAST_obj);
+      if TrussMe_FEM:-m_VerboseMode then
+        printf(" DONE\n");
+      end if;
     catch:
+      if TrussMe_FEM:-m_VerboseMode then
+        printf(" FAILED\n");
+      end if;
       error("LAST or LEM package not installed.");
     end try;
 
@@ -1004,6 +1022,10 @@ export SolveFEM := proc(
     # Set signature checking and time limit
     LEM_obj:-SetSignatureMode(LEM_obj, use_SIG);
     LAST_obj:-SetTimeLimit(LAST_obj, TrussMe_FEM:-m_TimeLimit);
+
+    if TrussMe_FEM:-m_VerboseMode then
+      printf("Performing matrix factorization...");
+    end if;
 
     # Perform decomposition
     if evalb(factorization = "LU") then
@@ -1016,6 +1038,11 @@ export SolveFEM := proc(
       LAST_obj:-GJ(LAST_obj, fem["K_ff"]);
     else
       error("invalid factorization method.");
+    end if;
+
+    if TrussMe_FEM:-m_VerboseMode then
+      printf(" DONE\n");
+      printf("Solving system deformations...");
     end if;
 
     # Solve deformations
@@ -1033,6 +1060,11 @@ export SolveFEM := proc(
       fem["veils"] := [];
     end if;
   else
+
+    if TrussMe_FEM:-m_VerboseMode then
+      printf("Solving system deformations...");
+    end if;
+
     # Solve deformations
     fem["d_f"] := LinearAlgebra:-LinearSolve(
       fem["K_ff"], fem["f_f"] - fem["K_fs"].fem["d_s"]
@@ -1041,12 +1073,20 @@ export SolveFEM := proc(
     fem["veils"] := [];
   end if;
 
+  if TrussMe_FEM:-m_VerboseMode then
+    printf(" DONE\n");
+    printf("Solving system reactions...");
+  end if;
+
   # Solve reactions
   fem["f_s"] := fem["K_sf"].fem["d_f"] + fem["K_ss"].fem["d_s"] - fem["f_r"];
 
   # Store output displacements and reactions and restore initial permutation
   fem["d"] := convert(<fem["d_f"], fem["d_s"]>[fem["unperm"]], Vector);
   fem["f"] := convert(<fem["f_f"], fem["f_s"]>[fem["unperm"]], Vector);
+
+  # Mark as solved
+  fem["solved"] := true;
 
   if TrussMe_FEM:-m_VerboseMode then
     printf(" DONE\n");
