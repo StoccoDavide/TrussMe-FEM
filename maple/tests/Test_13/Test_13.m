@@ -39,63 +39,12 @@ classdef Test_13 < TrussMe.System
         data.A_Rocker_2 = .500e-4;
         data.A_Rocker_3 = .500e-4;
         data.A_Dummy_SA = .500e-4;
-        data.P1_x = -.7300000000;
-        data.P1_y = .2650000000;
-        data.P1_z = .1200000000;
-        data.P2_x = -1.010000000;
-        data.P2_y = .2350000000;
-        data.P2_z = .9800000000e-1;
-        data.P3_x = -.7195060000;
-        data.P3_y = .2700000000;
-        data.P3_z = .2400000000;
-        data.P4_x = -1.010519000;
-        data.P4_y = .2650000000;
-        data.P4_z = .2250000000;
-        data.P5_x = -.7752660000;
-        data.P5_y = .2650000000;
-        data.P5_z = .1630930000;
-        data.P6_x = -.8950000000;
-        data.P6_y = .5170000000;
-        data.P6_z = .2930000000;
-        data.P7_x = -.8850000000;
-        data.P7_y = .5500000000;
-        data.P7_z = .1200000000;
-        data.P8_x = -.7900000000;
-        data.P8_y = .5323530000;
-        data.P8_z = .1982000000;
-        data.P9_x = -.8900000000;
-        data.P9_y = .6050000000;
-        data.P9_z = 0.;
-        data.P10_x = -.8900000000;
-        data.P10_y = .6050000000;
-        data.P10_z = .2032000000;
-        data.P11_x = -.8950000000;
-        data.P11_y = .4798700000;
-        data.P11_z = .3126300000;
-        data.P12_x = -.8950000000;
-        data.P12_y = .2801760000;
-        data.P12_z = .4182070000;
-        data.P13_x = -.8950000000;
-        data.P13_y = .2430000000;
-        data.P13_z = .3750000000;
-        data.P14_x = -.8950000000;
-        data.P14_y = .2361160000;
-        data.P14_z = .4667420000;
-        data.P15_x = -.8950000000;
-        data.P15_y = .5000000000e-1;
-        data.P15_z = .4120000000;
-        data.F_x = 1000;
-        data.F_y = 1000;
-        data.F_z = 1000;
-        data.M_x = 100;
-        data.M_y = 100;
-        data.M_z = 100;
         data.I_x = .1e-3;
         data.I_y = .1e-3;
         data.I_z = .1e-3;
       elseif (nargin == 1 && isstruct(varargin{1}))
         data = varargin{1};
-      elseif (nargin == 68)
+      elseif (nargin == 17)
         data.A_UF_Rod = varargin{1};
         data.A_RF_Rod = varargin{2};
         data.A_LF_Rod = varargin{3};
@@ -110,60 +59,9 @@ classdef Test_13 < TrussMe.System
         data.A_Rocker_2 = varargin{12};
         data.A_Rocker_3 = varargin{13};
         data.A_Dummy_SA = varargin{14};
-        data.P1_x = varargin{15};
-        data.P1_y = varargin{16};
-        data.P1_z = varargin{17};
-        data.P2_x = varargin{18};
-        data.P2_y = varargin{19};
-        data.P2_z = varargin{20};
-        data.P3_x = varargin{21};
-        data.P3_y = varargin{22};
-        data.P3_z = varargin{23};
-        data.P4_x = varargin{24};
-        data.P4_y = varargin{25};
-        data.P4_z = varargin{26};
-        data.P5_x = varargin{27};
-        data.P5_y = varargin{28};
-        data.P5_z = varargin{29};
-        data.P6_x = varargin{30};
-        data.P6_y = varargin{31};
-        data.P6_z = varargin{32};
-        data.P7_x = varargin{33};
-        data.P7_y = varargin{34};
-        data.P7_z = varargin{35};
-        data.P8_x = varargin{36};
-        data.P8_y = varargin{37};
-        data.P8_z = varargin{38};
-        data.P9_x = varargin{39};
-        data.P9_y = varargin{40};
-        data.P9_z = varargin{41};
-        data.P10_x = varargin{42};
-        data.P10_y = varargin{43};
-        data.P10_z = varargin{44};
-        data.P11_x = varargin{45};
-        data.P11_y = varargin{46};
-        data.P11_z = varargin{47};
-        data.P12_x = varargin{48};
-        data.P12_y = varargin{49};
-        data.P12_z = varargin{50};
-        data.P13_x = varargin{51};
-        data.P13_y = varargin{52};
-        data.P13_z = varargin{53};
-        data.P14_x = varargin{54};
-        data.P14_y = varargin{55};
-        data.P14_z = varargin{56};
-        data.P15_x = varargin{57};
-        data.P15_y = varargin{58};
-        data.P15_z = varargin{59};
-        data.F_x = varargin{60};
-        data.F_y = varargin{61};
-        data.F_z = varargin{62};
-        data.M_x = varargin{63};
-        data.M_y = varargin{64};
-        data.M_z = varargin{65};
-        data.I_x = varargin{66};
-        data.I_y = varargin{67};
-        data.I_z = varargin{68};
+        data.I_x = varargin{15};
+        data.I_y = varargin{16};
+        data.I_z = varargin{17};
       else
         error('wrong number of input arguments.');
       end
@@ -174,7 +72,7 @@ classdef Test_13 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_K = K( this, ~, ~ )
+    function out_K = K( ~, in_1, ~ )
       % Evaluate the stiffness matrix K.
 
       % Extract properties
@@ -192,50 +90,49 @@ classdef Test_13 < TrussMe.System
       A_Rocker_2 = this.m_data.A_Rocker_2;
       A_Rocker_3 = this.m_data.A_Rocker_3;
       A_Dummy_SA = this.m_data.A_Dummy_SA;
-      P1_x = this.m_data.P1_x;
-      P1_y = this.m_data.P1_y;
-      P1_z = this.m_data.P1_z;
-      P2_x = this.m_data.P2_x;
-      P2_y = this.m_data.P2_y;
-      P2_z = this.m_data.P2_z;
-      P3_x = this.m_data.P3_x;
-      P3_y = this.m_data.P3_y;
-      P3_z = this.m_data.P3_z;
-      P4_x = this.m_data.P4_x;
-      P4_y = this.m_data.P4_y;
-      P4_z = this.m_data.P4_z;
-      P5_x = this.m_data.P5_x;
-      P5_y = this.m_data.P5_y;
-      P5_z = this.m_data.P5_z;
-      P6_x = this.m_data.P6_x;
-      P6_y = this.m_data.P6_y;
-      P6_z = this.m_data.P6_z;
-      P7_x = this.m_data.P7_x;
-      P7_y = this.m_data.P7_y;
-      P7_z = this.m_data.P7_z;
-      P8_x = this.m_data.P8_x;
-      P8_y = this.m_data.P8_y;
-      P8_z = this.m_data.P8_z;
-      P11_x = this.m_data.P11_x;
-      P11_y = this.m_data.P11_y;
-      P11_z = this.m_data.P11_z;
-      P12_x = this.m_data.P12_x;
-      P12_y = this.m_data.P12_y;
-      P12_z = this.m_data.P12_z;
-      P13_x = this.m_data.P13_x;
-      P13_y = this.m_data.P13_y;
-      P13_z = this.m_data.P13_z;
-      P14_x = this.m_data.P14_x;
-      P14_y = this.m_data.P14_y;
-      P14_z = this.m_data.P14_z;
-      P15_x = this.m_data.P15_x;
-      P15_y = this.m_data.P15_y;
-      P15_z = this.m_data.P15_z;
       I_y = this.m_data.I_y;
       I_z = this.m_data.I_z;
 
       % Extract inputs
-      % No inputs
+      P1_x = in_1(1);
+      P1_y = in_1(2);
+      P1_z = in_1(3);
+      P2_x = in_1(4);
+      P2_y = in_1(5);
+      P2_z = in_1(6);
+      P3_x = in_1(7);
+      P3_y = in_1(8);
+      P3_z = in_1(9);
+      P4_x = in_1(10);
+      P4_y = in_1(11);
+      P4_z = in_1(12);
+      P5_x = in_1(13);
+      P5_y = in_1(14);
+      P5_z = in_1(15);
+      P6_x = in_1(16);
+      P6_y = in_1(17);
+      P6_z = in_1(18);
+      P7_x = in_1(19);
+      P7_y = in_1(20);
+      P7_z = in_1(21);
+      P8_x = in_1(22);
+      P8_y = in_1(23);
+      P8_z = in_1(24);
+      P11_x = in_1(31);
+      P11_y = in_1(32);
+      P11_z = in_1(33);
+      P12_x = in_1(34);
+      P12_y = in_1(35);
+      P12_z = in_1(36);
+      P13_x = in_1(37);
+      P13_y = in_1(38);
+      P13_z = in_1(39);
+      P14_x = in_1(40);
+      P14_y = in_1(41);
+      P14_z = in_1(42);
+      P15_x = in_1(43);
+      P15_y = in_1(44);
+      P15_z = in_1(45);
 
       % Evaluate function
       t1 = P7_x - P1_x;
@@ -1319,10 +1216,10 @@ classdef Test_13 < TrussMe.System
       t1233 = t1216 * t1225;
       t1236 = sqrt(t1224);
       t1237 = 0.1e1 / t1236;
-      t1241 = 2 * t1237 * t1222 + 2 * t1237 * t1223;
+      t1241 = 2 * t1222 * t1237 + 2 * t1223 * t1237;
       t1242 = t1241 ^ 2;
       t1243 = t1221 * t1225;
-      t1246 = 4 * t1233 * t1232 + 4 * t1243 * t1232 + t1242;
+      t1246 = 4 * t1232 * t1233 + 4 * t1232 * t1243 + t1242;
       t1247 = 0.1e1 / t1246;
       t1249 = t1231 * t934 * t1247;
       t1250 = I_y * t1233;
@@ -1509,10 +1406,10 @@ classdef Test_13 < TrussMe.System
       t1387 = t1361 * t1373;
       t1390 = sqrt(t1372);
       t1391 = 0.1e1 / t1390;
-      t1395 = 2 * t1391 * t1370 + 2 * t1391 * t1371;
+      t1395 = 2 * t1370 * t1391 + 2 * t1371 * t1391;
       t1396 = t1395 ^ 2;
       t1397 = t1369 * t1373;
-      t1400 = 4 * t1387 * t1386 + 4 * t1397 * t1386 + t1396;
+      t1400 = 4 * t1386 * t1387 + 4 * t1386 * t1397 + t1396;
       t1401 = 0.1e1 / t1400;
       t1406 = t1385 / t1355 / t1374 / t1354 * t1401;
       t1407 = I_y * t1387;
@@ -1659,10 +1556,10 @@ classdef Test_13 < TrussMe.System
       t1569 = t1543 * t1559;
       t1571 = sqrt(t1558);
       t1572 = 0.1e1 / t1571;
-      t1575 = t1572 * t1556 + t1572 * t1557;
+      t1575 = t1556 * t1572 + t1557 * t1572;
       t1576 = t1575 ^ 2;
       t1577 = t1547 * t1559;
-      t1580 = 0.1e1 / (t1569 * t1568 + t1577 * t1568 + t1576);
+      t1580 = 0.1e1 / (t1568 * t1569 + t1568 * t1577 + t1576);
       t1585 = t1545 / t1549 / t1560 / t1548 * t1580;
       t1588 = 0.180e11 * I_y * t1569 * t1585;
       out_49_49 = t1554 + t1566 + t1588 + t840 + t852 + t874;
@@ -1777,10 +1674,10 @@ classdef Test_13 < TrussMe.System
       t1665 = t1639 * t1655;
       t1667 = sqrt(t1654);
       t1668 = 0.1e1 / t1667;
-      t1671 = t1668 * t1652 + t1668 * t1653;
+      t1671 = t1652 * t1668 + t1653 * t1668;
       t1672 = t1671 ^ 2;
       t1673 = t1643 * t1655;
-      t1675 = t1665 * t1664 + t1673 * t1664 + t1672;
+      t1675 = t1664 * t1665 + t1664 * t1673 + t1672;
       t1676 = 0.1e1 / t1675;
       t1681 = t1641 / t1645 / t1656 / t1644 * t1676;
       t1682 = I_y * t1665;
@@ -1809,10 +1706,10 @@ classdef Test_13 < TrussMe.System
       t1712 = t1686 * t1702;
       t1714 = sqrt(t1701);
       t1715 = 0.1e1 / t1714;
-      t1718 = t1715 * t1699 + t1715 * t1700;
+      t1718 = t1699 * t1715 + t1700 * t1715;
       t1719 = t1718 ^ 2;
       t1720 = t1690 * t1702;
-      t1722 = t1712 * t1711 + t1720 * t1711 + t1719;
+      t1722 = t1711 * t1712 + t1711 * t1720 + t1719;
       t1723 = 0.1e1 / t1722;
       t1728 = t1688 / t1692 / t1703 / t1691 * t1723;
       t1729 = I_y * t1712;
@@ -1889,15 +1786,15 @@ classdef Test_13 < TrussMe.System
       t1837 = -t1746 + t1753;
       t1839 = t1828 * t1832;
       t1840 = -t1768 + t1772 - t1777;
-      out_61_55 = t1834 * t1833 + t1837 * t1836 + t1840 * t1839;
+      out_61_55 = t1833 * t1834 + t1836 * t1837 + t1839 * t1840;
       t1842 = P14_z - P13_z;
       t1844 = P14_x - P13_x;
-      t1847 = t1832 * (-t1842 * t1824 + t1844 * t1828);
+      t1847 = t1832 * (-t1824 * t1842 + t1828 * t1844);
       t1849 = P14_y - P13_y;
-      t1853 = t1832 * (t1849 * t1824 - t1844 * t1826);
+      t1853 = t1832 * (t1824 * t1849 - t1826 * t1844);
       t1855 = -t1826 * t1853 + t1828 * t1847;
       t1856 = t1855 ^ 2;
-      t1860 = t1832 * (t1842 * t1826 - t1849 * t1828);
+      t1860 = t1832 * (t1826 * t1842 - t1828 * t1849);
       t1863 = t1824 * t1853 - t1828 * t1860;
       t1864 = t1863 ^ 2;
       t1867 = -t1824 * t1847 + t1826 * t1860;
@@ -1908,11 +1805,11 @@ classdef Test_13 < TrussMe.System
       t1874 = t1863 * t1871;
       t1876 = t1867 * t1871;
       out_62_55 = t1834 * t1872 + t1837 * t1874 + t1840 * t1876;
-      t1880 = t1876 * t1836 - t1874 * t1839;
+      t1880 = t1836 * t1876 - t1839 * t1874;
       t1881 = t1880 ^ 2;
-      t1884 = -t1876 * t1833 + t1872 * t1839;
+      t1884 = -t1833 * t1876 + t1839 * t1872;
       t1885 = t1884 ^ 2;
-      t1888 = t1874 * t1833 - t1872 * t1836;
+      t1888 = t1833 * t1874 - t1836 * t1872;
       t1889 = t1888 ^ 2;
       t1891 = sqrt(t1881 + t1885 + t1889);
       t1892 = 0.1e1 / t1891;
@@ -1973,9 +1870,9 @@ classdef Test_13 < TrussMe.System
       out_60_56 = t1961 + t1964;
       t1966 = -t1927 - t1931;
       t1968 = -t1944 + t1951;
-      out_61_56 = t1837 * t1833 + t1966 * t1836 + t1968 * t1839;
-      out_62_56 = t1837 * t1872 + t1966 * t1874 + t1968 * t1876;
-      out_63_56 = t1837 * t1893 + t1966 * t1895 + t1968 * t1897;
+      out_61_56 = t1833 * t1837 + t1836 * t1966 + t1839 * t1968;
+      out_62_56 = t1837 * t1872 + t1874 * t1966 + t1876 * t1968;
+      out_63_56 = t1837 * t1893 + t1895 * t1966 + t1897 * t1968;
       t1977 = t1948 * t1929;
       t1981 = t1749 * t1929;
       out_64_56 = -0.12600e13 * t1977 * t1902 * t1833 + 0.12600e13 * t1981 * t1902 * t1839;
@@ -2012,9 +1909,9 @@ classdef Test_13 < TrussMe.System
       out_59_57 = -t2025 - t2027;
       out_60_57 = -out_58_55;
       t2030 = -t2007 - t2010 - t2013;
-      out_61_57 = t1840 * t1833 + t1968 * t1836 + t2030 * t1839;
-      out_62_57 = t1840 * t1872 + t1968 * t1874 + t2030 * t1876;
-      out_63_57 = t1840 * t1893 + t1968 * t1895 + t2030 * t1897;
+      out_61_57 = t1833 * t1840 + t1836 * t1968 + t1839 * t2030;
+      out_62_57 = t1840 * t1872 + t1874 * t1968 + t1876 * t2030;
+      out_63_57 = t1840 * t1893 + t1895 * t1968 + t1897 * t2030;
       t2038 = t2020 + t2023;
       t2041 = t1902 * I_z * t1685;
       t2044 = -t1899;
@@ -2718,7 +2615,7 @@ classdef Test_13 < TrussMe.System
       out_84_84 = 0.2165413534e12 * t132 * t1088 + 0.5760e12 * I_y * t893 * t3068 + 0.23040e13 * I_z * t927 * t3072 + 0.2165413534e12 * t132 * t1320 + 0.5760e12 * I_y * t1216 * t3078 + 0.23040e13 * I_z * t1243 * t3082 + 0.2165413534e12 * t132 * t1478 + 0.5760e12 * I_y * t1361 * t3088 + 0.23040e13 * I_z * t1397 * t3092;
 
       % Store outputs
-      out_K = zeros(84, 84);
+      out_K = sparse(84, 84);
       out_K(1, 1) = out_1_1;
       out_K(2, 1) = out_2_1;
       out_K(3, 1) = out_3_1;
@@ -3816,7 +3713,7 @@ classdef Test_13 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_K_ff = K_ff( this, ~, ~ )
+    function out_K_ff = K_ff( ~, in_1, ~ )
       % Evaluate the stiffness matrix K_ff.
 
       % Extract properties
@@ -3834,50 +3731,49 @@ classdef Test_13 < TrussMe.System
       A_Rocker_2 = this.m_data.A_Rocker_2;
       A_Rocker_3 = this.m_data.A_Rocker_3;
       A_Dummy_SA = this.m_data.A_Dummy_SA;
-      P1_x = this.m_data.P1_x;
-      P1_y = this.m_data.P1_y;
-      P1_z = this.m_data.P1_z;
-      P2_x = this.m_data.P2_x;
-      P2_y = this.m_data.P2_y;
-      P2_z = this.m_data.P2_z;
-      P3_x = this.m_data.P3_x;
-      P3_y = this.m_data.P3_y;
-      P3_z = this.m_data.P3_z;
-      P4_x = this.m_data.P4_x;
-      P4_y = this.m_data.P4_y;
-      P4_z = this.m_data.P4_z;
-      P5_x = this.m_data.P5_x;
-      P5_y = this.m_data.P5_y;
-      P5_z = this.m_data.P5_z;
-      P6_x = this.m_data.P6_x;
-      P6_y = this.m_data.P6_y;
-      P6_z = this.m_data.P6_z;
-      P7_x = this.m_data.P7_x;
-      P7_y = this.m_data.P7_y;
-      P7_z = this.m_data.P7_z;
-      P8_x = this.m_data.P8_x;
-      P8_y = this.m_data.P8_y;
-      P8_z = this.m_data.P8_z;
-      P11_x = this.m_data.P11_x;
-      P11_y = this.m_data.P11_y;
-      P11_z = this.m_data.P11_z;
-      P12_x = this.m_data.P12_x;
-      P12_y = this.m_data.P12_y;
-      P12_z = this.m_data.P12_z;
-      P13_x = this.m_data.P13_x;
-      P13_y = this.m_data.P13_y;
-      P13_z = this.m_data.P13_z;
-      P14_x = this.m_data.P14_x;
-      P14_y = this.m_data.P14_y;
-      P14_z = this.m_data.P14_z;
-      P15_x = this.m_data.P15_x;
-      P15_y = this.m_data.P15_y;
-      P15_z = this.m_data.P15_z;
       I_y = this.m_data.I_y;
       I_z = this.m_data.I_z;
 
       % Extract inputs
-      % No inputs
+      P1_x = in_1(1);
+      P1_y = in_1(2);
+      P1_z = in_1(3);
+      P2_x = in_1(4);
+      P2_y = in_1(5);
+      P2_z = in_1(6);
+      P3_x = in_1(7);
+      P3_y = in_1(8);
+      P3_z = in_1(9);
+      P4_x = in_1(10);
+      P4_y = in_1(11);
+      P4_z = in_1(12);
+      P5_x = in_1(13);
+      P5_y = in_1(14);
+      P5_z = in_1(15);
+      P6_x = in_1(16);
+      P6_y = in_1(17);
+      P6_z = in_1(18);
+      P7_x = in_1(19);
+      P7_y = in_1(20);
+      P7_z = in_1(21);
+      P8_x = in_1(22);
+      P8_y = in_1(23);
+      P8_z = in_1(24);
+      P11_x = in_1(31);
+      P11_y = in_1(32);
+      P11_z = in_1(33);
+      P12_x = in_1(34);
+      P12_y = in_1(35);
+      P12_z = in_1(36);
+      P13_x = in_1(37);
+      P13_y = in_1(38);
+      P13_z = in_1(39);
+      P14_x = in_1(40);
+      P14_y = in_1(41);
+      P14_z = in_1(42);
+      P15_x = in_1(43);
+      P15_y = in_1(44);
+      P15_z = in_1(45);
 
       % Evaluate function
       t1 = P7_x - P1_x;
@@ -4239,10 +4135,10 @@ classdef Test_13 < TrussMe.System
       t452 = t426 * t442;
       t454 = sqrt(t441);
       t455 = 0.1e1 / t454;
-      t458 = t439 * t455 + t440 * t455;
+      t458 = t455 * t439 + t455 * t440;
       t459 = t458 ^ 2;
       t460 = t430 * t442;
-      t462 = t451 * t452 + t451 * t460 + t459;
+      t462 = t452 * t451 + t460 * t451 + t459;
       t463 = 0.1e1 / t462;
       t468 = t428 / t432 / t443 / t431 * t463;
       t469 = I_y * t452;
@@ -5666,7 +5562,7 @@ classdef Test_13 < TrussMe.System
       out_52_52 = 0.2165413534e12 * t12 * t858 + 0.5760e12 * I_y * t549 * t2470 + 0.23040e13 * I_z * t583 * t2474 + 0.2165413534e12 * t12 * t1191 + 0.5760e12 * I_y * t1017 * t2480 + 0.23040e13 * I_z * t1044 * t2484 + 0.2165413534e12 * t12 * t1474 + 0.5760e12 * I_y * t1279 * t2490 + 0.23040e13 * I_z * t1315 * t2494;
 
       % Store outputs
-      out_K_ff = zeros(52, 52);
+      out_K_ff = sparse(52, 52);
       out_K_ff(1, 1) = out_1_1;
       out_K_ff(2, 1) = out_2_1;
       out_K_ff(3, 1) = out_3_1;
@@ -6319,7 +6215,7 @@ classdef Test_13 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_K_fs = K_fs( this, ~, ~ )
+    function out_K_fs = K_fs( ~, in_1, ~ )
       % Evaluate the stiffness matrix K_fs.
 
       % Extract properties
@@ -6331,47 +6227,46 @@ classdef Test_13 < TrussMe.System
       A_Rocker_2 = this.m_data.A_Rocker_2;
       A_Rocker_3 = this.m_data.A_Rocker_3;
       A_Dummy_SA = this.m_data.A_Dummy_SA;
-      P1_x = this.m_data.P1_x;
-      P1_y = this.m_data.P1_y;
-      P1_z = this.m_data.P1_z;
-      P2_x = this.m_data.P2_x;
-      P2_y = this.m_data.P2_y;
-      P2_z = this.m_data.P2_z;
-      P3_x = this.m_data.P3_x;
-      P3_y = this.m_data.P3_y;
-      P3_z = this.m_data.P3_z;
-      P4_x = this.m_data.P4_x;
-      P4_y = this.m_data.P4_y;
-      P4_z = this.m_data.P4_z;
-      P5_x = this.m_data.P5_x;
-      P5_y = this.m_data.P5_y;
-      P5_z = this.m_data.P5_z;
-      P6_x = this.m_data.P6_x;
-      P6_y = this.m_data.P6_y;
-      P6_z = this.m_data.P6_z;
-      P7_x = this.m_data.P7_x;
-      P7_y = this.m_data.P7_y;
-      P7_z = this.m_data.P7_z;
-      P8_x = this.m_data.P8_x;
-      P8_y = this.m_data.P8_y;
-      P8_z = this.m_data.P8_z;
-      P12_x = this.m_data.P12_x;
-      P12_y = this.m_data.P12_y;
-      P12_z = this.m_data.P12_z;
-      P13_x = this.m_data.P13_x;
-      P13_y = this.m_data.P13_y;
-      P13_z = this.m_data.P13_z;
-      P14_x = this.m_data.P14_x;
-      P14_y = this.m_data.P14_y;
-      P14_z = this.m_data.P14_z;
-      P15_x = this.m_data.P15_x;
-      P15_y = this.m_data.P15_y;
-      P15_z = this.m_data.P15_z;
       I_y = this.m_data.I_y;
       I_z = this.m_data.I_z;
 
       % Extract inputs
-      % No inputs
+      P1_x = in_1(1);
+      P1_y = in_1(2);
+      P1_z = in_1(3);
+      P2_x = in_1(4);
+      P2_y = in_1(5);
+      P2_z = in_1(6);
+      P3_x = in_1(7);
+      P3_y = in_1(8);
+      P3_z = in_1(9);
+      P4_x = in_1(10);
+      P4_y = in_1(11);
+      P4_z = in_1(12);
+      P5_x = in_1(13);
+      P5_y = in_1(14);
+      P5_z = in_1(15);
+      P6_x = in_1(16);
+      P6_y = in_1(17);
+      P6_z = in_1(18);
+      P7_x = in_1(19);
+      P7_y = in_1(20);
+      P7_z = in_1(21);
+      P8_x = in_1(22);
+      P8_y = in_1(23);
+      P8_z = in_1(24);
+      P12_x = in_1(34);
+      P12_y = in_1(35);
+      P12_z = in_1(36);
+      P13_x = in_1(37);
+      P13_y = in_1(38);
+      P13_z = in_1(39);
+      P14_x = in_1(40);
+      P14_y = in_1(41);
+      P14_z = in_1(42);
+      P15_x = in_1(43);
+      P15_y = in_1(44);
+      P15_z = in_1(45);
 
       % Evaluate function
       t1 = P7_x - P1_x;
@@ -6724,10 +6619,10 @@ classdef Test_13 < TrussMe.System
       t693 = t667 * t683;
       t695 = sqrt(t682);
       t696 = 0.1e1 / t695;
-      t699 = t680 * t696 + t681 * t696;
+      t699 = t696 * t680 + t696 * t681;
       t700 = t699 ^ 2;
       t701 = t671 * t683;
-      t703 = t692 * t693 + t692 * t701 + t700;
+      t703 = t693 * t692 + t701 * t692 + t700;
       t704 = 0.1e1 / t703;
       t709 = t669 / t673 / t684 / t672 * t704;
       t710 = I_y * t693;
@@ -6744,7 +6639,7 @@ classdef Test_13 < TrussMe.System
       t738 = t670 * I_y;
       t739 = t738 * t737;
       t742 = -0.2100e12 * t730 * t716 + 0.25200e13 * t666 * t733 * t687 - 0.25200e13 * t739 * t709;
-      out_34_22 = t665 * t713 + t715 * t727 + t729 * t742;
+      out_34_22 = t713 * t665 + t727 * t715 + t742 * t729;
       t745 = t669 * t675;
       t748 = t700 * t704;
       t749 = t675 * I_y;
@@ -6753,11 +6648,11 @@ classdef Test_13 < TrussMe.System
       t757 = t699 * t704;
       t760 = t670 * t696;
       t764 = -0.2100e12 * t730 * t754 + 0.25200e13 * t760 * t668 * t686 * I_y * t757;
-      out_35_22 = t665 * t727 + t715 * t752 + t729 * t764;
+      out_35_22 = t727 * t665 + t752 * t715 + t764 * t729;
       t768 = t671 * t675;
       t774 = I_y * t701;
       t777 = -0.2100e12 * A_Rocker_2 * t768 - 0.25200e13 * I_z * t667 * t687 - 0.25200e13 * t774 * t709;
-      out_36_22 = t665 * t742 + t715 * t764 + t729 * t777;
+      out_36_22 = t742 * t665 + t764 * t715 + t777 * t729;
       t779 = sqrt(t703);
       t780 = 0.1e1 / t779;
       t782 = t668 * t686 * t780;
@@ -6785,12 +6680,12 @@ classdef Test_13 < TrussMe.System
       out_39_22 = t821 * t665 - 0.12600e13 * t823 * t794 + t826 * t729;
       t828 = P14_z - P13_z;
       t830 = P14_x - P13_x;
-      t833 = t664 * (-t656 * t828 + t660 * t830);
+      t833 = t664 * (-t828 * t656 + t830 * t660);
       t835 = P14_y - P13_y;
-      t839 = t664 * (t656 * t835 - t658 * t830);
+      t839 = t664 * (t835 * t656 - t830 * t658);
       t841 = -t658 * t839 + t660 * t833;
       t842 = t841 ^ 2;
-      t846 = t664 * (t658 * t828 - t660 * t835);
+      t846 = t664 * (t828 * t658 - t835 * t660);
       t849 = t656 * t839 - t660 * t846;
       t850 = t849 ^ 2;
       t853 = -t656 * t833 + t658 * t846;
@@ -6799,12 +6694,12 @@ classdef Test_13 < TrussMe.System
       t857 = 0.1e1 / t856;
       t858 = t853 * t857;
       t860 = t849 * t857;
-      t862 = t715 * t858 - t729 * t860;
+      t862 = t858 * t715 - t860 * t729;
       t863 = t862 ^ 2;
       t865 = t841 * t857;
-      t867 = -t665 * t858 + t729 * t865;
+      t867 = -t858 * t665 + t865 * t729;
       t868 = t867 ^ 2;
-      t871 = t665 * t860 - t715 * t865;
+      t871 = t860 * t665 - t865 * t715;
       t872 = t871 ^ 2;
       t874 = sqrt(t863 + t868 + t872);
       t875 = 0.1e1 / t874;
@@ -6823,10 +6718,10 @@ classdef Test_13 < TrussMe.System
       t889 = t877 * t888;
       t891 = sqrt(t887);
       t892 = 0.1e1 / t891;
-      t895 = t885 * t892 + t886 * t892;
+      t895 = t892 * t885 + t892 * t886;
       t896 = t895 ^ 2;
       t897 = t879 * t888;
-      t899 = t883 * t889 + t883 * t897 + t896;
+      t899 = t889 * t883 + t897 * t883 + t896;
       t900 = sqrt(t899);
       t901 = 0.1e1 / t900;
       t902 = sqrt(t880);
@@ -6988,7 +6883,7 @@ classdef Test_13 < TrussMe.System
       t1345 = I_y * t877 * t1278;
       t1348 = I_z * t897 * t1282;
       t1352 = t1311 * t876 + t1333 * t921 + (t1265 + 0.8400e12 * t1267 + 0.8400e12 * t1270 + t1343 + 0.8400e12 * t1345 + 0.8400e12 * t1348) * t935;
-      out_40_25 = t1313 * t656 * t664 + t1335 * t658 * t664 + t1352 * t660 * t664;
+      out_40_25 = t656 * t664 * t1313 + t658 * t664 * t1335 + t660 * t664 * t1352;
       t1356 = t928 * t715;
       t1359 = -t1078;
       out_41_25 = t1083 * t665 - 0.12600e13 * t1070 * t1356 + t1359 * t729;
@@ -7011,7 +6906,7 @@ classdef Test_13 < TrussMe.System
       out_37_26 = t1221 * t865 + t1232 * t860 + t1243 * t858;
       out_38_26 = t1232 * t865 + t1252 * t860 + t1260 * t858;
       out_39_26 = t1243 * t865 + t1260 * t860 + t1272 * t858;
-      out_40_26 = t1313 * t841 * t857 + t1335 * t849 * t857 + t1352 * t853 * t857;
+      out_40_26 = t841 * t857 * t1313 + t849 * t857 * t1335 + t853 * t857 * t1352;
       t1427 = t928 * t860;
       out_41_26 = t1083 * t865 - 0.12600e13 * t1070 * t1427 + t1359 * t858;
       out_42_26 = 0.12600e13 * t1064 * t951 * t865 - 0.12600e13 * t1080 * t951 * t858;
@@ -7040,10 +6935,10 @@ classdef Test_13 < TrussMe.System
       t1477 = t1451 * t1467;
       t1479 = sqrt(t1466);
       t1480 = 0.1e1 / t1479;
-      t1483 = t1464 * t1480 + t1465 * t1480;
+      t1483 = t1480 * t1464 + t1480 * t1465;
       t1484 = t1483 ^ 2;
       t1485 = t1455 * t1467;
-      t1488 = 0.1e1 / (t1476 * t1477 + t1476 * t1485 + t1484);
+      t1488 = 0.1e1 / (t1477 * t1476 + t1485 * t1476 + t1484);
       t1493 = t1453 / t1457 / t1468 / t1456 * t1488;
       out_41_27 = -0.2100e12 * A_Dummy_SA * t1451 * t1459 - 0.25200e13 * I_z * t1455 * t1471 - 0.25200e13 * I_y * t1477 * t1493;
       t1497 = t1450 * t1459;
@@ -7058,7 +6953,7 @@ classdef Test_13 < TrussMe.System
       out_43_29 = -0.2100e12 * A_Dummy_SA * t1455 * t1459 - 0.25200e13 * I_z * t1451 * t1471 - 0.25200e13 * I_y * t1485 * t1493;
 
       % Store outputs
-      out_K_fs = zeros(52, 32);
+      out_K_fs = sparse(52, 32);
       out_K_fs(1, 1) = out_1_1;
       out_K_fs(2, 1) = out_2_1;
       out_K_fs(3, 1) = out_3_1;
@@ -7246,7 +7141,7 @@ classdef Test_13 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_K_sf = K_sf( this, ~, ~ )
+    function out_K_sf = K_sf( ~, in_1, ~ )
       % Evaluate the stiffness matrix K_sf.
 
       % Extract properties
@@ -7258,47 +7153,46 @@ classdef Test_13 < TrussMe.System
       A_Rocker_2 = this.m_data.A_Rocker_2;
       A_Rocker_3 = this.m_data.A_Rocker_3;
       A_Dummy_SA = this.m_data.A_Dummy_SA;
-      P1_x = this.m_data.P1_x;
-      P1_y = this.m_data.P1_y;
-      P1_z = this.m_data.P1_z;
-      P2_x = this.m_data.P2_x;
-      P2_y = this.m_data.P2_y;
-      P2_z = this.m_data.P2_z;
-      P3_x = this.m_data.P3_x;
-      P3_y = this.m_data.P3_y;
-      P3_z = this.m_data.P3_z;
-      P4_x = this.m_data.P4_x;
-      P4_y = this.m_data.P4_y;
-      P4_z = this.m_data.P4_z;
-      P5_x = this.m_data.P5_x;
-      P5_y = this.m_data.P5_y;
-      P5_z = this.m_data.P5_z;
-      P6_x = this.m_data.P6_x;
-      P6_y = this.m_data.P6_y;
-      P6_z = this.m_data.P6_z;
-      P7_x = this.m_data.P7_x;
-      P7_y = this.m_data.P7_y;
-      P7_z = this.m_data.P7_z;
-      P8_x = this.m_data.P8_x;
-      P8_y = this.m_data.P8_y;
-      P8_z = this.m_data.P8_z;
-      P12_x = this.m_data.P12_x;
-      P12_y = this.m_data.P12_y;
-      P12_z = this.m_data.P12_z;
-      P13_x = this.m_data.P13_x;
-      P13_y = this.m_data.P13_y;
-      P13_z = this.m_data.P13_z;
-      P14_x = this.m_data.P14_x;
-      P14_y = this.m_data.P14_y;
-      P14_z = this.m_data.P14_z;
-      P15_x = this.m_data.P15_x;
-      P15_y = this.m_data.P15_y;
-      P15_z = this.m_data.P15_z;
       I_y = this.m_data.I_y;
       I_z = this.m_data.I_z;
 
       % Extract inputs
-      % No inputs
+      P1_x = in_1(1);
+      P1_y = in_1(2);
+      P1_z = in_1(3);
+      P2_x = in_1(4);
+      P2_y = in_1(5);
+      P2_z = in_1(6);
+      P3_x = in_1(7);
+      P3_y = in_1(8);
+      P3_z = in_1(9);
+      P4_x = in_1(10);
+      P4_y = in_1(11);
+      P4_z = in_1(12);
+      P5_x = in_1(13);
+      P5_y = in_1(14);
+      P5_z = in_1(15);
+      P6_x = in_1(16);
+      P6_y = in_1(17);
+      P6_z = in_1(18);
+      P7_x = in_1(19);
+      P7_y = in_1(20);
+      P7_z = in_1(21);
+      P8_x = in_1(22);
+      P8_y = in_1(23);
+      P8_z = in_1(24);
+      P12_x = in_1(34);
+      P12_y = in_1(35);
+      P12_z = in_1(36);
+      P13_x = in_1(37);
+      P13_y = in_1(38);
+      P13_z = in_1(39);
+      P14_x = in_1(40);
+      P14_y = in_1(41);
+      P14_z = in_1(42);
+      P15_x = in_1(43);
+      P15_y = in_1(44);
+      P15_z = in_1(45);
 
       % Evaluate function
       t1 = P7_x - P1_x;
@@ -7582,10 +7476,10 @@ classdef Test_13 < TrussMe.System
       t552 = t526 * t542;
       t554 = sqrt(t541);
       t555 = 0.1e1 / t554;
-      t558 = t555 * t539 + t555 * t540;
+      t558 = t539 * t555 + t540 * t555;
       t559 = t558 ^ 2;
       t560 = t530 * t542;
-      t562 = t552 * t551 + t560 * t551 + t559;
+      t562 = t551 * t552 + t551 * t560 + t559;
       t563 = 0.1e1 / t562;
       t568 = t528 / t532 / t543 / t531 * t563;
       t569 = I_y * t552;
@@ -7651,10 +7545,10 @@ classdef Test_13 < TrussMe.System
       t693 = t667 * t683;
       t695 = sqrt(t682);
       t696 = 0.1e1 / t695;
-      t699 = t696 * t680 + t696 * t681;
+      t699 = t680 * t696 + t681 * t696;
       t700 = t699 ^ 2;
       t701 = t671 * t683;
-      t703 = t693 * t692 + t701 * t692 + t700;
+      t703 = t692 * t693 + t692 * t701 + t700;
       t704 = 0.1e1 / t703;
       t709 = t669 / t673 / t684 / t672 * t704;
       t710 = I_y * t693;
@@ -7671,15 +7565,15 @@ classdef Test_13 < TrussMe.System
       t738 = t670 * I_y;
       t739 = t738 * t737;
       t742 = -0.2100e12 * t730 * t716 + 0.25200e13 * t666 * t733 * t687 - 0.25200e13 * t739 * t709;
-      out_22_34 = t713 * t665 + t727 * t715 + t742 * t729;
+      out_22_34 = t665 * t713 + t715 * t727 + t729 * t742;
       t744 = P14_z - P13_z;
       t746 = P14_x - P13_x;
-      t749 = t664 * (-t744 * t656 + t746 * t660);
+      t749 = t664 * (-t656 * t744 + t660 * t746);
       t751 = P14_y - P13_y;
-      t755 = t664 * (t751 * t656 - t746 * t658);
+      t755 = t664 * (t656 * t751 - t658 * t746);
       t757 = -t658 * t755 + t660 * t749;
       t758 = t757 ^ 2;
-      t762 = t664 * (t744 * t658 - t751 * t660);
+      t762 = t664 * (t658 * t744 - t660 * t751);
       t765 = t656 * t755 - t660 * t762;
       t766 = t765 ^ 2;
       t769 = -t656 * t749 + t658 * t762;
@@ -7690,11 +7584,11 @@ classdef Test_13 < TrussMe.System
       t776 = t765 * t773;
       t778 = t769 * t773;
       out_23_34 = t713 * t774 + t727 * t776 + t742 * t778;
-      t782 = t778 * t715 - t776 * t729;
+      t782 = t715 * t778 - t729 * t776;
       t783 = t782 ^ 2;
-      t786 = -t778 * t665 + t774 * t729;
+      t786 = -t665 * t778 + t729 * t774;
       t787 = t786 ^ 2;
-      t790 = t776 * t665 - t774 * t715;
+      t790 = t665 * t776 - t715 * t774;
       t791 = t790 ^ 2;
       t793 = sqrt(t783 + t787 + t791);
       t794 = 0.1e1 / t793;
@@ -7728,9 +7622,9 @@ classdef Test_13 < TrussMe.System
       t847 = t699 * t704;
       t850 = t670 * t696;
       t854 = -0.2100e12 * t730 * t844 + 0.25200e13 * t850 * t668 * t686 * I_y * t847;
-      out_22_35 = t727 * t665 + t842 * t715 + t854 * t729;
-      out_23_35 = t727 * t774 + t842 * t776 + t854 * t778;
-      out_24_35 = t727 * t795 + t842 * t797 + t854 * t799;
+      out_22_35 = t665 * t727 + t715 * t842 + t729 * t854;
+      out_23_35 = t727 * t774 + t776 * t842 + t778 * t854;
+      out_24_35 = t727 * t795 + t797 * t842 + t799 * t854;
       t863 = t850 * t839;
       t867 = t722 * t839;
       out_25_35 = -0.12600e13 * t863 * t817 * t665 + 0.12600e13 * t867 * t817 * t729;
@@ -7738,9 +7632,9 @@ classdef Test_13 < TrussMe.System
       t878 = t671 * t675;
       t884 = I_y * t701;
       t887 = -0.2100e12 * A_Rocker_2 * t878 - 0.25200e13 * I_z * t667 * t687 - 0.25200e13 * t884 * t709;
-      out_22_36 = t742 * t665 + t854 * t715 + t887 * t729;
-      out_23_36 = t742 * t774 + t854 * t776 + t887 * t778;
-      out_24_36 = t742 * t795 + t854 * t797 + t887 * t799;
+      out_22_36 = t665 * t742 + t715 * t854 + t729 * t887;
+      out_23_36 = t742 * t774 + t776 * t854 + t778 * t887;
+      out_24_36 = t742 * t795 + t797 * t854 + t799 * t887;
       t896 = 0.12600e13 * t884 * t804;
       t899 = 0.12600e13 * t824 * t667 * t687;
       t900 = t896 + t899;
@@ -7770,8 +7664,8 @@ classdef Test_13 < TrussMe.System
       t956 = t666 * t738 * t931;
       t959 = t733 * t737 * t935;
       t961 = -t954 - 0.4200e12 * t956 + 0.4200e12 * t959;
-      out_25_37 = t939 * t665 + t950 * t715 + t961 * t729;
-      out_26_37 = t939 * t774 + t950 * t776 + t961 * t778;
+      out_25_37 = t665 * t939 + t715 * t950 + t729 * t961;
+      out_26_37 = t774 * t939 + t776 * t950 + t778 * t961;
       out_22_38 = -0.12600e13 * t818 * t815 * t665 + 0.12600e13 * t903 * t815 * t729;
       out_23_38 = -0.12600e13 * t818 * t815 * t774 + 0.12600e13 * t903 * t815 * t778;
       out_24_38 = -0.12600e13 * t818 * t815 * t795 + 0.12600e13 * t903 * t815 * t799;
@@ -7781,8 +7675,8 @@ classdef Test_13 < TrussMe.System
       t994 = 0.8076923077e11 * t952 * t844;
       t997 = t850 * t844 * I_z * t847;
       t999 = -t994 - 0.4200e12 * t997;
-      out_25_38 = t950 * t665 + t991 * t715 + t999 * t729;
-      out_26_38 = t950 * t774 + t991 * t776 + t999 * t778;
+      out_25_38 = t665 * t950 + t715 * t991 + t729 * t999;
+      out_26_38 = t774 * t950 + t776 * t991 + t778 * t999;
       t1004 = -t827;
       out_22_39 = t1004 * t665 - 0.12600e13 * t867 * t913 + t813 * t729;
       out_23_39 = t1004 * t774 - 0.12600e13 * t867 * t919 + t813 * t778;
@@ -7791,8 +7685,8 @@ classdef Test_13 < TrussMe.System
       t1022 = I_y * t667 * t931;
       t1025 = I_z * t701 * t935;
       t1027 = -t1020 + 0.4200e12 * t1022 + 0.4200e12 * t1025;
-      out_25_39 = t1027 * t729 + t961 * t665 + t999 * t715;
-      out_26_39 = t1027 * t778 + t961 * t774 + t999 * t776;
+      out_25_39 = t1027 * t729 + t665 * t961 + t715 * t999;
+      out_26_39 = t1027 * t778 + t774 * t961 + t776 * t999;
       t1032 = t746 ^ 2;
       t1033 = t751 ^ 2;
       t1034 = t744 ^ 2;
@@ -7807,10 +7701,10 @@ classdef Test_13 < TrussMe.System
       t1044 = t1032 * t1043;
       t1046 = sqrt(t1042);
       t1047 = 0.1e1 / t1046;
-      t1050 = t1047 * t1040 + t1047 * t1041;
+      t1050 = t1040 * t1047 + t1041 * t1047;
       t1051 = t1050 ^ 2;
       t1052 = t1034 * t1043;
-      t1054 = t1044 * t1038 + t1052 * t1038 + t1051;
+      t1054 = t1038 * t1044 + t1038 * t1052 + t1051;
       t1055 = sqrt(t1054);
       t1056 = 0.1e1 / t1055;
       t1057 = sqrt(t1035);
@@ -7926,10 +7820,10 @@ classdef Test_13 < TrussMe.System
       t1365 = t1339 * t1355;
       t1367 = sqrt(t1354);
       t1368 = 0.1e1 / t1367;
-      t1371 = t1368 * t1352 + t1368 * t1353;
+      t1371 = t1352 * t1368 + t1353 * t1368;
       t1372 = t1371 ^ 2;
       t1373 = t1343 * t1355;
-      t1376 = 0.1e1 / (t1365 * t1364 + t1373 * t1364 + t1372);
+      t1376 = 0.1e1 / (t1364 * t1365 + t1364 * t1373 + t1372);
       t1381 = t1341 / t1345 / t1356 / t1344 * t1376;
       out_27_41 = -0.2100e12 * A_Dummy_SA * t1339 * t1347 - 0.25200e13 * I_z * t1343 * t1359 - 0.25200e13 * I_y * t1365 * t1381;
       t1385 = t1338 * t1347;
@@ -7989,7 +7883,7 @@ classdef Test_13 < TrussMe.System
       out_26_46 = t1525 * t774 + t1553 * t776 + t1575 * t778;
 
       % Store outputs
-      out_K_sf = zeros(32, 52);
+      out_K_sf = sparse(32, 52);
       out_K_sf(1, 1) = out_1_1;
       out_K_sf(2, 1) = out_2_1;
       out_K_sf(3, 1) = out_3_1;
@@ -8177,7 +8071,7 @@ classdef Test_13 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_K_ss = K_ss( this, ~, ~ )
+    function out_K_ss = K_ss( ~, in_1, ~ )
       % Evaluate the stiffness matrix K_ss.
 
       % Extract properties
@@ -8189,47 +8083,46 @@ classdef Test_13 < TrussMe.System
       A_Rocker_2 = this.m_data.A_Rocker_2;
       A_Rocker_3 = this.m_data.A_Rocker_3;
       A_Dummy_SA = this.m_data.A_Dummy_SA;
-      P1_x = this.m_data.P1_x;
-      P1_y = this.m_data.P1_y;
-      P1_z = this.m_data.P1_z;
-      P2_x = this.m_data.P2_x;
-      P2_y = this.m_data.P2_y;
-      P2_z = this.m_data.P2_z;
-      P3_x = this.m_data.P3_x;
-      P3_y = this.m_data.P3_y;
-      P3_z = this.m_data.P3_z;
-      P4_x = this.m_data.P4_x;
-      P4_y = this.m_data.P4_y;
-      P4_z = this.m_data.P4_z;
-      P5_x = this.m_data.P5_x;
-      P5_y = this.m_data.P5_y;
-      P5_z = this.m_data.P5_z;
-      P6_x = this.m_data.P6_x;
-      P6_y = this.m_data.P6_y;
-      P6_z = this.m_data.P6_z;
-      P7_x = this.m_data.P7_x;
-      P7_y = this.m_data.P7_y;
-      P7_z = this.m_data.P7_z;
-      P8_x = this.m_data.P8_x;
-      P8_y = this.m_data.P8_y;
-      P8_z = this.m_data.P8_z;
-      P12_x = this.m_data.P12_x;
-      P12_y = this.m_data.P12_y;
-      P12_z = this.m_data.P12_z;
-      P13_x = this.m_data.P13_x;
-      P13_y = this.m_data.P13_y;
-      P13_z = this.m_data.P13_z;
-      P14_x = this.m_data.P14_x;
-      P14_y = this.m_data.P14_y;
-      P14_z = this.m_data.P14_z;
-      P15_x = this.m_data.P15_x;
-      P15_y = this.m_data.P15_y;
-      P15_z = this.m_data.P15_z;
       I_y = this.m_data.I_y;
       I_z = this.m_data.I_z;
 
       % Extract inputs
-      % No inputs
+      P1_x = in_1(1);
+      P1_y = in_1(2);
+      P1_z = in_1(3);
+      P2_x = in_1(4);
+      P2_y = in_1(5);
+      P2_z = in_1(6);
+      P3_x = in_1(7);
+      P3_y = in_1(8);
+      P3_z = in_1(9);
+      P4_x = in_1(10);
+      P4_y = in_1(11);
+      P4_z = in_1(12);
+      P5_x = in_1(13);
+      P5_y = in_1(14);
+      P5_z = in_1(15);
+      P6_x = in_1(16);
+      P6_y = in_1(17);
+      P6_z = in_1(18);
+      P7_x = in_1(19);
+      P7_y = in_1(20);
+      P7_z = in_1(21);
+      P8_x = in_1(22);
+      P8_y = in_1(23);
+      P8_z = in_1(24);
+      P12_x = in_1(34);
+      P12_y = in_1(35);
+      P12_z = in_1(36);
+      P13_x = in_1(37);
+      P13_y = in_1(38);
+      P13_z = in_1(39);
+      P14_x = in_1(40);
+      P14_y = in_1(41);
+      P14_z = in_1(42);
+      P15_x = in_1(43);
+      P15_y = in_1(44);
+      P15_z = in_1(45);
 
       % Evaluate function
       t1 = P7_x - P1_x;
@@ -8686,7 +8579,7 @@ classdef Test_13 < TrussMe.System
       out_29_29 = 0.2100e12 * A_Dummy_SA * t1190 * t1194 + 0.25200e13 * I_z * t1186 * t1206 + 0.25200e13 * I_y * t1220 * t1228;
 
       % Store outputs
-      out_K_ss = zeros(32, 32);
+      out_K_ss = sparse(32, 32);
       out_K_ss(1, 1) = out_1_1;
       out_K_ss(2, 1) = out_2_1;
       out_K_ss(3, 1) = out_3_1;
@@ -8770,7 +8663,7 @@ classdef Test_13 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_d = d( this, ~, ~ )
+    function out_d = d( ~, ~, ~ )
       % Evaluate the deformation vector d.  
 
       % Check if the system has been solved
@@ -8788,12 +8681,12 @@ classdef Test_13 < TrussMe.System
       % No body
 
       % Store outputs
-      out_d = zeros(84, 1);
+      out_d = sparse(84, 1);
     end % d
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_d_f = d_f( this, ~, ~ )
+    function out_d_f = d_f( ~, ~, ~ )
       % Evaluate the deformation vector d_f.  
 
       % Check if the system has been solved
@@ -8816,7 +8709,7 @@ classdef Test_13 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_d_s = d_s( this, ~, ~ )
+    function out_d_s = d_s( ~, ~, ~ )
       % Evaluate the deformation vector d_s.
 
       % Extract properties
@@ -8829,12 +8722,12 @@ classdef Test_13 < TrussMe.System
       % No body
 
       % Store outputs
-      out_d_s = zeros(32, 1);
+      out_d_s = sparse(32, 1);
     end % d_s
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_f = f( this, ~, ~ )
+    function out_f = f( ~, in_1, ~ )
       % Evaluate the force vector f.  
 
       % Check if the system has been solved
@@ -8843,15 +8736,15 @@ classdef Test_13 < TrussMe.System
       end
 
       % Extract properties
-      F_x = this.m_data.F_x;
-      F_y = this.m_data.F_y;
-      F_z = this.m_data.F_z;
-      M_x = this.m_data.M_x;
-      M_y = this.m_data.M_y;
-      M_z = this.m_data.M_z;
+      % No properties
 
       % Extract inputs
-      % No inputs
+      F_x = in_1(46);
+      F_y = in_1(47);
+      F_z = in_1(48);
+      M_x = in_1(49);
+      M_y = in_1(50);
+      M_z = in_1(51);
 
       % Evaluate function
       out_79 = F_x;
@@ -8862,7 +8755,7 @@ classdef Test_13 < TrussMe.System
       out_84 = M_z;
 
       % Store outputs
-      out_f = zeros(84, 1);
+      out_f = sparse(84, 1);
       out_f(79) = out_79;
       out_f(80) = out_80;
       out_f(81) = out_81;
@@ -8873,19 +8766,19 @@ classdef Test_13 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_f_f = f_f( this, ~, ~ )
+    function out_f_f = f_f( ~, in_1, ~ )
       % Evaluate the force vector f_f.
 
       % Extract properties
-      F_x = this.m_data.F_x;
-      F_y = this.m_data.F_y;
-      F_z = this.m_data.F_z;
-      M_x = this.m_data.M_x;
-      M_y = this.m_data.M_y;
-      M_z = this.m_data.M_z;
+      % No properties
 
       % Extract inputs
-      % No inputs
+      F_x = in_1(46);
+      F_y = in_1(47);
+      F_z = in_1(48);
+      M_x = in_1(49);
+      M_y = in_1(50);
+      M_z = in_1(51);
 
       % Evaluate function
       out_47 = F_x;
@@ -8896,7 +8789,7 @@ classdef Test_13 < TrussMe.System
       out_52 = M_z;
 
       % Store outputs
-      out_f_f = zeros(52, 1);
+      out_f_f = sparse(52, 1);
       out_f_f(47) = out_47;
       out_f_f(48) = out_48;
       out_f_f(49) = out_49;
@@ -8907,7 +8800,7 @@ classdef Test_13 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_f_s = f_s( this, ~, ~ )
+    function out_f_s = f_s( ~, ~, ~ )
       % Evaluate the force vector f_s.  
 
       % Check if the system has been solved
@@ -8930,7 +8823,7 @@ classdef Test_13 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_f_r = f_r( this, ~, ~ )
+    function out_f_r = f_r( ~, ~, ~ )
       % Evaluate the force vector f_r.
 
       % Extract properties
@@ -8943,12 +8836,12 @@ classdef Test_13 < TrussMe.System
       % No body
 
       % Store outputs
-      out_f_r = zeros(32, 1);
+      out_f_r = sparse(32, 1);
     end % f_r
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_perm = perm( this )
+    function out_perm = perm( ~ )
       % Evaluate the permutation vector.
 
       % Extract properties
@@ -9050,7 +8943,7 @@ classdef Test_13 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_unperm = unperm( this )
+    function out_unperm = unperm( ~ )
       % Evaluate the unpermutation vector.
 
       % Extract properties
@@ -9152,8 +9045,13 @@ classdef Test_13 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_v = v( this, ~ )
-      % Evaluate the veiling vector.
+    function out_v = v( ~, ~ )
+      % Evaluate the veiling vector.  
+
+      % Check if the system has been solved
+      if ~this.m_solved
+        error('system has not been solved.');
+      end
 
       % Extract properties
       % No properties

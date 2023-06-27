@@ -41,7 +41,7 @@ export MakeMaterial := proc({
   return table([
     "type"            = MATERIAL,
     "name"            = name,
-    "id"              = TrussMe_FEM:-GenerateId(),
+    "id"              = TrussMe:-FEM:-GenerateId(),
     "elastic_modulus" = elastic_modulus,
     "shear_modulus"   = shear_modulus,
     "poisson_ratio"   = poisson_ratio,
@@ -57,7 +57,7 @@ export MakeCarbonSteel := proc( $ )::MATERIAL;
     "modulus E = 210.0e+09 (Pa), Poisson's ratio nu = 0.3 (-), shear modulus"
     "E/(2*(1+nu), density rho = 7850.0 (kg/m^3).";
 
-  return TrussMe_FEM:-MakeMaterial(
+  return TrussMe:-FEM:-MakeMaterial(
     parse("name")            = "CarbonSteel",
     parse("elastic_modulus") = 210.0e+09,
     parse("poisson_ratio")   = 0.3,
@@ -69,17 +69,17 @@ end proc: # CarbonSteel
 
 export MakeInoxSteel := proc( $ )::MATERIAL;
 
-    description "Get default steel material with 'InoxSteel' name, elastic "
-      "modulus E = 200.0e+09 (Pa), Poisson's ratio nu = 0.3 (-), shear modulus"
-      "E/(2*(1+nu), density rho = 8000.0 (kg/m^3).";
+  description "Get default steel material with 'InoxSteel' name, elastic "
+    "modulus E = 200.0e+09 (Pa), Poisson's ratio nu = 0.3 (-), shear modulus"
+    "E/(2*(1+nu), density rho = 8000.0 (kg/m^3).";
 
-    return TrussMe_FEM:-MakeMaterial(
-      parse("name")            = "InoxSteel",
-      parse("elastic_modulus") = 200.0e+09,
-      parse("poisson_ratio")   = 0.3,
-      parse("density")         = 8000.0
-    );
-  end proc: # InoxSteel
+  return TrussMe:-FEM:-MakeMaterial(
+    parse("name")            = "InoxSteel",
+    parse("elastic_modulus") = 200.0e+09,
+    parse("poisson_ratio")   = 0.3,
+    parse("density")         = 8000.0
+  );
+end proc: # InoxSteel
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -89,7 +89,7 @@ export MakeTitanium := proc( $ )::MATERIAL;
     "modulus E = 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
     "E/(2*(1+nu), density rho = 4500.0 (kg/m^3).";
 
-  return TrussMe_FEM:-MakeMaterial(
+  return TrussMe:-FEM:-MakeMaterial(
     parse("name")            = "Titanium",
     parse("elastic_modulus") = 110.0e+09,
     parse("poisson_ratio")   = 0.33,
@@ -105,7 +105,7 @@ export MakeCopper := proc( $ )::MATERIAL;
     "modulus E = 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
     "E/(2*(1+nu), density rho = 4500.0 (kg/m^3).";
 
-  return TrussMe_FEM:-MakeMaterial(
+  return TrussMe:-FEM:-MakeMaterial(
     parse("name")            = "Copper",
     parse("elastic_modulus") = 110.0e+09,
     parse("poisson_ratio")   = 0.33,
@@ -121,7 +121,7 @@ export MakeBrass := proc( $ )::MATERIAL;
     "modulus E = 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
     "E/(2*(1+nu), density rho = 4500.0 (kg/m^3).";
 
-  return TrussMe_FEM:-MakeMaterial(
+  return TrussMe:-FEM:-MakeMaterial(
     parse("name")            = "Brass",
     parse("elastic_modulus") = 110.0e+09,
     parse("poisson_ratio")   = 0.33,
@@ -137,7 +137,7 @@ export MakeBronze := proc( $ )::MATERIAL;
     "modulus E = 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
     "E/(2*(1+nu), density rho = 4500.0 (kg/m^3).";
 
-  return TrussMe_FEM:-MakeMaterial(
+  return TrussMe:-FEM:-MakeMaterial(
     parse("name")            = "Bronze",
     parse("elastic_modulus") = 110.0e+09,
     parse("poisson_ratio")   = 0.33,
@@ -153,7 +153,7 @@ export MakeLead := proc( $ )::MATERIAL;
     "modulus E = 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
     "E/(2*(1+nu), density rho = 4500.0 (kg/m^3).";
 
-  return TrussMe_FEM:-MakeMaterial(
+  return TrussMe:-FEM:-MakeMaterial(
     parse("name")            = "Lead",
     parse("elastic_modulus") = 110.0e+09,
     parse("poisson_ratio")   = 0.33,
@@ -169,7 +169,7 @@ export MakeZinc := proc( $ )::MATERIAL;
     "modulus E = 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
     "E/(2*(1+nu), density rho = 4500.0 (kg/m^3).";
 
-  return TrussMe_FEM:-MakeMaterial(
+  return TrussMe:-FEM:-MakeMaterial(
     parse("name")            = "Zinc",
     parse("elastic_modulus") = 110.0e+09,
     parse("poisson_ratio")   = 0.33,
@@ -185,7 +185,7 @@ export MakeMagnesium  := proc( $ )::MATERIAL;
     "modulus E = 45.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
     "E/(2*(1+nu), density rho = 1800.0 (kg/m^3).";
 
-  return TrussMe_FEM:-MakeMaterial(
+  return TrussMe:-FEM:-MakeMaterial(
     parse("name")            = "Magnesium",
     parse("elastic_modulus") = 45.0e+09,
     parse("poisson_ratio")   = 0.33,
@@ -201,7 +201,7 @@ export MakeAlluminium := proc( $ )::MATERIAL;
     "modulus E = 69.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
     "E/(2*(1+nu), density rho = 8000.0 (kg/m^3).";
 
-  return TrussMe_FEM:-MakeMaterial(
+  return TrussMe:-FEM:-MakeMaterial(
     parse("name")            = "Alluminium",
     parse("elastic_modulus") = 70.0e+09,
     parse("poisson_ratio")   = 0.33,
@@ -217,7 +217,7 @@ export MakeAvional := proc( $ )::MATERIAL;
     "modulus E = 70.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
     "E/(2*(1+nu), density rho = 2690.0 (kg/m^3).";
 
-  return TrussMe_FEM:-MakeMaterial(
+  return TrussMe:-FEM:-MakeMaterial(
     parse("name")            = "Avional",
     parse("elastic_modulus") = 70.0e+09,
     parse("poisson_ratio")   = 0.33,
@@ -233,7 +233,7 @@ export MakePeraluman := proc( $ )::MATERIAL;
     "modulus E = 70.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
     "E/(2*(1+nu), density rho = 2700.0 (kg/m^3).";
 
-  return TrussMe_FEM:-MakeMaterial(
+  return TrussMe:-FEM:-MakeMaterial(
     parse("name")            = "Peraluman",
     parse("elastic_modulus") = 70.0e+09,
     parse("poisson_ratio")   = 0.33,
@@ -249,7 +249,7 @@ export MakeAnticorodal := proc( $ )::MATERIAL;
     "modulus E = 69.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
     "E/(2*(1+nu), density rho = 2700.0 (kg/m^3).";
 
-  return TrussMe_FEM:-MakeMaterial(
+  return TrussMe:-FEM:-MakeMaterial(
     parse("name")            = "Anticorodal",
     parse("elastic_modulus") = 69.0e+09,
     parse("poisson_ratio")   = 0.33,
@@ -265,7 +265,7 @@ export MakeCarpental := proc( $ )::MATERIAL;
     "modulus E = 72.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
     "E/(2*(1+nu), density rho = 2780.0 (kg/m^3).";
 
-  return TrussMe_FEM:-MakeMaterial(
+  return TrussMe:-FEM:-MakeMaterial(
     parse("name")            = "Carpental",
     parse("elastic_modulus") = 72.0e+09,
     parse("poisson_ratio")   = 0.33,
@@ -281,7 +281,7 @@ export MakeErgal := proc( $ )::MATERIAL;
     "modulus E = 72.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulus"
     "E/(2*(1+nu), density rho = 2780.0 (kg/m^3).";
 
-  return TrussMe_FEM:-MakeMaterial(
+  return TrussMe:-FEM:-MakeMaterial(
     parse("name")            = "Ergal",
     parse("elastic_modulus") = 72.0e+09,
     parse("poisson_ratio")   = 0.33,

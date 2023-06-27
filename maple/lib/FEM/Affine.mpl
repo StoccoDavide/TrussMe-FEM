@@ -48,7 +48,7 @@ export GenerateFrame := proc(
   elif type(p_1, VECTOR) or type(p_1, POINT) then
     p_1_tmp := p_1[1..3];
   else
-    error("invalid x-axis vector or point detected.");
+    error("<p_1> must be a list of 3 elements or a vector of 4 elements.");
   end if;
 
   if type(p_2, Vector) and evalb(LinearAlgebra:-Dimension(p_2) = 3) then
@@ -58,7 +58,7 @@ export GenerateFrame := proc(
   elif type(p_2, VECTOR) or type(p_2, POINT) then
     p_2_tmp := p_2[1..3];
   else
-    error("invalid y-axis vector or point detected.");
+    error("<p_2> must be a list of 3 elements or a vector of 4 elements.");
   end if;
 
   if type(vec, Vector) and evalb(LinearAlgebra:-Dimension(vec) = 3) then
@@ -68,17 +68,17 @@ export GenerateFrame := proc(
   elif type(vec, VECTOR) or type(vec, POINT) then
     vec_tmp := vec[1..3];
   else
-    error("invalid z-axis vector or point detected.");
+    error("<vec> must be a list of 3 elements or a vector of 4 elements.");
   end if;
 
   e_x := p_2_tmp - p_1_tmp;
-  e_x := e_x / TrussMe_FEM:-Norm2(e_x);
+  e_x := e_x / TrussMe:-FEM:-Norm2(e_x);
 
   e_y := LinearAlgebra:-CrossProduct(vec_tmp, e_x);
-  e_y := e_y / TrussMe_FEM:-Norm2(e_y);
+  e_y := e_y / TrussMe:-FEM:-Norm2(e_y);
 
   e_z := LinearAlgebra:-CrossProduct(e_x, e_y);
-  e_z := e_z / TrussMe_FEM:-Norm2(e_z);
+  e_z := e_z / TrussMe:-FEM:-Norm2(e_z);
 
   return <<e_x,     0>|
           <e_y,     0>|
@@ -101,7 +101,7 @@ export GenerateGenericFrame := proc(
 
   description "Generate a generic reference frame matrix from a string label "
     "<label>. Optional arguments <e>, <p>, <x>, <y>, <z> and <s> are used to "
-    "customize the output.";
+    "customize the output, e.g., 'exx := e||s||x||x'.";
 
   local exx, exy, exz, eyx, eyy, eyz, ezx, ezy, ezz, pxx, pyy, pzz;
 
@@ -129,7 +129,7 @@ export InverseFrame := proc(
   RF::FRAME,
   $)::FRAME;
 
-  description "Inverse of the affine transformation matrix <RF>.";
+  description "Inverse affine transformation matrix <RF>.";
 
   LinearAlgebra:-Transpose(RF[1..3, 1..3]);
   return <<% | -%.RF[1..3, 4]>,
@@ -171,7 +171,7 @@ export Rotate := proc(
   angle::algebraic,
   $)::FRAME;
 
-  description "Affinet ransformation matrix corresponding to the rotation "
+  description "Affine transformation matrix corresponding to the rotation "
     "<angle> around the given <axis>.";
 
   if evalb(axis = 'X') or evalb(axis = "X") then
@@ -190,7 +190,7 @@ export Rotate := proc(
             <0,           0,          1, 0>|
             <0,           0,          0, 1>>;
   else
-    error("invalid axis detected.");
+    error("<axis> must be a string or a symbol.");
   end if;
 end proc: # Rotate
 
@@ -200,7 +200,7 @@ export Rotation := proc(
   RF::FRAME,
   $)::Matrix;
 
-  description "Extract the rotation vector of the reference frame <RF>.";
+  description "Extract the rotation matrix of the reference frame <RF>.";
 
   return RF[1..3, 1..3];
 end proc: # Rotation
@@ -346,14 +346,14 @@ export Project := proc(
   # Try to compare reference frames
   try
     # FIXME: problems with floats (floats not handled error)
-    evalb~(evala(TrussMe_FEM:-Simplify(RF_end) =~ TrussMe_FEM:-Simplify(RF_ini)));
+    evalb~(evala(TrussMe:-FEM:-Simplify(RF_end) =~ TrussMe:-FEM:-Simplify(RF_ini)));
   catch:
     evalb~(RF_end =~ RF_ini);
   end try;
 
   # Return the projection
   if has(%, false) then
-    return TrussMe_FEM:-Simplify(TrussMe_FEM:-InverseFrame(RF_end).RF_ini.x);
+    return TrussMe:-FEM:-Simplify(TrussMe:-FEM:-InverseFrame(RF_end).RF_ini.x);
   else
     return x;
   end if;

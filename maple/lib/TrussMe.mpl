@@ -4,7 +4,7 @@
 #            | || '__| | | / __/ __| |\/| |/ _ \ | |_  |  _| | |\/| |         #
 #            | || |  | |_| \__ \__ \ |  | |  __/ |  _| | |___| |  | |         #
 #            |_||_|   \__,_|___/___/_|  |_|\___| |_|   |_____|_|  |_|         #
-#              A Maple package for symbolic FEM structural analysis           #
+#        A package for mixed symbolic-numerical FEM structural analysis       #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # Current version authors:
@@ -13,9 +13,10 @@
 #
 # License: BSD 3-Clause License
 
-TrussMe_FEM := module()
+TrussMe := module()
+export FEM := module()
 
-  description "A Maple package for symbolic FEM structural analysis.";
+  description "A package for mixed symbolic-numerical FEM structural analysis.";
 
   option package,
          load   = ModuleLoad,
@@ -29,6 +30,7 @@ TrussMe_FEM := module()
   local m_NodeColor    := "MediumSeaGreen";
   local m_SupportColor := "DarkOrange";
   local m_ElementColor := "SteelBlue";
+  local m_ShellColor   := "MediumSlateBlue";
   local m_ForceColor   := "Firebrick";
   local m_MomentColor  := "Indigo";
   local m_NodeToken    := solidsphere;
@@ -41,14 +43,14 @@ TrussMe_FEM := module()
 
   export Info := proc()
 
-    description "Print 'TrussMe_FEM' module information.";
+    description "Print module information.";
 
     printf(
-      "+------------------------------------------------------------------------------+\n"
-      "| 'TrussMe_FEM' module version 0.0 - BSD 3-Clause License - Copyright (c) 2023 |\n"
-      "| Current version authors:                                                     |\n"
-      "|   Matteo Larcher and Davide Stocco.                                          |\n"
-      "+------------------------------------------------------------------------------+\n"
+      "+-------------------------------------------------------------------------------+\n"
+      "| 'TrussMe[FEM]' module version 0.0 - BSD 3-Clause License - Copyright (c) 2023 |\n"
+      "| Current version authors:                                                      |\n"
+      "|   Matteo Larcher and Davide Stocco.                                           |\n"
+      "+-------------------------------------------------------------------------------+\n"
     );
     return NULL;
   end proc: # Info
@@ -57,41 +59,42 @@ TrussMe_FEM := module()
 
   export ModuleLoad := proc()
 
-    description "'TrussMe_FEM' module load procedure.";
+    description "Module load procedure.";
 
     local lib_base_path, i, types;
 
     lib_base_path := NULL;
     for i in [libname] do
-      if (StringTools:-Search("TrussMe_FEM", i) <> 0) then
+      if evalb(StringTools:-Search("TrussMe_FEM", i) <> 0) then
         lib_base_path := i;
       end if;
     end do;
-    if (lib_base_path = NULL) then
-      error("cannot find 'TrussMe_FEM' library.");
+    if evalb(lib_base_path = NULL) then
+      error("cannot find 'TrussMe[FEM]' library in the 'TrussMe_FEM' toolbox "
+        "folder.");
     end if;
 
     # Define module types
-    TypeTools:-AddType('FRAME',      TrussMe_FEM:-IsFRAME);      protect('FRAME');
-    TypeTools:-AddType('VECTOR',     TrussMe_FEM:-IsVECTOR);     protect('VECTOR');
-    TypeTools:-AddType('POINT',      TrussMe_FEM:-IsPOINT);      protect('POINT');
-    TypeTools:-AddType('MATERIAL',   TrussMe_FEM:-IsMATERIAL);   protect('MATERIAL');
-    TypeTools:-AddType('DOFS',       TrussMe_FEM:-IsDOFS);       protect('DOFS');
-    TypeTools:-AddType('NODE',       TrussMe_FEM:-IsNODE);       protect('NODE');
-    TypeTools:-AddType('NODES',      TrussMe_FEM:-IsNODES);      protect('NODES');
-    TypeTools:-AddType('SUPPORT',    TrussMe_FEM:-IsSUPPORT);    protect('SUPPORT');
-    TypeTools:-AddType('SUPPORTS',   TrussMe_FEM:-IsSUPPORTS);   protect('SUPPORTS');
-    TypeTools:-AddType('STIFFNESS',  TrussMe_FEM:-IsSTIFFNESS);  protect('STIFFNESS');
-    TypeTools:-AddType('ELEMENT',    TrussMe_FEM:-IsELEMENT);    protect('ELEMENT');
-    TypeTools:-AddType('ELEMENTS',   TrussMe_FEM:-IsELEMENTS);   protect('ELEMENTS');
-    TypeTools:-AddType('STRUCTURE',  TrussMe_FEM:-IsSTRUCTURE);  protect('STRUCTURE');
-    TypeTools:-AddType('COMPONENTS', TrussMe_FEM:-IsCOMPONENTS); protect('COMPONENTS');
-    TypeTools:-AddType('LOAD',       TrussMe_FEM:-IsLOAD);       protect('LOAD');
-    TypeTools:-AddType('LOADS',      TrussMe_FEM:-IsLOADS);      protect('LOADS');
-    TypeTools:-AddType('FEM',        TrussMe_FEM:-IsFEM);        protect('FEM');
+    TypeTools:-AddType('FRAME',      TrussMe:-FEM:-IsFRAME);      protect('FRAME');
+    TypeTools:-AddType('VECTOR',     TrussMe:-FEM:-IsVECTOR);     protect('VECTOR');
+    TypeTools:-AddType('POINT',      TrussMe:-FEM:-IsPOINT);      protect('POINT');
+    TypeTools:-AddType('MATERIAL',   TrussMe:-FEM:-IsMATERIAL);   protect('MATERIAL');
+    TypeTools:-AddType('DOFS',       TrussMe:-FEM:-IsDOFS);       protect('DOFS');
+    TypeTools:-AddType('NODE',       TrussMe:-FEM:-IsNODE);       protect('NODE');
+    TypeTools:-AddType('NODES',      TrussMe:-FEM:-IsNODES);      protect('NODES');
+    TypeTools:-AddType('SUPPORT',    TrussMe:-FEM:-IsSUPPORT);    protect('SUPPORT');
+    TypeTools:-AddType('SUPPORTS',   TrussMe:-FEM:-IsSUPPORTS);   protect('SUPPORTS');
+    TypeTools:-AddType('STIFFNESS',  TrussMe:-FEM:-IsSTIFFNESS);  protect('STIFFNESS');
+    TypeTools:-AddType('ELEMENT',    TrussMe:-FEM:-IsELEMENT);    protect('ELEMENT');
+    TypeTools:-AddType('ELEMENTS',   TrussMe:-FEM:-IsELEMENTS);   protect('ELEMENTS');
+    TypeTools:-AddType('STRUCTURE',  TrussMe:-FEM:-IsSTRUCTURE);  protect('STRUCTURE');
+    TypeTools:-AddType('COMPONENTS', TrussMe:-FEM:-IsCOMPONENTS); protect('COMPONENTS');
+    TypeTools:-AddType('LOAD',       TrussMe:-FEM:-IsLOAD);       protect('LOAD');
+    TypeTools:-AddType('LOADS',      TrussMe:-FEM:-IsLOADS);      protect('LOADS');
+    TypeTools:-AddType('FEM',        TrussMe:-FEM:-IsFEM);        protect('FEM');
 
     # Codegen options
-    TrussMe_FEM:-m_CodegenOptions := table([
+    TrussMe:-FEM:-m_CodegenOptions := table([
       optimize          = true,
       digits            = 30,
       deducereturn      = false,
@@ -108,7 +111,7 @@ TrussMe_FEM := module()
 
   export ModuleUnload := proc()
 
-    description "TrussMe_FEM' module unload procedure.";
+    description "Module unload procedure.";
 
     unprotect('FRAME');      try TypeTools:-RemoveType('FRAME') catch: end try;
     unprotect('VECTOR');     try TypeTools:-RemoveType('VECTOR') catch: end try;
@@ -142,6 +145,7 @@ TrussMe_FEM := module()
     NodeColor::{string, nothing}      := NULL,
     SupportColor::{string, nothing}   := NULL,
     ElementColor::{string, nothing}   := NULL,
+    ShellColor::{string, nothing}     := NULL,
     ForceColor::{string, nothing}     := NULL,
     MomentColor::{string, nothing}    := NULL,
     NodeToken::{string, nothing}      := NULL,
@@ -149,53 +153,58 @@ TrussMe_FEM := module()
     }, $)
 
     description "Set the module options: verbose mode <VerboseMode>, warning "
-      "mode <WarningMode>, time limit <TimeLimit>, id length <IdLength>, "
+      "mode <WarningMode>, time limit <TimeLimit>, id code length <IdLength>, "
       "node color <NodeColor>, support color <SupportColor>, element color "
-      "<ElementColor>, force color <ForceColor>, moment color <MomentColor>, "
-      "node token <NodeToken>, support token <SupportToken>.";
+      "<ElementColor>, shell (2+ nodes) color <ShellColor>, force color "
+      "<ForceColor>, moment color <MomentColor>, node token <NodeToken>, "
+      "support token <SupportToken>.";
 
-    if (VerboseMode <> NULL) then
-      TrussMe_FEM:-m_VerboseMode := VerboseMode;
+    if evalb(VerboseMode <> NULL) then
+      TrussMe:-FEM:-m_VerboseMode := VerboseMode;
     end if;
 
-    if (WarningMode <> NULL) then
-      TrussMe_FEM:-m_WarningMode := WarningMode;
+    if evalb(WarningMode <> NULL) then
+      TrussMe:-FEM:-m_WarningMode := WarningMode;
     end if;
 
-    if (TimeLimit <> NULL) then
-      TrussMe_FEM:-m_TimeLimit := TimeLimit;
+    if evalb(TimeLimit <> NULL) then
+      TrussMe:-FEM:-m_TimeLimit := TimeLimit;
     end if;
 
-    if (IdLength <> NULL) then
-      TrussMe_FEM:-m_IdLength := IdLength;
+    if evalb(IdLength <> NULL) then
+      TrussMe:-FEM:-m_IdLength := IdLength;
     end if;
 
-    if (NodeColor <> NULL) then
-      TrussMe_FEM:-m_NodeColor := NodeColor;
+    if evalb(NodeColor <> NULL) then
+      TrussMe:-FEM:-m_NodeColor := NodeColor;
     end if;
 
-    if (SupportColor <> NULL) then
-      TrussMe_FEM:-m_SupportColor := SupportColor;
+    if evalb(SupportColor <> NULL) then
+      TrussMe:-FEM:-m_SupportColor := SupportColor;
     end if;
 
-    if (ElementColor <> NULL) then
-      TrussMe_FEM:-m_ElementColor := ElementColor;
+    if evalb(ElementColor <> NULL) then
+      TrussMe:-FEM:-m_ElementColor := ElementColor;
     end if;
 
-    if (ForceColor <> NULL) then
-      TrussMe_FEM:-m_ForceColor := ForceColor;
+    if evalb(ShellColor <> NULL) then
+      TrussMe:-FEM:-m_ShellColor := ShellColor;
     end if;
 
-    if (MomentColor <> NULL) then
-      TrussMe_FEM:-m_MomentColor := MomentColor;
+    if evalb(ForceColor <> NULL) then
+      TrussMe:-FEM:-m_ForceColor := ForceColor;
     end if;
 
-    if (NodeToken <> NULL) then
-      TrussMe_FEM:-m_NodeToken := NodeToken;
+    if evalb(MomentColor <> NULL) then
+      TrussMe:-FEM:-m_MomentColor := MomentColor;
     end if;
 
-    if (SupportToken <> NULL) then
-      TrussMe_FEM:-m_SupportToken := SupportToken;
+    if evalb(NodeToken <> NULL) then
+      TrussMe:-FEM:-m_NodeToken := NodeToken;
+    end if;
+
+    if evalb(SupportToken <> NULL) then
+      TrussMe:-FEM:-m_SupportToken := SupportToken;
     end if;
 
     return NULL;
@@ -209,7 +218,7 @@ TrussMe_FEM := module()
 
     description "Set gravity vector with [x, y, z]^T components of <vec>.";
 
-    TrussMe_FEM:-m_gravity := g;
+    TrussMe:-FEM:-m_gravity := g;
     return NULL;
   end proc: # SetGravity
 
@@ -219,7 +228,7 @@ TrussMe_FEM := module()
 
     description "Get gravity vector.";
 
-    return TrussMe_FEM:-m_gravity;
+    return TrussMe:-FEM:-m_gravity;
   end proc: # GetGravity
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -254,18 +263,19 @@ TrussMe_FEM := module()
 
   export GetObjById := proc(
     objs::list(anything),
-    id::string, {
+    id_fld::string,
+    {
     position::boolean := false
     }, $)::anything;
 
-    description "Get object which field id is <id> from a list or set of "
-      "objects <objs>.";
+    description "Get object which field 'id' is equal to <id_fld>, between "
+      "the objects <objs>.";
 
     local out, pos, i;
 
     out := NULL;
     for i from 1 to nops(objs) do
-      if evalb(objs[i]["id"] = id) then
+      if evalb(objs[i]["id"] = id_fld) then
         out := `if`(position, i, eval(objs[i])); # Do not remove eval: eval(table)
         break;
       end if;
@@ -277,12 +287,13 @@ TrussMe_FEM := module()
 
   export GetObjsByType := proc(
     objs::list(anything),
-    type_fld::{symbol, list(symbol), set(symbol)},{
+    type_fld::{symbol, list(symbol), set(symbol)},
+    {
     position::boolean := false
     }, $)::list(anything);
 
-    description "Get objects which field type is in <type_fld> from a list or "
-      "set of objects <objs>.";
+    description "Get objects which field 'type' is equal to <type_fld>, between "
+      "the objects <objs>.";
 
     local type_set, out, i;
 
@@ -312,23 +323,24 @@ TrussMe_FEM := module()
 
     description "Try to simplify an algebraic expression <var> with optional "
       "simplification options <opt>. The simplification is performed within "
-      "the internal or indexed time limit of <TimeLimit> seconds.";
+      "the internal or indexed time limit.";
 
     try
       return timelimit(
-        `if`(procname::indexed, op(procname), TrussMe_FEM:-m_TimeLimit),
+        `if`(procname::indexed, op(procname), TrussMe:-FEM:-m_TimeLimit),
         (simplify(var, opt) assuming real)
       );
     catch "time expired":
-      if TrussMe_FEM:-m_WarningMode then
-        WARNING("time limit of exceeded, raw solutions is returned.");
+      if TrussMe:-FEM:-m_WarningMode then
+        WARNING("exceeded time limit, raw solutions is returned.");
       end if;
       return var;
     catch "division by zero":
       error("division by zero detected.");
       return var;
     catch:
-      error("something went wrong.");
+      error("something went wrong, last exception '%1'.", lastexception);
+      return var;
     end try:
   end proc: # Simplify
 
@@ -338,7 +350,7 @@ TrussMe_FEM := module()
     x::{list, Vector},
     $)::algebraic;
 
-    description "Compute the Euclidean norm of the input vector or list <x>.";
+    description "Compute the Euclidean norm of list or vector <x>.";
 
     return sqrt(add(i, i in x^~2));
   end proc: # Norm2
@@ -346,7 +358,7 @@ TrussMe_FEM := module()
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   export GenerateId := proc({
-      size::positive := TrussMe_FEM:-m_IdLength,
+      size::positive := TrussMe:-FEM:-m_IdLength,
       opts::symbol   := 'alnum'
     }, $)::string;
 
@@ -359,22 +371,23 @@ TrussMe_FEM := module()
     A::Matrix,
     $)::anything;
 
-    description "Plot of non-zero values of the matrix <A>.";
+    description "Plot of non-zero values of matrix <A>.";
 
     return plots:-sparsematrixplot(A, 'matrixview');
   end proc: # Spy
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-$include "./lib/TrussMe_FEM/Affine.mpl"
-$include "./lib/TrussMe_FEM/Material.mpl"
-$include "./lib/TrussMe_FEM/Structure.mpl"
-$include "./lib/TrussMe_FEM/Load.mpl"
-$include "./lib/TrussMe_FEM/Codegen.mpl"
-$include "./lib/TrussMe_FEM/Plot.mpl"
+$include "./lib/FEM/Affine.mpl"
+$include "./lib/FEM/Material.mpl"
+$include "./lib/FEM/Structure.mpl"
+$include "./lib/FEM/Load.mpl"
+$include "./lib/FEM/Codegen.mpl"
+$include "./lib/FEM/Plot.mpl"
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-end module: # TrussMe_FEM
+end module: # FEM
+end module: # TrussMe
 
 # That's all folks!
