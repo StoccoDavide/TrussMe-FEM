@@ -1,7 +1,7 @@
 # MAPLE API
 
 ```
-# A package for mixed symbolic-numerical FEM structural analysi
+# A package for mixed symbolic-numerical FEM structural analysis.
 module :
 
     # Print module information.
@@ -14,16 +14,18 @@ module :
     ModuleUnload( )
 
     # Set the module options: verbose mode <VerboseMode>, warning mode
-    # <WarningMode>, time limit <TimeLimit>, id length <IdLength>, node color
-    # <NodeColor>, support color <SupportColor>, element color <ElementColor>,
-    # force color <ForceColor>, moment color <MomentColor>, node token
-    # <NodeToken>, support token <SupportToken>.
+    # <WarningMode>, time limit <TimeLimit>, id code length <IdLength>, node
+    # color <NodeColor>, support color <SupportColor>, element color
+    # <ElementColor>, shell (2+ nodes) color <ShellColor>, force color
+    # <ForceColor>, moment color <MomentColor>, node token <NodeToken>, support
+    # token <SupportToken>.
     SetModuleOptions( { ElementColor::{nothing, string} := NULL,
                         ForceColor::{nothing, string} := NULL,
                         IdLength::{nothing, positive} := NULL,
                         MomentColor::{nothing, string} := NULL,
                         NodeColor::{nothing, string} := NULL,
                         NodeToken::{nothing, string} := NULL,
+                        ShellColor::{nothing, string} := NULL,
                         SupportColor::{nothing, string} := NULL,
                         SupportToken::{nothing, string} := NULL,
                         TimeLimit::{nothing, nonnegative} := NULL,
@@ -40,11 +42,12 @@ module :
     # <objs>.
     GetObjByName( objs::list(anything), name::string, $ ) :: anything
 
-    # Get object which field id is <id> from a list or set of objects <objs>.
-    GetObjById( objs::list(anything), id::string,
+    # Get object which field 'id' is equal to <id_fld>, between the objects
+    # <objs>.
+    GetObjById( objs::list(anything), id_fld::string,
                 { position::boolean := false }, $ ) :: anything
 
-    # Get objects which field type is in <type_fld> from a list or set of
+    # Get objects which field 'type' is equal to <type_fld>, between the
     # objects <objs>.
     GetObjsByType( objs::list(anything),
                    type_fld::{symbol, list(symbol), set(symbol)},
@@ -55,13 +58,13 @@ module :
     # internal or indexed time limit.
     Simplify( var::anything, opt::anything := NULL, $ ) :: anything
 
-    # Compute the Euclidean norm of the input vector or list <x>.
+    # Compute the Euclidean norm of list or vector <x>.
     Norm2( x::{Vector, list}, $ ) :: algebraic
 
     GenerateId( { opts::symbol := 'alnum',
                   size::positive := TrussMe:-FEM:-m_IdLength }, $ ) :: string
 
-    # Plot of non-zero values of the matrix <A>.
+    # Plot of non-zero values of matrix <A>.
     Spy( A::Matrix, $ ) :: anything
 
     # Check if the variable <var> is of FRAME type.
@@ -89,11 +92,11 @@ module :
     # Extract the translation vector of the reference frame <RF>.
     Translation( RF::FRAME, $ ) :: Vector
 
-    # Affinet ransformation matrix corresponding to the rotation <angle> around
+    # Affine transformation matrix corresponding to the rotation <angle> around
     # the given <axis>.
     Rotate( axis::{string, symbol}, angle::algebraic, $ ) :: FRAME
 
-    # Extract the rotation vector of the reference frame <RF>.
+    # Extract the rotation matrix of the reference frame <RF>.
     Rotation( RF::FRAME, $ ) :: Matrix
 
     # Check if the variable <var> is of VECTOR type.
@@ -305,16 +308,11 @@ module :
     IsELEMENTS( var::anything, $ ) :: boolean
 
     # Make an element with name <name> on reference frame <frame>, connecting
-    # the dofs <N1_dofs> on node 1 <[N1, N1_dofs]>, connecting the dofs
-    # <N2_dofs> on node 2 <[N2, N2_dofs]> with stiffness <K>. Optional nodes
-    # distance <distance> can be specified.
+    # the dofs <Ni_dofs> on i-th node i <[Ni, Ni_dofs]>, connecting with
+    # stiffness <K>.
     MakeElement( name::string,
-                 N1::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})},
-                 N2::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})},
-                 K::STIFFNESS,
-                 { distance::algebraic := -1,
-                   frame::FRAME := TrussMe:-FEM:-GenerateGenericFrame(name) },
-                 $ ) :: ELEMENT
+                 { frame::FRAME := TrussMe:-FEM:-GenerateGenericFrame(name) } )
+               :: ELEMENT
 
     # Make a spring element with name <name> on reference frame <frame>,
     # connecting the dofs <N1_dofs> on node 1 <[N1, N1_dofs]>, connecting the
@@ -398,8 +396,8 @@ module :
     # choosen between 'LU', fraction-free 'FFLU', 'QR', and Gauss-Jordan 'GJ'.
     SolveFEM( fem::_FEM,
               { factorization::string := "LU", label::string := "V",
-                tryhard::boolean := false, use_LAST::boolean := false,
-                use_LEM::boolean := true, use_SIG::boolean := true }, $ )
+                use_LAST::boolean := false, use_LEM::boolean := true,
+                use_SIG::boolean := true }, $ )
 
     # Store the FEM structure <fem> in the nodes <nodes>.
     StoreFEM( fem::_FEM, $ )

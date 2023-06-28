@@ -51,7 +51,7 @@ export StructureGraph := proc(
   local nodes, elements, loads, obj, i, vertex_name, vertex_id, vertex_color, G;
 
   if m_VerboseMode then
-    printf("Checking structure connections...");
+    printf("Checking structure connections... ");
   end if;
 
   # Extract nodes, elements and loads from <fem> object
@@ -235,7 +235,7 @@ export PlotDeformedElement := proc(
   if type(d_1, list) and evalb(nops(d_1) = 6) then
     d_1_tmp := convert(subs(op(data), d_1), Vector);
   elif type(d_1, Vector) and evalb(LinearAlgebra:-Dimension(d_1) = 6) then
-    d_1_tmp := d_1;
+    d_1_tmp := subs(op(data), d_1);;
   else
     error("<d_1> must be a list or a vector of 6 elements.");
   end if;

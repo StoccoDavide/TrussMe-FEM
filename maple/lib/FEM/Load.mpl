@@ -81,7 +81,7 @@ export GetNodalLoads := proc(
   local F, i, j, R;
 
   if TrussMe:-FEM:-m_VerboseMode then
-    printf("Getting nodal loads...");
+    printf("Getting nodal loads... ");
   end if;
 
   F := Vector(6 * nops(nodes), storage = sparse);
@@ -100,7 +100,7 @@ export GetNodalLoads := proc(
   end do;
 
   if TrussMe:-FEM:-m_VerboseMode then
-    printf(" DONE\n");
+    printf("DONE\n");
   end if;
 
   return F;

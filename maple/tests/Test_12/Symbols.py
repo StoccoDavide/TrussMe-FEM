@@ -1,3 +1,0 @@
-# Symbols variables 
-symbols = frozenset([])
-

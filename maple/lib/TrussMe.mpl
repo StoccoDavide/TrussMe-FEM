@@ -22,7 +22,6 @@ export FEM := module()
          load   = ModuleLoad,
          unload = ModuleUnload;
 
-  local m_gravity      := <0, 0, 0, 0>;
   local m_IdLength     := 5;
   local m_VerboseMode  := false;
   local m_WarningMode  := true;
@@ -209,27 +208,6 @@ export FEM := module()
 
     return NULL;
   end proc: # SetModuleOptions
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export SetGravity := proc(
-    g::VECTOR,
-    $)
-
-    description "Set gravity vector with [x, y, z]^T components of <vec>.";
-
-    TrussMe:-FEM:-m_gravity := g;
-    return NULL;
-  end proc: # SetGravity
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  export GetGravity := proc( $ )::VECTOR;
-
-    description "Get gravity vector.";
-
-    return TrussMe:-FEM:-m_gravity;
-  end proc: # GetGravity
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

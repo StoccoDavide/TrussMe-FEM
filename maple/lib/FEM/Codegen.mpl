@@ -375,7 +375,7 @@ export VectorToMatlab := proc(
     tmp_data, vec_inds, tmp_vars, tmp_vars_rm, tmp_vars_nl, typestr;
 
   if TrussMe:-FEM:-m_VerboseMode then
-    printf("Generating vector function '%s'...", name);
+    printf("Generating vector function '%s'... ", name);
   end if;
 
   # Extract the function properties
@@ -419,7 +419,7 @@ export VectorToMatlab := proc(
   end if;
 
   if TrussMe:-FEM:-m_VerboseMode then
-    printf(" DONE\n");
+    printf("DONE\n");
   end if;
 
   # Generate the generated code
@@ -455,7 +455,7 @@ export MatrixToMatlab := proc(
     tmp_data, mat_inds, tmp_vars, tmp_vars_rm, tmp_vars_nl, typestr;
 
   if TrussMe:-FEM:-m_VerboseMode then
-    printf("Generating matrix function '%s'...", name);
+    printf("Generating matrix function '%s'... ", name);
   end if;
 
   # Extract the function properties
@@ -499,7 +499,7 @@ export MatrixToMatlab := proc(
   end if;
 
   if TrussMe:-FEM:-m_VerboseMode then
-    printf(" DONE\n");
+    printf("DONE\n");
   end if;
 
   # Store the results

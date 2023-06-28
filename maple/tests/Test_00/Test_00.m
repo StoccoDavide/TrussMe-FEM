@@ -34,7 +34,7 @@ classdef Test_00 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_K = K( this, ~, ~ )
+    function out_K = K( ~, ~, ~ )
       % Evaluate the stiffness matrix K.
 
       % Extract properties
@@ -44,188 +44,95 @@ classdef Test_00 < TrussMe.System
       % No inputs
 
       % Evaluate function
-      out_1_1 = 0.6666666667e6;
-      out_7_1 = -0.6666666667e6;
-      out_2_2 = 0.500000e6;
-      out_14_2 = -0.500000e6;
-      out_4_4 = 0.6666666667e11;
-      out_10_4 = -0.6666666667e11;
-      out_5_5 = 0.5000000000e11;
-      out_17_5 = -0.5000000000e11;
-      out_6_6 = 1;
-      out_1_7 = -0.6666666667e6;
-      out_7_7 = 0.9546666667e6;
-      out_13_7 = -0.144000e6;
-      out_14_7 = -0.192000e6;
-      out_25_7 = -0.144000e6;
-      out_26_7 = 0.192000e6;
-      out_8_8 = 0.1012000e7;
-      out_13_8 = -0.192000e6;
-      out_14_8 = -0.256000e6;
-      out_20_8 = -0.500000e6;
-      out_25_8 = 0.192000e6;
-      out_26_8 = -0.256000e6;
-      out_9_9 = 1;
-      out_4_10 = -0.6666666667e11;
-      out_10_10 = 0.9546666667e11;
-      out_16_10 = -0.1440000000e11;
-      out_17_10 = -0.1920000000e11;
-      out_28_10 = -0.1440000000e11;
-      out_29_10 = 0.1920000000e11;
-      out_11_11 = 0.1012000000e12;
-      out_16_11 = -0.1920000000e11;
-      out_17_11 = -0.2560000000e11;
-      out_23_11 = -0.5000000000e11;
-      out_28_11 = 0.1920000000e11;
-      out_29_11 = -0.2560000000e11;
-      out_12_12 = 1;
-      out_7_13 = -0.144000e6;
-      out_8_13 = -0.192000e6;
-      out_13_13 = 0.8106666667e6;
-      out_14_13 = 0.192000e6;
-      out_19_13 = -0.6666666667e6;
-      out_2_14 = -0.500000e6;
-      out_7_14 = -0.192000e6;
-      out_8_14 = -0.256000e6;
-      out_13_14 = 0.192000e6;
-      out_14_14 = 0.756000e6;
-      out_10_16 = -0.1440000000e11;
-      out_11_16 = -0.1920000000e11;
-      out_16_16 = 0.8106666667e11;
-      out_17_16 = 0.1920000000e11;
-      out_22_16 = -0.6666666667e11;
-      out_5_17 = -0.5000000000e11;
-      out_10_17 = -0.1920000000e11;
-      out_11_17 = -0.2560000000e11;
-      out_16_17 = 0.1920000000e11;
-      out_17_17 = 0.7560000000e11;
-      out_18_18 = 1;
-      out_13_19 = -0.6666666667e6;
-      out_19_19 = 0.1333333333e7;
-      out_25_19 = -0.6666666667e6;
-      out_8_20 = -0.500000e6;
-      out_20_20 = 0.500000e6;
-      out_21_21 = 1;
-      out_16_22 = -0.6666666667e11;
-      out_22_22 = 0.1333333333e12;
-      out_28_22 = -0.6666666667e11;
-      out_11_23 = -0.5000000000e11;
-      out_23_23 = 0.5000000000e11;
-      out_24_24 = 1;
-      out_7_25 = -0.144000e6;
-      out_8_25 = 0.192000e6;
-      out_19_25 = -0.6666666667e6;
-      out_25_25 = 0.8106666667e6;
-      out_26_25 = -0.192000e6;
-      out_7_26 = 0.192000e6;
-      out_8_26 = -0.256000e6;
-      out_25_26 = -0.192000e6;
-      out_26_26 = 0.256000e6;
-      out_10_28 = -0.1440000000e11;
-      out_11_28 = 0.1920000000e11;
-      out_22_28 = -0.6666666667e11;
-      out_28_28 = 0.8106666667e11;
-      out_29_28 = -0.1920000000e11;
-      out_10_29 = 0.1920000000e11;
-      out_11_29 = -0.2560000000e11;
-      out_28_29 = -0.1920000000e11;
-      out_29_29 = 0.2560000000e11;
-      out_30_30 = 1;
+      % No body
 
       % Store outputs
-      out_K = zeros(30, 30);
-      out_K(1, 1) = out_1_1;
-      out_K(7, 1) = out_7_1;
-      out_K(2, 2) = out_2_2;
-      out_K(14, 2) = out_14_2;
-      out_K(4, 4) = out_4_4;
-      out_K(10, 4) = out_10_4;
-      out_K(5, 5) = out_5_5;
-      out_K(17, 5) = out_17_5;
-      out_K(6, 6) = out_6_6;
-      out_K(1, 7) = out_1_7;
-      out_K(7, 7) = out_7_7;
-      out_K(13, 7) = out_13_7;
-      out_K(14, 7) = out_14_7;
-      out_K(25, 7) = out_25_7;
-      out_K(26, 7) = out_26_7;
-      out_K(8, 8) = out_8_8;
-      out_K(13, 8) = out_13_8;
-      out_K(14, 8) = out_14_8;
-      out_K(20, 8) = out_20_8;
-      out_K(25, 8) = out_25_8;
-      out_K(26, 8) = out_26_8;
-      out_K(9, 9) = out_9_9;
-      out_K(4, 10) = out_4_10;
-      out_K(10, 10) = out_10_10;
-      out_K(16, 10) = out_16_10;
-      out_K(17, 10) = out_17_10;
-      out_K(28, 10) = out_28_10;
-      out_K(29, 10) = out_29_10;
-      out_K(11, 11) = out_11_11;
-      out_K(16, 11) = out_16_11;
-      out_K(17, 11) = out_17_11;
-      out_K(23, 11) = out_23_11;
-      out_K(28, 11) = out_28_11;
-      out_K(29, 11) = out_29_11;
-      out_K(12, 12) = out_12_12;
-      out_K(7, 13) = out_7_13;
-      out_K(8, 13) = out_8_13;
-      out_K(13, 13) = out_13_13;
-      out_K(14, 13) = out_14_13;
-      out_K(19, 13) = out_19_13;
-      out_K(2, 14) = out_2_14;
-      out_K(7, 14) = out_7_14;
-      out_K(8, 14) = out_8_14;
-      out_K(13, 14) = out_13_14;
-      out_K(14, 14) = out_14_14;
-      out_K(10, 16) = out_10_16;
-      out_K(11, 16) = out_11_16;
-      out_K(16, 16) = out_16_16;
-      out_K(17, 16) = out_17_16;
-      out_K(22, 16) = out_22_16;
-      out_K(5, 17) = out_5_17;
-      out_K(10, 17) = out_10_17;
-      out_K(11, 17) = out_11_17;
-      out_K(16, 17) = out_16_17;
-      out_K(17, 17) = out_17_17;
-      out_K(18, 18) = out_18_18;
-      out_K(13, 19) = out_13_19;
-      out_K(19, 19) = out_19_19;
-      out_K(25, 19) = out_25_19;
-      out_K(8, 20) = out_8_20;
-      out_K(20, 20) = out_20_20;
-      out_K(21, 21) = out_21_21;
-      out_K(16, 22) = out_16_22;
-      out_K(22, 22) = out_22_22;
-      out_K(28, 22) = out_28_22;
-      out_K(11, 23) = out_11_23;
-      out_K(23, 23) = out_23_23;
-      out_K(24, 24) = out_24_24;
-      out_K(7, 25) = out_7_25;
-      out_K(8, 25) = out_8_25;
-      out_K(19, 25) = out_19_25;
-      out_K(25, 25) = out_25_25;
-      out_K(26, 25) = out_26_25;
-      out_K(7, 26) = out_7_26;
-      out_K(8, 26) = out_8_26;
-      out_K(25, 26) = out_25_26;
-      out_K(26, 26) = out_26_26;
-      out_K(10, 28) = out_10_28;
-      out_K(11, 28) = out_11_28;
-      out_K(22, 28) = out_22_28;
-      out_K(28, 28) = out_28_28;
-      out_K(29, 28) = out_29_28;
-      out_K(10, 29) = out_10_29;
-      out_K(11, 29) = out_11_29;
-      out_K(28, 29) = out_28_29;
-      out_K(29, 29) = out_29_29;
-      out_K(30, 30) = out_30_30;
+      out_K = sparse(30, 30);
+      out_K(1, 1) = 666666.6667;
+      out_K(7, 1) = -666666.6667;
+      out_K(2, 2) = 500000.;
+      out_K(14, 2) = -500000.;
+      out_K(4, 4) = .6666666667e11;
+      out_K(10, 4) = -.6666666667e11;
+      out_K(5, 5) = .5000000000e11;
+      out_K(17, 5) = -.5000000000e11;
+      out_K(1, 7) = -666666.6667;
+      out_K(7, 7) = 954666.6667;
+      out_K(13, 7) = -144000.;
+      out_K(14, 7) = -192000.;
+      out_K(25, 7) = -144000.;
+      out_K(26, 7) = 192000.;
+      out_K(8, 8) = 1012000.;
+      out_K(13, 8) = -192000.;
+      out_K(14, 8) = -256000.;
+      out_K(20, 8) = -500000.;
+      out_K(25, 8) = 192000.;
+      out_K(26, 8) = -256000.;
+      out_K(4, 10) = -.6666666667e11;
+      out_K(10, 10) = .9546666667e11;
+      out_K(16, 10) = -.1440000000e11;
+      out_K(17, 10) = -.1920000000e11;
+      out_K(28, 10) = -.1440000000e11;
+      out_K(29, 10) = .1920000000e11;
+      out_K(11, 11) = .1012000000e12;
+      out_K(16, 11) = -.1920000000e11;
+      out_K(17, 11) = -.2560000000e11;
+      out_K(23, 11) = -.5000000000e11;
+      out_K(28, 11) = .1920000000e11;
+      out_K(29, 11) = -.2560000000e11;
+      out_K(7, 13) = -144000.;
+      out_K(8, 13) = -192000.;
+      out_K(13, 13) = 810666.6667;
+      out_K(14, 13) = 192000.;
+      out_K(19, 13) = -666666.6667;
+      out_K(2, 14) = -500000.;
+      out_K(7, 14) = -192000.;
+      out_K(8, 14) = -256000.;
+      out_K(13, 14) = 192000.;
+      out_K(14, 14) = 756000.;
+      out_K(10, 16) = -.1440000000e11;
+      out_K(11, 16) = -.1920000000e11;
+      out_K(16, 16) = .8106666667e11;
+      out_K(17, 16) = .1920000000e11;
+      out_K(22, 16) = -.6666666667e11;
+      out_K(5, 17) = -.5000000000e11;
+      out_K(10, 17) = -.1920000000e11;
+      out_K(11, 17) = -.2560000000e11;
+      out_K(16, 17) = .1920000000e11;
+      out_K(17, 17) = .7560000000e11;
+      out_K(13, 19) = -666666.6667;
+      out_K(19, 19) = 1333333.333;
+      out_K(25, 19) = -666666.6667;
+      out_K(8, 20) = -500000.;
+      out_K(20, 20) = 500000.;
+      out_K(16, 22) = -.6666666667e11;
+      out_K(22, 22) = .1333333333e12;
+      out_K(28, 22) = -.6666666667e11;
+      out_K(11, 23) = -.5000000000e11;
+      out_K(23, 23) = .5000000000e11;
+      out_K(7, 25) = -144000.;
+      out_K(8, 25) = 192000.;
+      out_K(19, 25) = -666666.6667;
+      out_K(25, 25) = 810666.6667;
+      out_K(26, 25) = -192000.;
+      out_K(7, 26) = 192000.;
+      out_K(8, 26) = -256000.;
+      out_K(25, 26) = -192000.;
+      out_K(26, 26) = 256000.;
+      out_K(10, 28) = -.1440000000e11;
+      out_K(11, 28) = .1920000000e11;
+      out_K(22, 28) = -.6666666667e11;
+      out_K(28, 28) = .8106666667e11;
+      out_K(29, 28) = -.1920000000e11;
+      out_K(10, 29) = .1920000000e11;
+      out_K(11, 29) = -.2560000000e11;
+      out_K(28, 29) = -.1920000000e11;
+      out_K(29, 29) = .2560000000e11;
     end % K
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_K_ff = K_ff( this, ~, ~ )
+    function out_K_ff = K_ff( ~, ~, ~ )
       % Evaluate the stiffness matrix K_ff.
 
       % Extract properties
@@ -235,62 +142,32 @@ classdef Test_00 < TrussMe.System
       % No inputs
 
       % Evaluate function
-      out_1_1 = 1;
-      out_2_2 = 0.9546666667e6;
-      out_8_2 = -0.192000e6;
-      out_3_3 = 0.1012000e7;
-      out_8_3 = -0.256000e6;
-      out_11_3 = -0.500000e6;
-      out_4_4 = 1;
-      out_5_5 = 0.9546666667e11;
-      out_6_6 = 0.1012000000e12;
-      out_14_6 = -0.5000000000e11;
-      out_7_7 = 1;
-      out_2_8 = -0.192000e6;
-      out_3_8 = -0.256000e6;
-      out_8_8 = 0.756000e6;
-      out_9_9 = 1;
-      out_10_10 = 0.1333333333e7;
-      out_3_11 = -0.500000e6;
-      out_11_11 = 0.500000e6;
-      out_12_12 = 1;
-      out_13_13 = 0.1333333333e12;
-      out_6_14 = -0.5000000000e11;
-      out_14_14 = 0.5000000000e11;
-      out_15_15 = 1;
-      out_16_16 = 1;
+      % No body
 
       % Store outputs
-      out_K_ff = zeros(16, 16);
-      out_K_ff(1, 1) = out_1_1;
-      out_K_ff(2, 2) = out_2_2;
-      out_K_ff(8, 2) = out_8_2;
-      out_K_ff(3, 3) = out_3_3;
-      out_K_ff(8, 3) = out_8_3;
-      out_K_ff(11, 3) = out_11_3;
-      out_K_ff(4, 4) = out_4_4;
-      out_K_ff(5, 5) = out_5_5;
-      out_K_ff(6, 6) = out_6_6;
-      out_K_ff(14, 6) = out_14_6;
-      out_K_ff(7, 7) = out_7_7;
-      out_K_ff(2, 8) = out_2_8;
-      out_K_ff(3, 8) = out_3_8;
-      out_K_ff(8, 8) = out_8_8;
-      out_K_ff(9, 9) = out_9_9;
-      out_K_ff(10, 10) = out_10_10;
-      out_K_ff(3, 11) = out_3_11;
-      out_K_ff(11, 11) = out_11_11;
-      out_K_ff(12, 12) = out_12_12;
-      out_K_ff(13, 13) = out_13_13;
-      out_K_ff(6, 14) = out_6_14;
-      out_K_ff(14, 14) = out_14_14;
-      out_K_ff(15, 15) = out_15_15;
-      out_K_ff(16, 16) = out_16_16;
+      out_K_ff = sparse(9, 9);
+      out_K_ff(1, 1) = 954666.6667;
+      out_K_ff(5, 1) = -192000.;
+      out_K_ff(2, 2) = 1012000.;
+      out_K_ff(5, 2) = -256000.;
+      out_K_ff(7, 2) = -500000.;
+      out_K_ff(3, 3) = .9546666667e11;
+      out_K_ff(4, 4) = .1012000000e12;
+      out_K_ff(9, 4) = -.5000000000e11;
+      out_K_ff(1, 5) = -192000.;
+      out_K_ff(2, 5) = -256000.;
+      out_K_ff(5, 5) = 756000.;
+      out_K_ff(6, 6) = 1333333.333;
+      out_K_ff(2, 7) = -500000.;
+      out_K_ff(7, 7) = 500000.;
+      out_K_ff(8, 8) = .1333333333e12;
+      out_K_ff(4, 9) = -.5000000000e11;
+      out_K_ff(9, 9) = .5000000000e11;
     end % K_ff
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_K_fs = K_fs( this, ~, ~ )
+    function out_K_fs = K_fs( ~, ~, ~ )
       % Evaluate the stiffness matrix K_fs.
 
       % Extract properties
@@ -300,58 +177,37 @@ classdef Test_00 < TrussMe.System
       % No inputs
 
       % Evaluate function
-      out_2_1 = -0.6666666667e6;
-      out_8_2 = -0.500000e6;
-      out_5_4 = -0.6666666667e11;
-      out_2_6 = -0.144000e6;
-      out_3_6 = -0.192000e6;
-      out_8_6 = 0.192000e6;
-      out_10_6 = -0.6666666667e6;
-      out_5_8 = -0.1440000000e11;
-      out_6_8 = -0.1920000000e11;
-      out_13_8 = -0.6666666667e11;
-      out_5_9 = -0.1920000000e11;
-      out_6_9 = -0.2560000000e11;
-      out_2_10 = -0.144000e6;
-      out_3_10 = 0.192000e6;
-      out_10_10 = -0.6666666667e6;
-      out_2_11 = 0.192000e6;
-      out_3_11 = -0.256000e6;
-      out_5_13 = -0.1440000000e11;
-      out_6_13 = 0.1920000000e11;
-      out_13_13 = -0.6666666667e11;
-      out_5_14 = 0.1920000000e11;
-      out_6_14 = -0.2560000000e11;
+      % No body
 
       % Store outputs
-      out_K_fs = zeros(16, 14);
-      out_K_fs(2, 1) = out_2_1;
-      out_K_fs(8, 2) = out_8_2;
-      out_K_fs(5, 4) = out_5_4;
-      out_K_fs(2, 6) = out_2_6;
-      out_K_fs(3, 6) = out_3_6;
-      out_K_fs(8, 6) = out_8_6;
-      out_K_fs(10, 6) = out_10_6;
-      out_K_fs(5, 8) = out_5_8;
-      out_K_fs(6, 8) = out_6_8;
-      out_K_fs(13, 8) = out_13_8;
-      out_K_fs(5, 9) = out_5_9;
-      out_K_fs(6, 9) = out_6_9;
-      out_K_fs(2, 10) = out_2_10;
-      out_K_fs(3, 10) = out_3_10;
-      out_K_fs(10, 10) = out_10_10;
-      out_K_fs(2, 11) = out_2_11;
-      out_K_fs(3, 11) = out_3_11;
-      out_K_fs(5, 13) = out_5_13;
-      out_K_fs(6, 13) = out_6_13;
-      out_K_fs(13, 13) = out_13_13;
-      out_K_fs(5, 14) = out_5_14;
-      out_K_fs(6, 14) = out_6_14;
+      out_K_fs = sparse(9, 21);
+      out_K_fs(1, 1) = -666666.6667;
+      out_K_fs(5, 2) = -500000.;
+      out_K_fs(3, 4) = -.6666666667e11;
+      out_K_fs(1, 9) = -144000.;
+      out_K_fs(2, 9) = -192000.;
+      out_K_fs(5, 9) = 192000.;
+      out_K_fs(6, 9) = -666666.6667;
+      out_K_fs(3, 11) = -.1440000000e11;
+      out_K_fs(4, 11) = -.1920000000e11;
+      out_K_fs(8, 11) = -.6666666667e11;
+      out_K_fs(3, 12) = -.1920000000e11;
+      out_K_fs(4, 12) = -.2560000000e11;
+      out_K_fs(1, 16) = -144000.;
+      out_K_fs(2, 16) = 192000.;
+      out_K_fs(6, 16) = -666666.6667;
+      out_K_fs(1, 17) = 192000.;
+      out_K_fs(2, 17) = -256000.;
+      out_K_fs(3, 19) = -.1440000000e11;
+      out_K_fs(4, 19) = .1920000000e11;
+      out_K_fs(8, 19) = -.6666666667e11;
+      out_K_fs(3, 20) = .1920000000e11;
+      out_K_fs(4, 20) = -.2560000000e11;
     end % K_fs
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_K_sf = K_sf( this, ~, ~ )
+    function out_K_sf = K_sf( ~, ~, ~ )
       % Evaluate the stiffness matrix K_sf.
 
       % Extract properties
@@ -361,58 +217,37 @@ classdef Test_00 < TrussMe.System
       % No inputs
 
       % Evaluate function
-      out_1_2 = -0.6666666667e6;
-      out_6_2 = -0.144000e6;
-      out_10_2 = -0.144000e6;
-      out_11_2 = 0.192000e6;
-      out_6_3 = -0.192000e6;
-      out_10_3 = 0.192000e6;
-      out_11_3 = -0.256000e6;
-      out_4_5 = -0.6666666667e11;
-      out_8_5 = -0.1440000000e11;
-      out_9_5 = -0.1920000000e11;
-      out_13_5 = -0.1440000000e11;
-      out_14_5 = 0.1920000000e11;
-      out_8_6 = -0.1920000000e11;
-      out_9_6 = -0.2560000000e11;
-      out_13_6 = 0.1920000000e11;
-      out_14_6 = -0.2560000000e11;
-      out_2_8 = -0.500000e6;
-      out_6_8 = 0.192000e6;
-      out_6_10 = -0.6666666667e6;
-      out_10_10 = -0.6666666667e6;
-      out_8_13 = -0.6666666667e11;
-      out_13_13 = -0.6666666667e11;
+      % No body
 
       % Store outputs
-      out_K_sf = zeros(14, 16);
-      out_K_sf(1, 2) = out_1_2;
-      out_K_sf(6, 2) = out_6_2;
-      out_K_sf(10, 2) = out_10_2;
-      out_K_sf(11, 2) = out_11_2;
-      out_K_sf(6, 3) = out_6_3;
-      out_K_sf(10, 3) = out_10_3;
-      out_K_sf(11, 3) = out_11_3;
-      out_K_sf(4, 5) = out_4_5;
-      out_K_sf(8, 5) = out_8_5;
-      out_K_sf(9, 5) = out_9_5;
-      out_K_sf(13, 5) = out_13_5;
-      out_K_sf(14, 5) = out_14_5;
-      out_K_sf(8, 6) = out_8_6;
-      out_K_sf(9, 6) = out_9_6;
-      out_K_sf(13, 6) = out_13_6;
-      out_K_sf(14, 6) = out_14_6;
-      out_K_sf(2, 8) = out_2_8;
-      out_K_sf(6, 8) = out_6_8;
-      out_K_sf(6, 10) = out_6_10;
-      out_K_sf(10, 10) = out_10_10;
-      out_K_sf(8, 13) = out_8_13;
-      out_K_sf(13, 13) = out_13_13;
+      out_K_sf = sparse(21, 9);
+      out_K_sf(1, 1) = -666666.6667;
+      out_K_sf(9, 1) = -144000.;
+      out_K_sf(16, 1) = -144000.;
+      out_K_sf(17, 1) = 192000.;
+      out_K_sf(9, 2) = -192000.;
+      out_K_sf(16, 2) = 192000.;
+      out_K_sf(17, 2) = -256000.;
+      out_K_sf(4, 3) = -.6666666667e11;
+      out_K_sf(11, 3) = -.1440000000e11;
+      out_K_sf(12, 3) = -.1920000000e11;
+      out_K_sf(19, 3) = -.1440000000e11;
+      out_K_sf(20, 3) = .1920000000e11;
+      out_K_sf(11, 4) = -.1920000000e11;
+      out_K_sf(12, 4) = -.2560000000e11;
+      out_K_sf(19, 4) = .1920000000e11;
+      out_K_sf(20, 4) = -.2560000000e11;
+      out_K_sf(2, 5) = -500000.;
+      out_K_sf(9, 5) = 192000.;
+      out_K_sf(9, 6) = -666666.6667;
+      out_K_sf(16, 6) = -666666.6667;
+      out_K_sf(11, 8) = -.6666666667e11;
+      out_K_sf(19, 8) = -.6666666667e11;
     end % K_sf
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_K_ss = K_ss( this, ~, ~ )
+    function out_K_ss = K_ss( ~, ~, ~ )
       % Evaluate the stiffness matrix K_ss.
 
       % Extract properties
@@ -422,52 +257,34 @@ classdef Test_00 < TrussMe.System
       % No inputs
 
       % Evaluate function
-      out_1_1 = 0.6666666667e6;
-      out_2_2 = 0.500000e6;
-      out_4_4 = 0.6666666667e11;
-      out_5_5 = 0.5000000000e11;
-      out_9_5 = -0.5000000000e11;
-      out_6_6 = 0.8106666667e6;
-      out_8_8 = 0.8106666667e11;
-      out_9_8 = 0.1920000000e11;
-      out_5_9 = -0.5000000000e11;
-      out_8_9 = 0.1920000000e11;
-      out_9_9 = 0.7560000000e11;
-      out_10_10 = 0.8106666667e6;
-      out_11_10 = -0.192000e6;
-      out_10_11 = -0.192000e6;
-      out_11_11 = 0.256000e6;
-      out_13_13 = 0.8106666667e11;
-      out_14_13 = -0.1920000000e11;
-      out_13_14 = -0.1920000000e11;
-      out_14_14 = 0.2560000000e11;
+      % No body
 
       % Store outputs
-      out_K_ss = zeros(14, 14);
-      out_K_ss(1, 1) = out_1_1;
-      out_K_ss(2, 2) = out_2_2;
-      out_K_ss(4, 4) = out_4_4;
-      out_K_ss(5, 5) = out_5_5;
-      out_K_ss(9, 5) = out_9_5;
-      out_K_ss(6, 6) = out_6_6;
-      out_K_ss(8, 8) = out_8_8;
-      out_K_ss(9, 8) = out_9_8;
-      out_K_ss(5, 9) = out_5_9;
-      out_K_ss(8, 9) = out_8_9;
-      out_K_ss(9, 9) = out_9_9;
-      out_K_ss(10, 10) = out_10_10;
-      out_K_ss(11, 10) = out_11_10;
-      out_K_ss(10, 11) = out_10_11;
-      out_K_ss(11, 11) = out_11_11;
-      out_K_ss(13, 13) = out_13_13;
-      out_K_ss(14, 13) = out_14_13;
-      out_K_ss(13, 14) = out_13_14;
-      out_K_ss(14, 14) = out_14_14;
+      out_K_ss = sparse(21, 21);
+      out_K_ss(1, 1) = 666666.6667;
+      out_K_ss(2, 2) = 500000.;
+      out_K_ss(4, 4) = .6666666667e11;
+      out_K_ss(5, 5) = .5000000000e11;
+      out_K_ss(12, 5) = -.5000000000e11;
+      out_K_ss(9, 9) = 810666.6667;
+      out_K_ss(11, 11) = .8106666667e11;
+      out_K_ss(12, 11) = .1920000000e11;
+      out_K_ss(5, 12) = -.5000000000e11;
+      out_K_ss(11, 12) = .1920000000e11;
+      out_K_ss(12, 12) = .7560000000e11;
+      out_K_ss(16, 16) = 810666.6667;
+      out_K_ss(17, 16) = -192000.;
+      out_K_ss(16, 17) = -192000.;
+      out_K_ss(17, 17) = 256000.;
+      out_K_ss(19, 19) = .8106666667e11;
+      out_K_ss(20, 19) = -.1920000000e11;
+      out_K_ss(19, 20) = -.1920000000e11;
+      out_K_ss(20, 20) = .2560000000e11;
     end % K_ss
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_d = d( this, ~, ~ )
+    function out_d = d( ~, ~, ~ )
       % Evaluate the deformation vector d.
 
       % Extract properties
@@ -477,22 +294,19 @@ classdef Test_00 < TrussMe.System
       % No inputs
 
       % Evaluate function
-      out_7 = 0.945497630296577608e-2;
-      out_8 = -0.220667950237504427e-1;
-      out_14 = -0.507109004750090631e-2;
-      out_20 = -0.420667950237504362e-1;
+      % No body
 
       % Store outputs
-      out_d = zeros(30, 1);
-      out_d(7) = out_7;
-      out_d(8) = out_8;
-      out_d(14) = out_14;
-      out_d(20) = out_20;
+      out_d = sparse(30, 1);
+      out_d(7) = .00945497630296578;
+      out_d(8) = -.0220667950237504;
+      out_d(14) = -.00507109004750091;
+      out_d(20) = -.0420667950237504;
     end % d
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_d_f = d_f( this, ~, ~ )
+    function out_d_f = d_f( ~, ~, ~ )
       % Evaluate the deformation vector d_f.
 
       % Extract properties
@@ -502,22 +316,19 @@ classdef Test_00 < TrussMe.System
       % No inputs
 
       % Evaluate function
-      out_2 = 0.945497630296577608e-2;
-      out_3 = -0.220667950237504427e-1;
-      out_8 = -0.507109004750090631e-2;
-      out_11 = -0.420667950237504362e-1;
+      % No body
 
       % Store outputs
-      out_d_f = zeros(16, 1);
-      out_d_f(2) = out_2;
-      out_d_f(3) = out_3;
-      out_d_f(8) = out_8;
-      out_d_f(11) = out_11;
+      out_d_f = sparse(9, 1);
+      out_d_f(1) = .00945497630296578;
+      out_d_f(2) = -.0220667950237504;
+      out_d_f(5) = -.00507109004750091;
+      out_d_f(7) = -.0420667950237504;
     end % d_f
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_d_s = d_s( this, ~, ~ )
+    function out_d_s = d_s( ~, ~, ~ )
       % Evaluate the deformation vector d_s.
 
       % Extract properties
@@ -530,12 +341,12 @@ classdef Test_00 < TrussMe.System
       % No body
 
       % Store outputs
-      out_d_s = zeros(14, 1);
+      out_d_s = sparse(21, 1);
     end % d_s
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_f = f( this, ~, ~ )
+    function out_f = f( ~, ~, ~ )
       % Evaluate the force vector f.
 
       % Extract properties
@@ -545,28 +356,22 @@ classdef Test_00 < TrussMe.System
       % No inputs
 
       % Evaluate function
-      out_1 = -0.630331753562568247e4;
-      out_2 = 0.253554502375045331e4;
-      out_7 = 10000;
-      out_13 = 0.190165876781283964e4;
-      out_20 = -10000;
-      out_25 = -0.559834123218715649e4;
-      out_26 = 0.746445497624954260e4;
+      % No body
 
       % Store outputs
-      out_f = zeros(30, 1);
-      out_f(1) = out_1;
-      out_f(2) = out_2;
-      out_f(7) = out_7;
-      out_f(13) = out_13;
-      out_f(20) = out_20;
-      out_f(25) = out_25;
-      out_f(26) = out_26;
+      out_f = sparse(30, 1);
+      out_f(1) = -6303.31753562568;
+      out_f(2) = 2535.54502375045;
+      out_f(7) = 10000;
+      out_f(13) = 1901.65876781284;
+      out_f(20) = -10000;
+      out_f(25) = -5598.34123218716;
+      out_f(26) = 7464.45497624954;
     end % f
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_f_f = f_f( this, ~, ~ )
+    function out_f_f = f_f( ~, ~, ~ )
       % Evaluate the force vector f_f.
 
       % Extract properties
@@ -576,18 +381,17 @@ classdef Test_00 < TrussMe.System
       % No inputs
 
       % Evaluate function
-      out_2 = 10000;
-      out_11 = -10000;
+      % No body
 
       % Store outputs
-      out_f_f = zeros(16, 1);
-      out_f_f(2) = out_2;
-      out_f_f(11) = out_11;
+      out_f_f = sparse(9, 1);
+      out_f_f(1) = 10000;
+      out_f_f(7) = -10000;
     end % f_f
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_f_s = f_s( this, ~, ~ )
+    function out_f_s = f_s( ~, ~, ~ )
       % Evaluate the force vector f_s.
 
       % Extract properties
@@ -597,24 +401,20 @@ classdef Test_00 < TrussMe.System
       % No inputs
 
       % Evaluate function
-      out_1 = -0.630331753562568247e4;
-      out_2 = 0.253554502375045331e4;
-      out_6 = 0.190165876781283964e4;
-      out_10 = -0.559834123218715649e4;
-      out_11 = 0.746445497624954260e4;
+      % No body
 
       % Store outputs
-      out_f_s = zeros(14, 1);
-      out_f_s(1) = out_1;
-      out_f_s(2) = out_2;
-      out_f_s(6) = out_6;
-      out_f_s(10) = out_10;
-      out_f_s(11) = out_11;
+      out_f_s = sparse(21, 1);
+      out_f_s(1) = -6303.31753562568;
+      out_f_s(2) = 2535.54502375045;
+      out_f_s(9) = 1901.65876781284;
+      out_f_s(16) = -5598.34123218716;
+      out_f_s(17) = 7464.45497624954;
     end % f_s
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_f_r = f_r( this, ~, ~ )
+    function out_f_r = f_r( ~, ~, ~ )
       % Evaluate the force vector f_r.
 
       % Extract properties
@@ -627,12 +427,12 @@ classdef Test_00 < TrussMe.System
       % No body
 
       % Store outputs
-      out_f_r = zeros(14, 1);
+      out_f_r = sparse(21, 1);
     end % f_r
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_perm = perm( this )
+    function out_perm = perm( ~ )
       % Evaluate the permutation vector.
 
       % Extract properties
@@ -642,74 +442,45 @@ classdef Test_00 < TrussMe.System
       % No inputs
 
       % Evaluate function
-      out_1 = 6;
-      out_2 = 7;
-      out_3 = 8;
-      out_4 = 9;
-      out_5 = 10;
-      out_6 = 11;
-      out_7 = 12;
-      out_8 = 14;
-      out_9 = 18;
-      out_10 = 19;
-      out_11 = 20;
-      out_12 = 21;
-      out_13 = 22;
-      out_14 = 23;
-      out_15 = 24;
-      out_16 = 30;
-      out_17 = 1;
-      out_18 = 2;
-      out_19 = 3;
-      out_20 = 4;
-      out_21 = 5;
-      out_22 = 13;
-      out_23 = 15;
-      out_24 = 16;
-      out_25 = 17;
-      out_26 = 25;
-      out_27 = 26;
-      out_28 = 27;
-      out_29 = 28;
-      out_30 = 29;
+      % No body
 
       % Store outputs
       out_perm = zeros(30, 1);
-      out_perm(1) = out_1;
-      out_perm(2) = out_2;
-      out_perm(3) = out_3;
-      out_perm(4) = out_4;
-      out_perm(5) = out_5;
-      out_perm(6) = out_6;
-      out_perm(7) = out_7;
-      out_perm(8) = out_8;
-      out_perm(9) = out_9;
-      out_perm(10) = out_10;
-      out_perm(11) = out_11;
-      out_perm(12) = out_12;
-      out_perm(13) = out_13;
-      out_perm(14) = out_14;
-      out_perm(15) = out_15;
-      out_perm(16) = out_16;
-      out_perm(17) = out_17;
-      out_perm(18) = out_18;
-      out_perm(19) = out_19;
-      out_perm(20) = out_20;
-      out_perm(21) = out_21;
-      out_perm(22) = out_22;
-      out_perm(23) = out_23;
-      out_perm(24) = out_24;
-      out_perm(25) = out_25;
-      out_perm(26) = out_26;
-      out_perm(27) = out_27;
-      out_perm(28) = out_28;
-      out_perm(29) = out_29;
-      out_perm(30) = out_30;
+      out_perm(1) = 7;
+      out_perm(2) = 8;
+      out_perm(3) = 10;
+      out_perm(4) = 11;
+      out_perm(5) = 14;
+      out_perm(6) = 19;
+      out_perm(7) = 20;
+      out_perm(8) = 22;
+      out_perm(9) = 23;
+      out_perm(10) = 1;
+      out_perm(11) = 2;
+      out_perm(12) = 3;
+      out_perm(13) = 4;
+      out_perm(14) = 5;
+      out_perm(15) = 6;
+      out_perm(16) = 9;
+      out_perm(17) = 12;
+      out_perm(18) = 13;
+      out_perm(19) = 15;
+      out_perm(20) = 16;
+      out_perm(21) = 17;
+      out_perm(22) = 18;
+      out_perm(23) = 21;
+      out_perm(24) = 24;
+      out_perm(25) = 25;
+      out_perm(26) = 26;
+      out_perm(27) = 27;
+      out_perm(28) = 28;
+      out_perm(29) = 29;
+      out_perm(30) = 30;
     end % perm
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_unperm = unperm( this )
+    function out_unperm = unperm( ~ )
       % Evaluate the unpermutation vector.
 
       % Extract properties
@@ -719,74 +490,45 @@ classdef Test_00 < TrussMe.System
       % No inputs
 
       % Evaluate function
-      out_1 = 17;
-      out_2 = 18;
-      out_3 = 19;
-      out_4 = 20;
-      out_5 = 21;
-      out_6 = 1;
-      out_7 = 2;
-      out_8 = 3;
-      out_9 = 4;
-      out_10 = 5;
-      out_11 = 6;
-      out_12 = 7;
-      out_13 = 22;
-      out_14 = 8;
-      out_15 = 23;
-      out_16 = 24;
-      out_17 = 25;
-      out_18 = 9;
-      out_19 = 10;
-      out_20 = 11;
-      out_21 = 12;
-      out_22 = 13;
-      out_23 = 14;
-      out_24 = 15;
-      out_25 = 26;
-      out_26 = 27;
-      out_27 = 28;
-      out_28 = 29;
-      out_29 = 30;
-      out_30 = 16;
+      % No body
 
       % Store outputs
       out_unperm = zeros(30, 1);
-      out_unperm(1) = out_1;
-      out_unperm(2) = out_2;
-      out_unperm(3) = out_3;
-      out_unperm(4) = out_4;
-      out_unperm(5) = out_5;
-      out_unperm(6) = out_6;
-      out_unperm(7) = out_7;
-      out_unperm(8) = out_8;
-      out_unperm(9) = out_9;
-      out_unperm(10) = out_10;
-      out_unperm(11) = out_11;
-      out_unperm(12) = out_12;
-      out_unperm(13) = out_13;
-      out_unperm(14) = out_14;
-      out_unperm(15) = out_15;
-      out_unperm(16) = out_16;
-      out_unperm(17) = out_17;
-      out_unperm(18) = out_18;
-      out_unperm(19) = out_19;
-      out_unperm(20) = out_20;
-      out_unperm(21) = out_21;
-      out_unperm(22) = out_22;
-      out_unperm(23) = out_23;
-      out_unperm(24) = out_24;
-      out_unperm(25) = out_25;
-      out_unperm(26) = out_26;
-      out_unperm(27) = out_27;
-      out_unperm(28) = out_28;
-      out_unperm(29) = out_29;
-      out_unperm(30) = out_30;
+      out_unperm(1) = 10;
+      out_unperm(2) = 11;
+      out_unperm(3) = 12;
+      out_unperm(4) = 13;
+      out_unperm(5) = 14;
+      out_unperm(6) = 15;
+      out_unperm(7) = 1;
+      out_unperm(8) = 2;
+      out_unperm(9) = 16;
+      out_unperm(10) = 3;
+      out_unperm(11) = 4;
+      out_unperm(12) = 17;
+      out_unperm(13) = 18;
+      out_unperm(14) = 5;
+      out_unperm(15) = 19;
+      out_unperm(16) = 20;
+      out_unperm(17) = 21;
+      out_unperm(18) = 22;
+      out_unperm(19) = 6;
+      out_unperm(20) = 7;
+      out_unperm(21) = 23;
+      out_unperm(22) = 8;
+      out_unperm(23) = 9;
+      out_unperm(24) = 24;
+      out_unperm(25) = 25;
+      out_unperm(26) = 26;
+      out_unperm(27) = 27;
+      out_unperm(28) = 28;
+      out_unperm(29) = 29;
+      out_unperm(30) = 30;
     end % unperm
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_v = v( this, ~ )
+    function out_v = v( ~, ~ )
       % Evaluate the veiling vector.
 
       % Extract properties
