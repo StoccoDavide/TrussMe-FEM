@@ -130,10 +130,10 @@ export DrawFrame := proc(
   end if;
 
   tmp := subs(op(data), frame);
-  p := [TrussMe:-FEM:-CompXYZ(TrussMe:-FEM:-Origin(tmp))]:
-  x := [TrussMe:-FEM:-CompXYZ(TrussMe:-FEM:-UvecX(tmp))]:
-  y := [TrussMe:-FEM:-CompXYZ(TrussMe:-FEM:-UvecY(tmp))]:
-  z := [TrussMe:-FEM:-CompXYZ(TrussMe:-FEM:-UvecZ(tmp))]:
+  p := [TrussMe:-FEM:-CompXYZ(TrussMe:-FEM:-Origin(tmp))];
+  x := [TrussMe:-FEM:-CompXYZ(TrussMe:-FEM:-UvecX(tmp))];
+  y := [TrussMe:-FEM:-CompXYZ(TrussMe:-FEM:-UvecY(tmp))];
+  z := [TrussMe:-FEM:-CompXYZ(TrussMe:-FEM:-UvecZ(tmp))];
 
   return plots:-display(
     plots:-arrow(p, scaling*x, parse("shape") = cylindrical_arrow, parse("color") = colors[1]),
@@ -321,7 +321,7 @@ export PlotLoad := proc(
   if type(p_1, list) and evalb(nops(p_1) = 3) then
     p_1_tmp :=  subs(op(data), p_1);
   elif type(p_1, Vector) and evalb(LinearAlgebra:-Dimension(p_1) = 4) then
-    p_1_tmp := convert( subs(op(data), p_1), list)[1..3];
+    p_1_tmp := convert(subs(op(data), p_1), list)[1..3];
   else
     error("<p_1> must be a list of 3 elements or a vector of 4 elements.");
   end if;
@@ -329,7 +329,7 @@ export PlotLoad := proc(
   if type(p_2, list) and evalb(nops(p_2) = 3) then
     p_2_tmp :=  subs(op(data), p_2);
   elif type(p_2, Vector) and evalb(LinearAlgebra:-Dimension(p_2) = 4) then
-    p_2_tmp := convert( subs(op(data), p_2), list)[1..3];
+    p_2_tmp := convert(subs(op(data), p_2), list)[1..3];
   else
     error("<p_2> must be a list of 3 elements or a vector of 4 elements.");
   end if;
@@ -390,7 +390,7 @@ export PlotStructure := proc(
     disp_nodes_frames := [seq(i, i = 1..nops(nodes))];
     for i from 1 to nops(nodes) do
       disp_nodes_frames[i] := TrussMe:-FEM:-DrawFrame(
-        nodes[i]["frame"], parse("scaling") = nodes_scaling
+        nodes[i]["frame"], parse("scaling") = nodes_scaling, parse("data") = data
       );
     end do;
   else
@@ -403,7 +403,7 @@ export PlotStructure := proc(
     disp_elements_frames := [seq(i, i = 1..n)];
     for i from 1 to n do
       disp_elements_frames[i] := TrussMe:-FEM:-DrawFrame(
-        elements[i]["frame"], parse("scaling") = elements_scaling
+        elements[i]["frame"], parse("scaling") = elements_scaling, parse("data") = data
       );
     end do;
   else
@@ -546,7 +546,7 @@ export PlotDeformedStructure := proc(
     for i from 1 to nops(nodes) do
       # TODO: translate and rotate according to node deformations
       disp_nodes_frames[i] := TrussMe:-FEM:-DrawFrame(
-        nodes[i]["frame"], parse("scaling") = nodes_scaling
+        nodes[i]["frame"], parse("scaling") = nodes_scaling, parse("data") = data
       );
     end do;
   else
@@ -560,7 +560,7 @@ export PlotDeformedStructure := proc(
     for i from 1 to n do
       # TODO: translate and rotate according to node deformations
       disp_elements_frames[i] := TrussMe:-FEM:-DrawFrame(
-        elements[i]["frame"], parse("scaling") = elements_scaling
+        elements[i]["frame"], parse("scaling") = elements_scaling, parse("data") = data
       );
     end do;
   else

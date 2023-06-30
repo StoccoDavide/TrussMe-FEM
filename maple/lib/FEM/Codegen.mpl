@@ -280,9 +280,9 @@ export GenerateHeader := proc(
 
   out := cat("function out_", name, " = ", name, "( ");
   if skipthis and evalb(add(map(nops, vars)) = 0) then
-    out := cat(out, "this");
-  else
     out := cat(out, "~");
+  else
+    out := cat(out, "this");
   end if;
 
   for i from 1 to nops(vars) do
@@ -404,7 +404,7 @@ export VectorToMatlab := proc(
   # Generate the method header
   header := TrussMe:-FEM:-GenerateHeader(
     name, tmp_vars_rm, parse("info") = info, parse("indent") = indent,
-    parse("skipthis") = evalb(nops(tmp_data) > 0)
+    parse("skipthis") = evalb(nops(tmp_data) = 0)
   );
 
   # Generate the elements
@@ -484,7 +484,7 @@ export MatrixToMatlab := proc(
   # Generate the method header
   header := TrussMe:-FEM:-GenerateHeader(
     name, tmp_vars_rm, parse("info") = info, parse("indent") = indent,
-    parse("skipthis") = evalb(nops(tmp_data) > 0)
+    parse("skipthis") = evalb(nops(tmp_data) = 0)
   );
 
   # Generate the elements
