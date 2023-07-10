@@ -47,6 +47,31 @@ classdef System < handle
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
+    %> Get the system data.
+    %>
+    %> \param field The system data field.
+    %>
+    %> \return The system data field.
+    %
+    function out = get_data_field( this, field )
+      out = this.m_data.(field);
+    end
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    %> Set the system data.
+    %>
+    %> \param field The system data field.
+    %> \param value The system data field value.
+    %>
+    %> \param t_data The system data.
+    %
+    function set_data_field( this, field, value )
+      this.m_data.(field) = value
+    end
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
     %> Compute the system stiffness matrix \f$ \mathbf{K} \f$ as:
     %>
     %> \f[

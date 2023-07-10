@@ -30,7 +30,7 @@ end proc: # IsFRAME
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export GenerateFrame := proc(
+export GenerateFrameXY := proc(
   p_1::{list, Vector, VECTOR, POINT},
   p_2::{list, Vector, VECTOR, POINT},
   vec::{list, Vector, VECTOR},
@@ -84,7 +84,65 @@ export GenerateFrame := proc(
           <e_y,     0>|
           <e_z,     0>|
           <p_1_tmp, 1>>;
-end proc: # GenerateFrame
+end proc: # GenerateFrameXY
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export GenerateFrameXZ := proc(
+  p_1::{list, Vector, VECTOR, POINT},
+  p_2::{list, Vector, VECTOR, POINT},
+  vec::{list, Vector, VECTOR},
+  $)::FRAME;
+
+  description "Generate a reference frame matrix from three points or vectors "
+    "<p_1>, <p_2> and vector <vec> ortogonal to XZ-plane <vec>";
+
+  local p_1_tmp, p_2_tmp, vec_tmp, e_x, e_y, e_z;
+
+  if type(p_1, Vector) and evalb(LinearAlgebra:-Dimension(p_1) = 3) then
+    p_1_tmp := p_1;
+  elif type(p_1, list) and evalb(nops(p_1) = 3) then
+    p_1_tmp := convert(p_1, Vector);
+  elif type(p_1, VECTOR) or type(p_1, POINT) then
+    p_1_tmp := p_1[1..3];
+  else
+    error("<p_1> must be a list of 3 elements or a vector of 4 elements.");
+  end if;
+
+  if type(p_2, Vector) and evalb(LinearAlgebra:-Dimension(p_2) = 3) then
+    p_2_tmp := p_2;
+  elif type(p_2, list) and evalb(nops(p_2) = 3) then
+    p_2_tmp := convert(p_2, Vector);
+  elif type(p_2, VECTOR) or type(p_2, POINT) then
+    p_2_tmp := p_2[1..3];
+  else
+    error("<p_2> must be a list of 3 elements or a vector of 4 elements.");
+  end if;
+
+  if type(vec, Vector) and evalb(LinearAlgebra:-Dimension(vec) = 3) then
+    vec_tmp := vec;
+  elif type(vec, list) and evalb(nops(vec) = 3) then
+    vec_tmp := convert(vec, Vector);
+  elif type(vec, VECTOR) or type(vec, POINT) then
+    vec_tmp := vec[1..3];
+  else
+    error("<vec> must be a list of 3 elements or a vector of 4 elements.");
+  end if;
+
+  e_z := p_2_tmp - p_1_tmp;
+  e_z := e_z / TrussMe:-FEM:-Norm2(e_z);
+
+  e_x := LinearAlgebra:-CrossProduct(vec_tmp, e_z);
+  e_x := e_x / TrussMe:-FEM:-Norm2(e_x);
+
+  e_y := LinearAlgebra:-CrossProduct(e_z, e_x);
+  e_y := e_y / TrussMe:-FEM:-Norm2(e_y);
+
+  return <<e_x,     0>|
+          <e_y,     0>|
+          <e_z,     0>|
+          <p_1_tmp, 1>>;
+end proc: # GenerateFrameXZ
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
