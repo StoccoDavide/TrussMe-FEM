@@ -67,7 +67,7 @@ classdef System < handle
     %> \param t_data The system data.
     %
     function set_data_field( this, field, value )
-      this.m_data.(field) = value
+      this.m_data.(field) = value;
     end
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

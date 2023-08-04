@@ -991,10 +991,10 @@ export SolveFEM := proc(
   }, $)
 
   description "Solve the FEM structure <fem> and optionally use LAST LU "
-    "decompostion <use_LAST> and veil the expressions <use_LEM> with signature "
-    "mode <use_SIG> and label <label>. Factorization method <factorization> "
-    "can be choosen between 'LU', fraction-free 'FFLU', 'QR', and Gauss-Jordan "
-    "'GJ'.";
+    "decompostion <use_LAST> and veil the expressions <use_LEM> with "
+    "signature mode <use_SIG> and label <label>. Factorization method "
+    "<factorization> can be choosen between 'LU', fraction-free 'FFLU', 'QR', "
+    "and Gauss-Jordan 'GJ'.";
 
   local dofs, LAST_obj, LEM_obj, i;
 
@@ -1053,15 +1053,6 @@ export SolveFEM := proc(
       LAST_obj, fem["f_f"] - fem["K_fs"].fem["d_s"]
     );
 
-    # Unveil expressions if required
-    if use_LEM then
-      fem["label"] := label;
-      fem["veils"] := LEM_obj:-VeilList(LEM_obj);
-    else
-      fem["d_f"]   := LEM_obj:-Unveil(LEM_obj, fem["d_f"]);
-      fem["label"] := "";
-      fem["veils"] := [];
-    end if;
   else
 
     if TrussMe:-FEM:-m_VerboseMode then
@@ -1074,6 +1065,7 @@ export SolveFEM := proc(
     ) assuming real;
     fem["label"] := "";
     fem["veils"] := [];
+
   end if;
 
   if TrussMe:-FEM:-m_VerboseMode then
@@ -1084,16 +1076,36 @@ export SolveFEM := proc(
   # Solve reactions
   fem["f_s"] := fem["K_sf"].fem["d_f"] + fem["K_ss"].fem["d_s"] - fem["f_r"];
 
+  # Unveil expressions if required
+  if use_LAST and use_LEM then
+    fem["label"] := label;
+    fem["veils"] := LEM_obj:-VeilList(LEM_obj);
+  else
+    if TrussMe:-FEM:-m_VerboseMode then
+      printf("DONE\n");
+      printf("Unveiling expressions... ");
+    end if;
+    fem["d_f"]   := LEM_obj:-Unveil(LEM_obj, fem["d_f"]);
+    fem["f_s"]   := LEM_obj:-Unveil(LEM_obj, fem["f_s"]);
+    fem["label"] := "";
+    fem["veils"] := [];
+  end if;
+
+  if TrussMe:-FEM:-m_VerboseMode then
+    printf("DONE\n");
+    printf("Applying inverse permutation... ");
+  end if;
+
   # Store output displacements and reactions and restore initial permutation
   fem["d"] := convert(<fem["d_f"], fem["d_s"]>[fem["unperm"]], Vector);
   fem["f"] := convert(<fem["f_f"], fem["f_s"]>[fem["unperm"]], Vector);
 
-  # Mark as solved
-  fem["solved"] := true;
-
   if TrussMe:-FEM:-m_VerboseMode then
     printf("DONE\n");
   end if;
+
+  # Mark as solved
+  fem["solved"] := true;
 
   return NULL;
 end proc: # SolveFEM

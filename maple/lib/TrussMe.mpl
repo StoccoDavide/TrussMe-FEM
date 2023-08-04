@@ -357,11 +357,12 @@ export FEM := module()
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 $include "./lib/FEM/Affine.mpl"
-$include "./lib/FEM/Material.mpl"
-$include "./lib/FEM/Structure.mpl"
-$include "./lib/FEM/Load.mpl"
 $include "./lib/FEM/Codegen.mpl"
+$include "./lib/FEM/Differentiation.mpl"
+$include "./lib/FEM/Load.mpl"
+$include "./lib/FEM/Material.mpl"
 $include "./lib/FEM/Plot.mpl"
+$include "./lib/FEM/Structure.mpl"
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

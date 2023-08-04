@@ -515,46 +515,46 @@ end proc: # MatrixToMatlab
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 export GetVeilSubs := proc(
-    veil::{Vector(algebraic), list(algebraic)},
-    $)
+  veil::{Vector(algebraic), list(algebraic)},
+  $)
 
-    description "Get the substitutions to transform veils <vars> from "
-      "(v[j])(f) to v_j.";
+  description "Get the substitutions to transform veils <veil> from "
+    "(v[j])(f) to v_j.";
 
-    local v, rm_v_deps, i, v_tmp;
+  local v, rm_v_deps, i, v_tmp;
 
-    # Store veiling variables
-    if not type(veil, list) then
-      v := convert(veil, list);
-    else
-      v := veil;
-    end if;
+  # Store veiling variables
+  if not type(veil, list) then
+    v := convert(veil, list);
+  else
+    v := veil;
+  end if;
 
-    # Compute transformations
-    if (nops(v) > 0) then
-      # Transform veil variables (v[i])(f) -> v_i
-      v_tmp := Array(v);
-      #for i from 1 to nops(v_tmp) do
-      for i from 1 to op(2, ArrayDims(v_tmp)) do
-        # (v[i])(f) -> v[i]
-        if type(v_tmp[i], function) then
-          v_tmp[i] := op(0, v_tmp[i]);
-        end if;
-        # v[i] -> v_i
-        if type(v_tmp[i], indexed) then
-          v_tmp[i] := convert(
-            cat(op(0, v_tmp[i]), "_", op(1..-1, v_tmp[i])), symbol
-          );
-        end if;
-      end do;
-      rm_v_deps := v =~ convert(v_tmp, list);
-    else
-      rm_v_deps := [];
-    end if;
+  # Compute transformations
+  if (nops(v) > 0) then
+    # Transform veil variables (v[i])(f) -> v_i
+    v_tmp := Array(v);
+    #for i from 1 to nops(v_tmp) do
+    for i from 1 to op(2, ArrayDims(v_tmp)) do
+      # (v[i])(f) -> v[i]
+      if type(v_tmp[i], function) then
+        v_tmp[i] := op(0, v_tmp[i]);
+      end if;
+      # v[i] -> v_i
+      if type(v_tmp[i], indexed) then
+        v_tmp[i] := convert(
+          cat(op(0, v_tmp[i]), "_", op(1..-1, v_tmp[i])), symbol
+        );
+      end if;
+    end do;
+    rm_v_deps := v =~ convert(v_tmp, list);
+  else
+    rm_v_deps := [];
+  end if;
 
-    # Return output
-    return rm_v_deps;
-  end proc: # GetVeilSubs
+  # Return output
+  return rm_v_deps;
+end proc: # GetVeilSubs
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
