@@ -22,15 +22,15 @@ export ObjectColor := proc(
   description "Return the color of the object <obj>.";
 
   if type(obj, SUPPORT) then
-    return TrussMe:-FEM:-m_SupportColor;
+    return TrussMe_FEM:-m_SupportColor;
   elif type(obj, NODE) and not type(obj, SUPPORT) then
-    return TrussMe:-FEM:-m_NodeColor;
+    return TrussMe_FEM:-m_NodeColor;
   elif type(obj, ELEMENT) and evalb(nops(obj["nodes"]) = 2) then
-    return TrussMe:-FEM:-m_ElementColor;
+    return TrussMe_FEM:-m_ElementColor;
   elif type(obj, ELEMENT) and evalb(nops(obj["nodes"]) > 2) then
-    return TrussMe:-FEM:-m_ShellColor;
+    return TrussMe_FEM:-m_ShellColor;
   elif type(obj, LOAD) then
-    return TrussMe:-FEM:-m_ForceColor;
+    return TrussMe_FEM:-m_ForceColor;
   else
     error("<obj> must be a node, support, element or load.");
   end if;
@@ -71,9 +71,9 @@ export StructureGraph := proc(
     seq(obj["id"], obj = loads)
   ];
   vertex_color := [
-    seq(TrussMe:-FEM:-ObjectColor(obj), obj = nodes),
-    seq(TrussMe:-FEM:-ObjectColor(obj), obj = elements),
-    seq(TrussMe:-FEM:-ObjectColor(obj), obj = loads)
+    seq(TrussMe_FEM:-ObjectColor(obj), obj = nodes),
+    seq(TrussMe_FEM:-ObjectColor(obj), obj = elements),
+    seq(TrussMe_FEM:-ObjectColor(obj), obj = loads)
   ];
 
   # Build graph
@@ -97,7 +97,7 @@ export StructureGraph := proc(
     G := GraphTheory:-RelabelVertices(G, vertex_name);
   end if;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf(" DONE\n");
   end if;
 
@@ -130,10 +130,10 @@ export DrawFrame := proc(
   end if;
 
   tmp := subs(op(data), frame);
-  p := [TrussMe:-FEM:-CompXYZ(TrussMe:-FEM:-Origin(tmp))];
-  x := [TrussMe:-FEM:-CompXYZ(TrussMe:-FEM:-UvecX(tmp))];
-  y := [TrussMe:-FEM:-CompXYZ(TrussMe:-FEM:-UvecY(tmp))];
-  z := [TrussMe:-FEM:-CompXYZ(TrussMe:-FEM:-UvecZ(tmp))];
+  p := [TrussMe_FEM:-CompXYZ(TrussMe_FEM:-Origin(tmp))];
+  x := [TrussMe_FEM:-CompXYZ(TrussMe_FEM:-UvecX(tmp))];
+  y := [TrussMe_FEM:-CompXYZ(TrussMe_FEM:-UvecY(tmp))];
+  z := [TrussMe_FEM:-CompXYZ(TrussMe_FEM:-UvecZ(tmp))];
 
   return plots:-display(
     plots:-arrow(p, scaling*x, parse("shape") = cylindrical_arrow, parse("color") = colors[1]),
@@ -148,8 +148,8 @@ export PlotNode := proc(
   p::{list(algebraic), Vector(algebraic)},
   {
   data::{list(`=`), set(`=`)} := [],
-  token::symbol               := TrussMe:-FEM:-m_NodeToken,
-  color::string               := TrussMe:-FEM:-m_NodeColor
+  token::symbol               := TrussMe_FEM:-m_NodeToken,
+  color::string               := TrussMe_FEM:-m_NodeColor
   }, $)::function;
 
   description "Plot the node (or support) at point <p> given a list or set of "
@@ -181,7 +181,7 @@ export PlotElement := proc(
   p_2::{list(algebraic), Vector(algebraic)},
   {
   data::{list(`=`), set(`=`)} := [],
-  color::string               := TrussMe:-FEM:-m_ElementColor
+  color::string               := TrussMe_FEM:-m_ElementColor
   }, $)::function;
 
   description "Plot the element from point <p_1> and <p_2> given a list or set "
@@ -223,7 +223,7 @@ export PlotDeformedElement := proc(
   {
   data::{list(`=`), set(`=`)} := [],
   scaling::nonnegative        := 1.0,
-  color::string               := TrussMe:-FEM:-m_ElementColor
+  color::string               := TrussMe_FEM:-m_ElementColor
   }, $)::function;
 
   description "Plot the element from diplacements <d_1> and <d_2> given a list "
@@ -265,30 +265,30 @@ export PlotDeformedElement := proc(
   end if;
 
   p1p2 := p_2_tmp - p_1_tmp;
-  p1p2_unit := try abs(p1p2 /~ TrussMe:-FEM:-Norm2(p1p2[1..3])) catch: [1,0,0] end try;
+  p1p2_unit := try abs(p1p2 /~ TrussMe_FEM:-Norm2(p1p2[1..3])) catch: [1,0,0] end try;
 
   # Calculate intermediate points through interpolation
   x := (d_1_tmp[1]*(1-xi) + d_2_tmp[1]*xi) * p1p2_unit[1] +
        (d_1_tmp[1]*(1-3*xi^2+2*xi^3) + d_2_tmp[1]*(3*xi^2-2*xi^3)) *
-       TrussMe:-FEM:-Norm2(p1p2_unit[2..3]) +
+       TrussMe_FEM:-Norm2(p1p2_unit[2..3]) +
        (d_1_tmp[6]*(xi-xi^2)*(1-xi) + d_2_tmp[6]*(xi^2-xi^3)*xi) *
-       TrussMe:-FEM:-Norm2(p1p2_unit[2..3]) -
+       TrussMe_FEM:-Norm2(p1p2_unit[2..3]) -
        (d_1_tmp[5]*(xi-xi^2)*(1-xi) + d_2_tmp[5]*(xi^2-xi^3)*xi) *
-       TrussMe:-FEM:-Norm2(p1p2_unit[2..3]);
+       TrussMe_FEM:-Norm2(p1p2_unit[2..3]);
   y := (d_1_tmp[2]*(1-xi) + d_2_tmp[2]*xi) * p1p2_unit[2] +
        (d_1_tmp[2]*(1-3*xi^2+2*xi^3) + d_2_tmp[2]*(3*xi^2-2*xi^3)) *
-       TrussMe:-FEM:-Norm2(p1p2_unit[[1,3]]) -
+       TrussMe_FEM:-Norm2(p1p2_unit[[1,3]]) -
        (d_1_tmp[6]*(xi-xi^2)*(1-xi) + d_2_tmp[6]*(xi^2-xi^3)*xi) *
-       TrussMe:-FEM:-Norm2(p1p2_unit[[1,3]]) +
+       TrussMe_FEM:-Norm2(p1p2_unit[[1,3]]) +
        (d_1_tmp[4]*(xi-xi^2)*(1-xi) + d_2_tmp[4]*(xi^2-xi^3)*xi) *
-       TrussMe:-FEM:-Norm2(p1p2_unit[[1,3]]);
+       TrussMe_FEM:-Norm2(p1p2_unit[[1,3]]);
   z := (d_1_tmp[3]*(1-xi) + d_2_tmp[3]*xi) * p1p2_unit[3] +
        (d_1_tmp[3]*(1-3*xi^2+2*xi^3) + d_2_tmp[3]*(3*xi^2-2*xi^3)) *
-       TrussMe:-FEM:-Norm2(p1p2_unit[1..2]) -
+       TrussMe_FEM:-Norm2(p1p2_unit[1..2]) -
        (d_1_tmp[4]*(xi-xi^2)*(1-xi) + d_2_tmp[4]*(xi^2-xi^3)*xi) *
-       TrussMe:-FEM:-Norm2(p1p2_unit[1..2]) +
+       TrussMe_FEM:-Norm2(p1p2_unit[1..2]) +
        (d_1_tmp[5]*(xi-xi^2)*(1-xi) + d_2_tmp[5]*(xi^2-xi^3)*(xi)) *
-       TrussMe:-FEM:-Norm2(p1p2_unit[1..2]);
+       TrussMe_FEM:-Norm2(p1p2_unit[1..2]);
 
   deformed_element := scaling *~ <x, y, z, 0> + p_1_tmp + p1p2 *~ xi;
 
@@ -309,7 +309,7 @@ export PlotLoad := proc(
   p_2::{list(algebraic), Vector(algebraic)},
   {
   data::{list(`=`), set(`=`)} := [],
-  color::string               := TrussMe:-FEM:-m_LoadColor,
+  color::string               := TrussMe_FEM:-m_LoadColor,
   scaling::nonnegative        := 1.0
   }, $)::function;
 
@@ -337,7 +337,7 @@ export PlotLoad := proc(
   wb := max(0.02, 0.05 * scaling);
   wh := max(0.04, 0.10 * scaling);
   hh := min(0.1, try
-      (0.1 * scaling)/TrussMe:-FEM:-Norm2(p_2_tmp - p_1_tmp) catch: infinity end try
+      (0.1 * scaling)/TrussMe_FEM:-Norm2(p_2_tmp - p_1_tmp) catch: infinity end try
   );
   return plots:-display(
     plottools:-arrow(p_1_tmp, p_2_tmp, wb, wh, hh, cylindrical_arrow),
@@ -389,7 +389,7 @@ export PlotStructure := proc(
   if evalb(nodes_scaling <> 0) then
     disp_nodes_frames := [seq(i, i = 1..nops(nodes))];
     for i from 1 to nops(nodes) do
-      disp_nodes_frames[i] := TrussMe:-FEM:-DrawFrame(
+      disp_nodes_frames[i] := TrussMe_FEM:-DrawFrame(
         nodes[i]["frame"], parse("scaling") = nodes_scaling, parse("data") = data
       );
     end do;
@@ -402,7 +402,7 @@ export PlotStructure := proc(
   if evalb(elements_scaling <> 0) then
     disp_elements_frames := [seq(i, i = 1..n)];
     for i from 1 to n do
-      disp_elements_frames[i] := TrussMe:-FEM:-DrawFrame(
+      disp_elements_frames[i] := TrussMe_FEM:-DrawFrame(
         elements[i]["frame"], parse("scaling") = elements_scaling, parse("data") = data
       );
     end do;
@@ -414,13 +414,13 @@ export PlotStructure := proc(
   disp_nodes := [seq(i, i = 1..nops(nodes))];
   for i from 1 to nops(nodes) do
     p_1 := <nodes[i]["coordinates"], 1>;
-    disp_nodes[i] := TrussMe:-FEM:-PlotNode(
+    disp_nodes[i] := TrussMe_FEM:-PlotNode(
       convert(p_1, Vector), parse("data")  = data,
       parse("color") = `if`(
-        type(nodes[i], SUPPORT), TrussMe:-FEM:-m_SupportColor, TrussMe:-FEM:-m_NodeColor
+        type(nodes[i], SUPPORT), TrussMe_FEM:-m_SupportColor, TrussMe_FEM:-m_NodeColor
       ),
       parse("token") = `if`(
-        type(nodes[i], SUPPORT), TrussMe:-FEM:-m_SupportToken, TrussMe:-FEM:-m_NodeToken
+        type(nodes[i], SUPPORT), TrussMe_FEM:-m_SupportToken, TrussMe_FEM:-m_NodeToken
       )
     );
   end do;
@@ -435,15 +435,15 @@ export PlotStructure := proc(
     for j from 1 to tmp do
       for k from j to tmp do
         tmp_i := tmp_i + 1;
-        TrussMe:-FEM:-GetObjById(nodes, elements[i]["nodes"][j], parse("position") = true);
+        TrussMe_FEM:-GetObjById(nodes, elements[i]["nodes"][j], parse("position") = true);
         p_1 := <nodes[%]["coordinates"], 1>;
-        TrussMe:-FEM:-GetObjById(nodes, elements[i]["nodes"][k+1], parse("position") = true);
+        TrussMe_FEM:-GetObjById(nodes, elements[i]["nodes"][k+1], parse("position") = true);
         p_2 := <nodes[%]["coordinates"], 1>;
-        disp_elements[tmp_i] := TrussMe:-FEM:-PlotElement(
+        disp_elements[tmp_i] := TrussMe_FEM:-PlotElement(
           convert(p_1, Vector), convert(p_2, Vector),
           parse("data")  = data,
           parse("color") = `if`(evalb(nops(elements[i]["nodes"]) = 2),
-            TrussMe:-FEM:-m_ElementColor, TrussMe:-FEM:-m_ShellColor)
+            TrussMe_FEM:-m_ElementColor, TrussMe_FEM:-m_ShellColor)
         );
       end do;
     end do;
@@ -453,7 +453,7 @@ export PlotStructure := proc(
   if evalb(load_scaling <> 0) then
     disp_loads := [seq(i, i = 1..2*nops(loads))];
     for i from 1 to nops(loads) do
-      j := TrussMe:-FEM:-GetObjById(nodes, loads[i]["node"], parse("position") = true);
+      j := TrussMe_FEM:-GetObjById(nodes, loads[i]["node"], parse("position") = true);
       p_2 := <nodes[j]["coordinates"], 1>;
 
       # Plot forces
@@ -462,11 +462,11 @@ export PlotStructure := proc(
       else
         p_1 := p_2 - loads[i]["frame"].<load_scaling * loads[i]["components"][1..3], 0>;
       end if;
-      disp_loads[2*i-1] := TrussMe:-FEM:-PlotLoad(
+      disp_loads[2*i-1] := TrussMe_FEM:-PlotLoad(
         convert(p_1, Vector), convert(p_2, Vector),
         parse("data")    = data,
         parse("scaling") = load_scaling,
-        parse("color")   = TrussMe:-FEM:-m_ForceColor
+        parse("color")   = TrussMe_FEM:-m_ForceColor
       );
 
       # Plot moments
@@ -475,11 +475,11 @@ export PlotStructure := proc(
       else
         p_1 := p_2 - loads[i]["frame"].<load_scaling * loads[i]["components"][4..6], 0>;
       end if;
-      disp_loads[2*i] := TrussMe:-FEM:-PlotLoad(
+      disp_loads[2*i] := TrussMe_FEM:-PlotLoad(
         convert(p_1, Vector), convert(p_2, Vector),
         parse("data")    = data,
         parse("scaling") = load_scaling,
-        parse("color")   = TrussMe:-FEM:-m_MomentColor
+        parse("color")   = TrussMe_FEM:-m_MomentColor
       );
     end do;
   else
@@ -545,7 +545,7 @@ export PlotDeformedStructure := proc(
     disp_nodes_frames := [seq(i, i = 1..nops(nodes))];
     for i from 1 to nops(nodes) do
       # TODO: translate and rotate according to node deformations
-      disp_nodes_frames[i] := TrussMe:-FEM:-DrawFrame(
+      disp_nodes_frames[i] := TrussMe_FEM:-DrawFrame(
         nodes[i]["frame"], parse("scaling") = nodes_scaling, parse("data") = data
       );
     end do;
@@ -559,7 +559,7 @@ export PlotDeformedStructure := proc(
     disp_elements_frames := [seq(i, i = 1..n)];
     for i from 1 to n do
       # TODO: translate and rotate according to node deformations
-      disp_elements_frames[i] := TrussMe:-FEM:-DrawFrame(
+      disp_elements_frames[i] := TrussMe_FEM:-DrawFrame(
         elements[i]["frame"], parse("scaling") = elements_scaling, parse("data") = data
       );
     end do;
@@ -575,13 +575,13 @@ export PlotDeformedStructure := proc(
         deformation_scaling *~ nodes[i]["frame"][1..3, 1..3].nodes[i]["output_displacements"][1..3], 1>,
       Vector
     );
-    disp_nodes[i] := TrussMe:-FEM:-PlotNode(
+    disp_nodes[i] := TrussMe_FEM:-PlotNode(
       p_1, parse("data")  = data_tmp,
       parse("color") = `if`(
-        type(nodes[i], SUPPORT), TrussMe:-FEM:-m_SupportColor, TrussMe:-FEM:-m_NodeColor
+        type(nodes[i], SUPPORT), TrussMe_FEM:-m_SupportColor, TrussMe_FEM:-m_NodeColor
       ),
       parse("token") = `if`(
-        type(nodes[i], SUPPORT), TrussMe:-FEM:-m_SupportToken, TrussMe:-FEM:-m_NodeToken
+        type(nodes[i], SUPPORT), TrussMe_FEM:-m_SupportToken, TrussMe_FEM:-m_NodeToken
       )
     );
   end do;
@@ -597,33 +597,33 @@ export PlotDeformedStructure := proc(
       for k from j to tmp do
         tmp_i := tmp_i + 1;
         if not interpolate then
-          TrussMe:-FEM:-GetObjById(nodes, elements[i]["nodes"][j], parse("position") = true);
+          TrussMe_FEM:-GetObjById(nodes, elements[i]["nodes"][j], parse("position") = true);
           p_1 := <nodes[%]["coordinates"] +
             nodes[%]["frame"][1..3, 1..3].(deformation_scaling *~ nodes[%]["output_displacements"][1..3]), 1>;
-          TrussMe:-FEM:-GetObjById(nodes, elements[i]["nodes"][k+1], parse("position") = true);
+          TrussMe_FEM:-GetObjById(nodes, elements[i]["nodes"][k+1], parse("position") = true);
           p_2 := <nodes[%]["coordinates"] +
             nodes[%]["frame"][1..3, 1..3].(deformation_scaling *~ nodes[%]["output_displacements"][1..3]), 1>;
-          disp_elements[tmp_i] := TrussMe:-FEM:-PlotElement(
+          disp_elements[tmp_i] := TrussMe_FEM:-PlotElement(
             convert(p_1, Vector), convert(p_2, Vector), parse("data") = data,
             parse("color") = `if`(evalb(nops(elements[i]["nodes"]) = 2),
-              TrussMe:-FEM:-m_ElementColor, TrussMe:-FEM:-m_ShellColor)
+              TrussMe_FEM:-m_ElementColor, TrussMe_FEM:-m_ShellColor)
           );
         else
-          TrussMe:-FEM:-GetObjById(nodes, elements[i]["nodes"][j], parse("position") = true);
+          TrussMe_FEM:-GetObjById(nodes, elements[i]["nodes"][j], parse("position") = true);
           p_1 := <nodes[%]["coordinates"], 1>;
           d_1 := <nodes[%%]["frame"][1..3, 1..3].nodes[%%]["output_displacements"][1..3],
             nodes[%%]["frame"][1..3, 1..3].nodes[%%]["output_displacements"][4..6]>;
-          TrussMe:-FEM:-GetObjById(nodes, elements[i]["nodes"][k+1], parse("position") = true);
+          TrussMe_FEM:-GetObjById(nodes, elements[i]["nodes"][k+1], parse("position") = true);
           p_2 := <nodes[%]["coordinates"], 1>;
           d_2 := <nodes[%%]["frame"][1..3, 1..3].nodes[%%]["output_displacements"][1..3],
             nodes[%%]["frame"][1..3, 1..3].nodes[%%]["output_displacements"][4..6]>;
-          disp_elements[tmp_i] := TrussMe:-FEM:-PlotDeformedElement(
+          disp_elements[tmp_i] := TrussMe_FEM:-PlotDeformedElement(
             convert(p_1, Vector), convert(p_2, Vector),
             convert(d_1, Vector), convert(d_2, Vector),
             parse("data")    = data_tmp,
             parse("scaling") = deformation_scaling,
             parse("color")   = `if`(evalb(nops(elements[i]["nodes"]) = 2),
-              TrussMe:-FEM:-m_ElementColor, TrussMe:-FEM:-m_ShellColor)
+              TrussMe_FEM:-m_ElementColor, TrussMe_FEM:-m_ShellColor)
           );
         end if;
       end do;
@@ -634,7 +634,7 @@ export PlotDeformedStructure := proc(
   if evalb(load_scaling <> 0) then
     disp_loads := [seq(i, i = 1..2*nops(loads))];
     for i from 1 to nops(loads) do
-      j := TrussMe:-FEM:-GetObjById(nodes, loads[i]["node"], parse("position") = true);
+      j := TrussMe_FEM:-GetObjById(nodes, loads[i]["node"], parse("position") = true);
       p_2 := <nodes[j]["coordinates"] +
         deformation_scaling *~ nodes[j]["output_displacements"][1..3], 1>;
 
@@ -644,11 +644,11 @@ export PlotDeformedStructure := proc(
       else
         p_1 := p_2 - loads[i]["frame"].<load_scaling * loads[i]["components"][1..3], 0>;
       end if;
-      disp_loads[2*i-1] := TrussMe:-FEM:-PlotLoad(
+      disp_loads[2*i-1] := TrussMe_FEM:-PlotLoad(
         convert(p_1, Vector), convert(p_2, Vector),
         parse("data")    = data_tmp,
         parse("scaling") = load_scaling,
-        parse("color")   = TrussMe:-FEM:-m_ForceColor
+        parse("color")   = TrussMe_FEM:-m_ForceColor
       );
 
       # Plot moments
@@ -657,11 +657,11 @@ export PlotDeformedStructure := proc(
       else
         p_1 := p_2 - loads[i]["frame"].<load_scaling * loads[i]["components"][4..6], 0>;
       end if;
-      disp_loads[2*i] := TrussMe:-FEM:-PlotLoad(
+      disp_loads[2*i] := TrussMe_FEM:-PlotLoad(
         convert(p_1, Vector), convert(p_2, Vector),
         parse("data")    = data_tmp,
         parse("scaling") = load_scaling,
-        parse("color")   = TrussMe:-FEM:-m_MomentColor
+        parse("color")   = TrussMe_FEM:-m_MomentColor
       );
     end do;
   else

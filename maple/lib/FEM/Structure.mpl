@@ -110,7 +110,7 @@ export MakeNode := proc(
   return table([
     "type"                 = NODE,
     "name"                 = name,
-    "id"                   = TrussMe:-FEM:-GenerateId(),
+    "id"                   = TrussMe_FEM:-GenerateId(),
     "frame"                = frame, # Reference frame from global to local
     "coordinates"          = coordinates_tmp, # Coordinates in the global frame
     "dofs"                 = dofs, # Constrained dofs in the local frame
@@ -142,14 +142,14 @@ export MakeCompliantNode := proc(
 
   local fixed, spring, compliant;
 
-  fixed := TrussMe:-FEM:-MakeNode(
+  fixed := TrussMe_FEM:-MakeNode(
     name, coordinates, parse("frame") = frame, parse("dofs") = dofs,
     parse("displacements") = displacements
   );
-  compliant := TrussMe:-FEM:-MakeNode(
+  compliant := TrussMe_FEM:-MakeNode(
     cat(name, "_compliant"), coordinates, parse("frame") = frame
   );
-  spring := TrussMe:-FEM:-MakeSpring(
+  spring := TrussMe_FEM:-MakeSpring(
     cat(name, "_spring"), fixed, compliant,
     parse("frame") = frame, parse("K") = K, parse("T") = T
   );
@@ -199,7 +199,7 @@ export GetSpringStiffness := proc(
     error("<T> must be a list of 3 elements or a single element.");
   end if;
 
-  if TrussMe:-FEM:-m_WarningMode then
+  if TrussMe_FEM:-m_WarningMode then
     if type(K_x, numeric) and evalb(K_x < 0) then
       WARNING("negative x-axis translational stiffness detected.");
     end if;
@@ -249,7 +249,7 @@ export GetRodStiffness := proc(
     "modulus <G>, the length <L>, and the cross-section inertia <I_x>, <I_y> "
     "and <I_z>.";
 
-  if TrussMe:-FEM:-m_WarningMode then
+  if TrussMe_FEM:-m_WarningMode then
     if type(A, numeric) and evalb(A <= 0) then
       WARNING("null or negative cross-section area detected.");
     end if;
@@ -273,7 +273,7 @@ export GetRodStiffness := proc(
     end if;
   end if;
 
-  return TrussMe:-FEM:-GetSpringStiffness([E*A/L, 0, 0], [G*(I_y+I_z)/L, 0, 0]);
+  return TrussMe_FEM:-GetSpringStiffness([E*A/L, 0, 0], [G*(I_y+I_z)/L, 0, 0]);
 
 end proc: # GetRodStiffness
 
@@ -295,7 +295,7 @@ export GetBeamStiffness := proc(
 
   local out, EA_L, GJ_L, EIy_L, EIy_L2, EIy_L3, EIz_L, EIz_L2, EIz_L3;
 
-  if TrussMe:-FEM:-m_WarningMode then
+  if TrussMe_FEM:-m_WarningMode then
     if type(A, numeric) and evalb(A <= 0) then
       WARNING("null or negative cross-section area detected.");
     end if;
@@ -367,7 +367,7 @@ export GetTimoshenkoBeamStiffness := proc(
 
   local out, P_y, P_z, EA_L, GJ_L, EIy_L, EIy_L2, EIy_L3, EIz_L, EIz_L2, EIz_L3;
 
-  if TrussMe:-FEM:-m_WarningMode then
+  if TrussMe_FEM:-m_WarningMode then
     if type(A, numeric) and evalb(A <= 0) then
       WARNING("null or negative cross-section area detected.");
     end if;
@@ -396,9 +396,9 @@ export GetTimoshenkoBeamStiffness := proc(
 
   EA_L  := E*A/L;
   GJ_L  := G*(I_y+I_z)/L;
-  EIy_L := TrussMe:-FEM:-Simplify(E*I_y/((1+P_y)*L));
+  EIy_L := TrussMe_FEM:-Simplify(E*I_y/((1+P_y)*L));
   EIy_L2 := EIy_L/L; EIy_L3 := EIy_L2/L;
-  EIz_L := TrussMe:-FEM:-Simplify(E*I_z/((1+P_z)*L));
+  EIz_L := TrussMe_FEM:-Simplify(E*I_z/((1+P_z)*L));
   EIz_L2 := EIz_L/L; EIz_L3 := EIz_L2/L;
 
   out := Matrix(12, storage = sparse);
@@ -487,7 +487,7 @@ export MakeElement := proc(
   # Ni::{NODE, list({NODE, DOFS}), Vector({NODE, DOFS})},
   # K::STIFFNESS,
   {
-  frame::FRAME := TrussMe:-FEM:-GenerateGenericFrame(name)
+  frame::FRAME := TrussMe_FEM:-GenerateGenericFrame(name)
   })::ELEMENT;
 
   description "Make an element with name <name> on reference frame <frame>, "
@@ -520,11 +520,11 @@ export MakeElement := proc(
   return table([
     "type"      = ELEMENT,
     "name"      = name,
-    "id"        = TrussMe:-FEM:-GenerateId(),
+    "id"        = TrussMe_FEM:-GenerateId(),
     "frame"     = frame, # Reference frame from global to local
     "nodes"     = nodes,
-    "dofs"      = dofs, # Constrained dofs on nodes in local frame
-    "stiffness" = K # Stiffness matrix in local frame
+    "dofs"      = dofs,  # Constrained dofs on nodes in local frame
+    "stiffness" = K      # Stiffness matrix in local frame
   ]);
 end proc: # MakeElement
 
@@ -537,7 +537,7 @@ export MakeSpring := proc(
   {
   K::{algebraic, list(algebraic)} := 0,
   T::{algebraic, list(algebraic)} := 0,
-  frame::FRAME                    := TrussMe:-FEM:-GenerateGenericFrame(name),
+  frame::FRAME                    := TrussMe_FEM:-GenerateGenericFrame(name),
   distance::algebraic             := 0
   }, $)::ELEMENT;
 
@@ -547,8 +547,8 @@ export MakeSpring := proc(
     "stiffnesses <K> or <K_x, K_y, K_z>, and torsional stiffnesses <T> or "
     "<T_x, T_y, T_z>. Optional nodes distance <distance> can be specified.";
 
-  return TrussMe:-FEM:-MakeElement(
-    name, N1, N2, TrussMe:-FEM:-GetSpringStiffness(K, T), parse("frame") = frame
+  return TrussMe_FEM:-MakeElement(
+    name, N1, N2, TrussMe_FEM:-GetSpringStiffness(K, T), parse("frame") = frame
   );
 end proc: # MakeSpring
 
@@ -559,17 +559,17 @@ export MakeRod := proc(
   N1::{NODE, list({NODE, DOFS}), Vector({NODE, DOFS})},
   N2::{NODE, list({NODE, DOFS}), Vector({NODE, DOFS})},
   {
-  material::MATERIAL       := TrussMe:-FEM:-MakeCarbonSteel(),
+  material::MATERIAL       := TrussMe_FEM:-MakeCarbonSteel(),
   area::algebraic          := 0,
   inertia::list(algebraic) := [0, 0, 0],
-  frame::FRAME             := TrussMe:-FEM:-GenerateGenericFrame(name),
+  frame::FRAME             := TrussMe_FEM:-GenerateGenericFrame(name),
   distance::algebraic      := -1
   }, $)::ELEMENT;
 
   description "Make a rod element with name <name> on reference frame <frame>, "
-    "connecting the dofs <N1_dofs> on node 1 <[N1, N1_dofs]>, connecting "
-    "the dofs <N2_dofs> on node 2 <[N2, N2_dofs]> with material <material>, "
-    "cross-section area <area>and inertia <inertia>. Optional nodes distance "
+    "connecting the dofs <N1_dofs> on node 1 <[N1, N1_dofs]> and the dofs "
+    "<N2_dofs> on node 2 <[N2, N2_dofs]>, with material <material>, "
+    "cross-section area <area> and inertia <inertia>. Optional nodes distance "
     "<distance> can be specified.";
 
   local L, coordinates_1, coordinates_2;
@@ -591,10 +591,10 @@ export MakeRod := proc(
     else
       error("<N2> must be a node or a list of node and dofs.");
     end if;
-    L := TrussMe:-FEM:-Norm2(coordinates_2 - coordinates_1);
+    L := TrussMe_FEM:-Norm2(coordinates_2 - coordinates_1);
   end if;
 
-  return TrussMe:-FEM:-MakeElement(name, N1, N2, TrussMe:-FEM:-GetRodStiffness(
+  return TrussMe_FEM:-MakeElement(name, N1, N2, TrussMe_FEM:-GetRodStiffness(
       area, material["elastic_modulus"], material["shear_modulus"], L, op(inertia)
     ), parse("frame") = frame
   );
@@ -607,10 +607,10 @@ export MakeBeam := proc(
   N1::{NODE, list({NODE, DOFS}), Vector({NODE, DOFS})},
   N2::{NODE, list({NODE, DOFS}), Vector({NODE, DOFS})},
   {
-  material::MATERIAL       := TrussMe:-FEM:-MakeCarbonSteel(),
+  material::MATERIAL       := TrussMe_FEM:-MakeCarbonSteel(),
   area::algebraic          := 0,
   inertia::list(algebraic) := [0, 0, 0],
-  frame::FRAME             := TrussMe:-FEM:-GenerateGenericFrame(name),
+  frame::FRAME             := TrussMe_FEM:-GenerateGenericFrame(name),
   distance::algebraic      := -1,
   timoshenko::boolean      := false
   }, $)::ELEMENT;
@@ -640,15 +640,15 @@ export MakeBeam := proc(
     else
       error("<N2> must be a node or a list of node and dofs.");
     end if;
-    L := TrussMe:-FEM:-Norm2(coordinates_2 - coordinates_1);
+    L := TrussMe_FEM:-Norm2(coordinates_2 - coordinates_1);
   end if;
 
-  return TrussMe:-FEM:-MakeElement(name, N1, N2,
+  return TrussMe_FEM:-MakeElement(name, N1, N2,
     `if`(timoshenko,
-    TrussMe:-FEM:-GetTimoshenkoBeamStiffness(
+    TrussMe_FEM:-GetTimoshenkoBeamStiffness(
       area, material["elastic_modulus"], material["shear_modulus"], L, op(inertia)
     ),
-    TrussMe:-FEM:-GetBeamStiffness(
+    TrussMe_FEM:-GetBeamStiffness(
       area, material["elastic_modulus"], material["shear_modulus"], L, op(inertia)
     )),
     parse("frame") = frame
@@ -676,7 +676,7 @@ export GetNodalDofs := proc(
 
   local dofs, i;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("Getting nodal dofs... ");
   end if;
 
@@ -685,7 +685,7 @@ export GetNodalDofs := proc(
     dofs[6*i-5..6*i] := nodes[i]["dofs"];
   end do;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("DONE\n");
   end if;
 
@@ -702,7 +702,7 @@ export GetNodalDisplacements := proc(
 
   local displacements, i;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("Getting nodal displacements... ");
   end if;
 
@@ -711,7 +711,7 @@ export GetNodalDisplacements := proc(
     displacements[6*i-5..6*i] := nodes[i]["displacements"];
   end do;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("DONE\n");
   end if;
 
@@ -728,18 +728,18 @@ export StiffnessTransformation := proc(
 
   local T, R_transp, i;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("Computing stiffness transformation matrix... ");
   end if;
 
   T := Matrix(6*nops(nodes), (i,j) -> `if`(evalb(i = j), 1, 0), storage = sparse);
   for i from 1 to nops(nodes) do
-    R_transp := LinearAlgebra:-Transpose(TrussMe:-FEM:-Rotation(nodes[i]["frame"]));
+    R_transp := LinearAlgebra:-Transpose(TrussMe_FEM:-Rotation(nodes[i]["frame"]));
     T[6*i-5..6*i-3, 6*i-5..6*i-3] := R_transp;
     T[6*i-2..6*i,   6*i-2..6*i  ] := R_transp;
   end do;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("DONE\n");
   end if;
 
@@ -758,7 +758,7 @@ end proc: # StiffnessTransformation
 
   local K, Q_i, D_i, K_i, R_i, n_i, p_i, d_i, i, j, k;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("Computing global stiffness matrix... ");
   end if;
 
@@ -770,37 +770,80 @@ end proc: # StiffnessTransformation
 
     # Build rotation matrix Q, retrieve nodes positions and build diagonal
     Q_i := Matrix(6*n_i, storage = sparse);
-    R_i := TrussMe:-FEM:-Rotation(elements[i]["frame"]);
+    R_i := TrussMe_FEM:-Rotation(elements[i]["frame"]);
     p_i := Vector(n_i);
     d_i := Vector(6*n_i);
     for j from 1 to n_i do
       Q_i[6*j-5..6*j-3, 6*j-5..6*j-3] := R_i;
       Q_i[6*j-2..6*j,   6*j-2..6*j  ] := R_i;
-      p_i[j] := TrussMe:-FEM:-GetObjById(
+      p_i[j] := TrussMe_FEM:-GetObjById(
         nodes, elements[i]["nodes"][j], parse("position") = true
       );
       d_i[6*j-5..6*j] := 1 -~ elements[i]["dofs"][j];
     end do;
 
+    # Recast stiffness matrix if necessary
+    if evalb(add(d_i) <> 12) then
+      K_i := TrussMe_FEM:-RecastStiffness(elements[i]["stiffness"], d_i);
+    else
+      K_i := elements[i]["stiffness"];
+    end if;
+
     # Element stiffness contribution selecting only constrained dofs (= 0)
-    D_i := LinearAlgebra:-DiagonalMatrix(d_i);
-    K_i := Q_i.(D_i.elements[i]["stiffness"].D_i).LinearAlgebra:-Transpose(Q_i);
+    K_i := Q_i.K_i.LinearAlgebra:-Transpose(Q_i);
 
     # Insert element stiffness contribution in global stiffness matrix
     for j from 1 to n_i do
       for k from 1 to n_i do
         K[6*p_i[j]-5..6*p_i[j], 6*p_i[k]-5..6*p_i[k]] :=
-        K[6*p_i[j]-5..6*p_i[j], 6*p_i[k]-5..6*p_i[k]] + K_i[6*j-5..6*j, 6*k-5..6*k];
+          K[6*p_i[j]-5..6*p_i[j], 6*p_i[k]-5..6*p_i[k]] + K_i[6*j-5..6*j, 6*k-5..6*k];
       end do;
     end do;
   end do;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("DONE\n");
   end if;
 
   return K;
 end proc: # GlobalStiffness
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export RecastStiffness := proc(
+  K::STIFFNESS,
+  d::Vector,
+  $)::Matrix;
+
+  description "Recast the stiffness matrix <K> according to the constrained "
+    "negated dofs <d>.";
+
+  local perm, unperm, i, n, K_r, K_11, K_12, K_21, K_22;
+
+  # Get permutation and unpermutation vectors
+  perm   := sort(d, `>`, output = 'permutation');
+  unperm := [seq(i, i = 1..nops(perm))];
+  for i from 1 to nops(unperm) do
+    unperm[perm[i]] := i;
+  end do;
+
+  # Get the number of constrained dofs
+  n := add(d);
+
+  # Compute permuted system stiffness matrices
+  K_r  := K[perm, perm];
+  K_11 := K_r[1..n, 1..n];
+  K_12 := K_r[1..n, n+1..-1];
+  K_21 := K_r[n+1..-1, 1..n];
+  K_22 := K_r[n+1..-1, n+1..-1];
+
+  # Recast stiffness matrix
+  K_r := Matrix(LinearAlgebra:-Dimension(d), storage = sparse);
+  K_r[1..n, 1..n] := K_11 - K_12.LinearAlgebra:-MatrixInverse(K_22).K_21;
+
+  # Unpermute stiffness matrix
+  return K_r[unperm, unperm];
+end proc: # RecastStiffness
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -814,8 +857,8 @@ export GlobalStiffnessPrime := proc(
 
   local T, K;
 
-  T := TrussMe:-FEM:-StiffnessTransformation(nodes);
-  K := TrussMe:-FEM:-GlobalStiffness(nodes, elements);
+  T := TrussMe_FEM:-StiffnessTransformation(nodes);
+  K := TrussMe_FEM:-GlobalStiffness(nodes, elements);
   return T.K.LinearAlgebra:-Transpose(T);
 end proc: # GlobalStiffnessPrime
 
@@ -848,17 +891,17 @@ export SplitFEM := proc(
   end do;
 
   # Compute global stiffness matrix, displacements and loads vectors
-  fem["K"] := TrussMe:-FEM:-Simplify(
-    TrussMe:-FEM:-GlobalStiffnessPrime(fem["nodes"], fem["elements"])
+  fem["K"] := TrussMe_FEM:-Simplify(
+    TrussMe_FEM:-GlobalStiffnessPrime(fem["nodes"], fem["elements"])
   );
-  fem["d"] := TrussMe:-FEM:-Simplify(
-    TrussMe:-FEM:-GetNodalDisplacements(fem["nodes"])
+  fem["d"] := TrussMe_FEM:-Simplify(
+    TrussMe_FEM:-GetNodalDisplacements(fem["nodes"])
   );
-  fem["f"] := TrussMe:-FEM:-Simplify(
-    TrussMe:-FEM:-GetNodalLoads(fem["nodes"], fem["loads"])
+  fem["f"] := TrussMe_FEM:-Simplify(
+    TrussMe_FEM:-GetNodalLoads(fem["nodes"], fem["loads"])
   );
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("Splitting system... ");
   end if;
 
@@ -879,7 +922,7 @@ export SplitFEM := proc(
   fem["f_s"]    := Vector(0);
   fem["f_r"]    := f[n+1..-1];
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("DONE\n");
   end if;
 
@@ -905,7 +948,7 @@ export RecastFEM := proc(
   info_tmp := fem["info"][fem["perm"]];
   idx_tmp  := [];
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("Looking for singularities... ");
   end if;
 
@@ -914,7 +957,7 @@ export RecastFEM := proc(
     if evalb(add(fill_tmp[i, 1..-1]) = 0) then
       if evalb(fem["f_f"][i] = 0) then
         idx_tmp := [op(idx_tmp), i];
-        if TrussMe:-FEM:-m_WarningMode then
+        if TrussMe_FEM:-m_WarningMode then
           WARNING("recasting system at node, dof = [name: %1, id: %2, direction: "
             "%3] is unconstrained and has a zero load.", op(info_tmp[i][1..3]));
         end if;
@@ -925,7 +968,7 @@ export RecastFEM := proc(
     end if;
   end do;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("DONE\n");
   end if;
 
@@ -933,7 +976,7 @@ export RecastFEM := proc(
   for i in idx_tmp do
     fem["dofs"][fem["perm"][i]] := 0;
   end do;
-  TrussMe:-FEM:-SplitFEM(fem);
+  TrussMe_FEM:-SplitFEM(fem);
   return NULL;
 end proc: # RecastFEM
 
@@ -966,12 +1009,12 @@ export GenerateFEM := proc(
   ]);
 
   # Split free and constrained dofs
-  fem["dofs"] := TrussMe:-FEM:-GetNodalDofs(fem["nodes"]);
-  TrussMe:-FEM:-SplitFEM(fem);
+  fem["dofs"] := TrussMe_FEM:-GetNodalDofs(fem["nodes"]);
+  TrussMe_FEM:-SplitFEM(fem);
 
   # Recast the stiffness matrix to avoid singularities
   if tryhard then
-    TrussMe:-FEM:-RecastFEM(fem);
+    TrussMe_FEM:-RecastFEM(fem);
   end if;
 
   # Return the FEM structure
@@ -1001,17 +1044,17 @@ export SolveFEM := proc(
   # Solve free dofs
   if use_LAST then
     try
-      if TrussMe:-FEM:-m_VerboseMode then
+      if TrussMe_FEM:-m_VerboseMode then
         printf("Initializing LAST and LEM objects... ");
       end if;
       LAST_obj := Object(LAST);
       LAST_obj:-InitLEM(LAST_obj, label);
       LEM_obj := LAST_obj:-GetLEM(LAST_obj);
-      if TrussMe:-FEM:-m_VerboseMode then
+      if TrussMe_FEM:-m_VerboseMode then
         printf("DONE\n");
       end if;
     catch:
-      if TrussMe:-FEM:-m_VerboseMode then
+      if TrussMe_FEM:-m_VerboseMode then
         printf(" FAILED\n");
       end if;
       error("LAST or LEM package not installed, please refere to the "
@@ -1019,14 +1062,14 @@ export SolveFEM := proc(
     end try;
 
     # Set verbose and warning modes
-    LAST_obj:-SetVerboseMode(LAST_obj, TrussMe:-FEM:-m_VerboseMode);
-    LAST_obj:-SetWarningMode(LAST_obj, TrussMe:-FEM:-m_WarningMode);
+    LAST_obj:-SetVerboseMode(LAST_obj, TrussMe_FEM:-m_VerboseMode);
+    LAST_obj:-SetWarningMode(LAST_obj, TrussMe_FEM:-m_WarningMode);
 
     # Set signature checking and time limit
     LEM_obj:-SetSignatureMode(LEM_obj, use_SIG);
-    LAST_obj:-SetTimeLimit(LAST_obj, TrussMe:-FEM:-m_TimeLimit);
+    LAST_obj:-SetTimeLimit(LAST_obj, TrussMe_FEM:-m_TimeLimit);
 
-    if TrussMe:-FEM:-m_VerboseMode then
+    if TrussMe_FEM:-m_VerboseMode then
       printf("Performing matrix factorization... ");
     end if;
 
@@ -1043,7 +1086,7 @@ export SolveFEM := proc(
       error("<factorization> must be 'LU', 'FFLU', 'QR', or 'GJ'.");
     end if;
 
-    if TrussMe:-FEM:-m_VerboseMode then
+    if TrussMe_FEM:-m_VerboseMode then
       printf("DONE\n");
       printf("Solving system deformations... ");
     end if;
@@ -1055,7 +1098,7 @@ export SolveFEM := proc(
 
   else
 
-    if TrussMe:-FEM:-m_VerboseMode then
+    if TrussMe_FEM:-m_VerboseMode then
       printf("Solving system deformations... ");
     end if;
 
@@ -1068,7 +1111,7 @@ export SolveFEM := proc(
 
   end if;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("DONE\n");
     printf("Solving system reactions... ");
   end if;
@@ -1080,8 +1123,8 @@ export SolveFEM := proc(
   if use_LAST and use_LEM then
     fem["label"] := label;
     fem["veils"] := LEM_obj:-VeilList(LEM_obj);
-  else
-    if TrussMe:-FEM:-m_VerboseMode then
+  elif use_LAST and not use_LEM then
+    if TrussMe_FEM:-m_VerboseMode then
       printf("DONE\n");
       printf("Unveiling expressions... ");
     end if;
@@ -1089,9 +1132,12 @@ export SolveFEM := proc(
     fem["f_s"]   := LEM_obj:-Unveil(LEM_obj, fem["f_s"]);
     fem["label"] := "";
     fem["veils"] := [];
+  else
+    fem["label"] := "";
+    fem["veils"] := [];
   end if;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("DONE\n");
     printf("Applying inverse permutation... ");
   end if;
@@ -1100,7 +1146,7 @@ export SolveFEM := proc(
   fem["d"] := convert(<fem["d_f"], fem["d_s"]>[fem["unperm"]], Vector);
   fem["f"] := convert(<fem["f_f"], fem["f_s"]>[fem["unperm"]], Vector);
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("DONE\n");
   end if;
 
@@ -1120,7 +1166,7 @@ export StoreFEM := proc(
 
   local i;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("Storing system... ");
   end if;
 
@@ -1129,7 +1175,7 @@ export StoreFEM := proc(
     fem["nodes"][i]["output_reactions"]     := fem["f"][6*i-5..6*i];
   end do;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("DONE\n");
   end if;
   return NULL;

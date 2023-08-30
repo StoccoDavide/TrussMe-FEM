@@ -62,7 +62,7 @@ module :
     Norm2( x::{Vector, list}, $ ) :: algebraic
 
     GenerateId( { opts::symbol := 'alnum',
-                  size::positive := TrussMe:-FEM:-m_IdLength }, $ ) :: string
+                  size::positive := TrussMe_FEM:-m_IdLength }, $ ) :: string
 
     # Plot of non-zero values of matrix <A>.
     Spy( A::Matrix, $ ) :: anything
@@ -311,7 +311,7 @@ module :
     # the dofs <Ni_dofs> on i-th node i <[Ni, Ni_dofs]>, connecting with
     # stiffness <K>.
     MakeElement( name::string,
-                 { frame::FRAME := TrussMe:-FEM:-GenerateGenericFrame(name) } )
+                 { frame::FRAME := TrussMe_FEM:-GenerateGenericFrame(name) } )
                :: ELEMENT
 
     # Make a spring element with name <name> on reference frame <frame>,
@@ -324,7 +324,7 @@ module :
                 { K::{algebraic, list(algebraic)} := 0,
                   T::{algebraic, list(algebraic)} := 0,
                   distance::algebraic := 0,
-                  frame::FRAME := TrussMe:-FEM:-GenerateGenericFrame(name) },
+                  frame::FRAME := TrussMe_FEM:-GenerateGenericFrame(name) },
                 $ ) :: ELEMENT
 
     # Make a rod element with name <name> on reference frame <frame>,
@@ -336,9 +336,9 @@ module :
              N1::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})},
              N2::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})},
              { area::algebraic := 0, distance::algebraic := -1,
-               frame::FRAME := TrussMe:-FEM:-GenerateGenericFrame(name),
+               frame::FRAME := TrussMe_FEM:-GenerateGenericFrame(name),
                inertia::list(algebraic) := [0, 0, 0],
-               material::MATERIAL := TrussMe:-FEM:-MakeCarbonSteel() }, $ )
+               material::MATERIAL := TrussMe_FEM:-MakeCarbonSteel() }, $ )
            :: ELEMENT
 
     # Make a beam element with name <name> on reference frame <frame>,
@@ -350,9 +350,9 @@ module :
               N1::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})},
               N2::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})},
               { area::algebraic := 0, distance::algebraic := -1,
-                frame::FRAME := TrussMe:-FEM:-GenerateGenericFrame(name),
+                frame::FRAME := TrussMe_FEM:-GenerateGenericFrame(name),
                 inertia::list(algebraic) := [0, 0, 0],
-                material::MATERIAL := TrussMe:-FEM:-MakeCarbonSteel(),
+                material::MATERIAL := TrussMe_FEM:-MakeCarbonSteel(),
                 timoshenko::boolean := false }, $ ) :: ELEMENT
 
     # Check if the variable <var> is of STRUCTURE type.
@@ -427,21 +427,21 @@ module :
 
     # Set options for code generation optimization.
     SetCodegenOptions( { coercetypes::boolean :=
-                           TrussMe:-FEM:-m_CodegenOptions[parse("coercetypes")],
+                           TrussMe_FEM:-m_CodegenOptions[parse("coercetypes")],
                          deducereturn::boolean :=
-                           TrussMe:-FEM:-m_CodegenOptions[parse("deducereturn")],
+                           TrussMe_FEM:-m_CodegenOptions[parse("deducereturn")],
                          deducetypes::boolean :=
-                           TrussMe:-FEM:-m_CodegenOptions[parse("deducetypes")],
+                           TrussMe_FEM:-m_CodegenOptions[parse("deducetypes")],
                          defaulttype::symbol :=
-                           TrussMe:-FEM:-m_CodegenOptions[parse("defaulttype")],
+                           TrussMe_FEM:-m_CodegenOptions[parse("defaulttype")],
                          digits::posint :=
-                           TrussMe:-FEM:-m_CodegenOptions[parse("digits")],
+                           TrussMe_FEM:-m_CodegenOptions[parse("digits")],
                          functionprecision::symbol :=
-                           TrussMe:-FEM:-m_CodegenOptions[parse("functionprecision")],
+                           TrussMe_FEM:-m_CodegenOptions[parse("functionprecision")],
                          optimize::boolean :=
-                           TrussMe:-FEM:-m_CodegenOptions[parse("optimize")],
+                           TrussMe_FEM:-m_CodegenOptions[parse("optimize")],
                          reduceanalysis::boolean :=
-                           TrussMe:-FEM:-m_CodegenOptions[parse("reduceanalysis")]
+                           TrussMe_FEM:-m_CodegenOptions[parse("reduceanalysis")]
                            },
                        $ )
 
@@ -565,15 +565,15 @@ module :
     # Plot the node (or support) at point <p> given a list or set of data for
     # substitution <data>, a display token <token> and a display color <color>.
     PlotNode( p::{Vector(algebraic), list(algebraic)},
-              { color::string := TrussMe:-FEM:-m_NodeColor,
+              { color::string := TrussMe_FEM:-m_NodeColor,
                 data::{list(`=`), set(`=`)} := [],
-                token::symbol := TrussMe:-FEM:-m_NodeToken }, $ ) :: function
+                token::symbol := TrussMe_FEM:-m_NodeToken }, $ ) :: function
 
     # Plot the element from point <p_1> and <p_2> given a list or set of data
     # for substitution <data> and a display color <color>.
     PlotElement( p_1::{Vector(algebraic), list(algebraic)},
                  p_2::{Vector(algebraic), list(algebraic)},
-                 { color::string := TrussMe:-FEM:-m_ElementColor,
+                 { color::string := TrussMe_FEM:-m_ElementColor,
                    data::{list(`=`), set(`=`)} := [] }, $ ) :: function
 
     # Plot the element from diplacements <d_1> and <d_2> given a list or set of
@@ -582,7 +582,7 @@ module :
                          p_2::{Vector(algebraic), list(algebraic)},
                          d_1::{Vector(algebraic), list(algebraic)},
                          d_2::{Vector(algebraic), list(algebraic)},
-                         { color::string := TrussMe:-FEM:-m_ElementColor,
+                         { color::string := TrussMe_FEM:-m_ElementColor,
                            data::{list(`=`), set(`=`)} := [],
                            scaling::nonnegative := 1.0 }, $ ) :: function
 
@@ -590,7 +590,7 @@ module :
     # data for substitution <data> and a display color <color>.
     PlotLoad( p_1::{Vector(algebraic), list(algebraic)},
               p_2::{Vector(algebraic), list(algebraic)},
-              { color::string := TrussMe:-FEM:-m_LoadColor,
+              { color::string := TrussMe_FEM:-m_LoadColor,
                 data::{list(`=`), set(`=`)} := [],
                 scaling::nonnegative := 1.0 }, $ ) :: function
 

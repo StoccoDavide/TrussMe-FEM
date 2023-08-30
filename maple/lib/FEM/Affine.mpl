@@ -72,13 +72,13 @@ export GenerateFrameXY := proc(
   end if;
 
   e_x := p_2_tmp - p_1_tmp;
-  e_x := e_x / TrussMe:-FEM:-Norm2(e_x);
+  e_x := e_x / TrussMe_FEM:-Norm2(e_x);
 
   e_y := LinearAlgebra:-CrossProduct(vec_tmp, e_x);
-  e_y := e_y / TrussMe:-FEM:-Norm2(e_y);
+  e_y := e_y / TrussMe_FEM:-Norm2(e_y);
 
   e_z := LinearAlgebra:-CrossProduct(e_x, e_y);
-  e_z := e_z / TrussMe:-FEM:-Norm2(e_z);
+  e_z := e_z / TrussMe_FEM:-Norm2(e_z);
 
   return <<e_x,     0>|
           <e_y,     0>|
@@ -130,13 +130,13 @@ export GenerateFrameXZ := proc(
   end if;
 
   e_z := p_2_tmp - p_1_tmp;
-  e_z := e_z / TrussMe:-FEM:-Norm2(e_z);
+  e_z := e_z / TrussMe_FEM:-Norm2(e_z);
 
   e_x := LinearAlgebra:-CrossProduct(vec_tmp, e_z);
-  e_x := e_x / TrussMe:-FEM:-Norm2(e_x);
+  e_x := e_x / TrussMe_FEM:-Norm2(e_x);
 
   e_y := LinearAlgebra:-CrossProduct(e_z, e_x);
-  e_y := e_y / TrussMe:-FEM:-Norm2(e_y);
+  e_y := e_y / TrussMe_FEM:-Norm2(e_y);
 
   return <<e_x,     0>|
           <e_y,     0>|
@@ -404,14 +404,14 @@ export Project := proc(
   # Try to compare reference frames
   try
     # FIXME: problems with floats (floats not handled error)
-    evalb~(evala(TrussMe:-FEM:-Simplify(RF_end) =~ TrussMe:-FEM:-Simplify(RF_ini)));
+    evalb~(evala(TrussMe_FEM:-Simplify(RF_end) =~ TrussMe_FEM:-Simplify(RF_ini)));
   catch:
     evalb~(RF_end =~ RF_ini);
   end try;
 
   # Return the projection
   if has(%, false) then
-    return TrussMe:-FEM:-Simplify(TrussMe:-FEM:-InverseFrame(RF_end).RF_ini.x);
+    return TrussMe_FEM:-Simplify(TrussMe_FEM:-InverseFrame(RF_end).RF_ini.x);
   else
     return x;
   end if;

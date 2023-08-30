@@ -49,26 +49,26 @@ end proc: # ClearFile
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 export SetCodegenOptions := proc({
-    optimize::boolean         := TrussMe:-FEM:-m_CodegenOptions[parse("optimize")],
-    digits::posint            := TrussMe:-FEM:-m_CodegenOptions[parse("digits")],
-    deducereturn::boolean     := TrussMe:-FEM:-m_CodegenOptions[parse("deducereturn")],
-    coercetypes::boolean      := TrussMe:-FEM:-m_CodegenOptions[parse("coercetypes")],
-    deducetypes::boolean      := TrussMe:-FEM:-m_CodegenOptions[parse("deducetypes")],
-    reduceanalysis::boolean   := TrussMe:-FEM:-m_CodegenOptions[parse("reduceanalysis")],
-    defaulttype::symbol       := TrussMe:-FEM:-m_CodegenOptions[parse("defaulttype")],
-    functionprecision::symbol := TrussMe:-FEM:-m_CodegenOptions[parse("functionprecision")]
+    optimize::boolean         := TrussMe_FEM:-m_CodegenOptions[parse("optimize")],
+    digits::posint            := TrussMe_FEM:-m_CodegenOptions[parse("digits")],
+    deducereturn::boolean     := TrussMe_FEM:-m_CodegenOptions[parse("deducereturn")],
+    coercetypes::boolean      := TrussMe_FEM:-m_CodegenOptions[parse("coercetypes")],
+    deducetypes::boolean      := TrussMe_FEM:-m_CodegenOptions[parse("deducetypes")],
+    reduceanalysis::boolean   := TrussMe_FEM:-m_CodegenOptions[parse("reduceanalysis")],
+    defaulttype::symbol       := TrussMe_FEM:-m_CodegenOptions[parse("defaulttype")],
+    functionprecision::symbol := TrussMe_FEM:-m_CodegenOptions[parse("functionprecision")]
   }, $)
 
   description "Set options for code generation optimization.";
 
-  TrussMe:-FEM:-m_CodegenOptions[parse("optimize")]          := optimize;
-  TrussMe:-FEM:-m_CodegenOptions[parse("digits")]            := digits;
-  TrussMe:-FEM:-m_CodegenOptions[parse("deducereturn")]      := deducereturn;
-  TrussMe:-FEM:-m_CodegenOptions[parse("coercetypes")]       := coercetypes;
-  TrussMe:-FEM:-m_CodegenOptions[parse("deducetypes")]       := deducetypes;
-  TrussMe:-FEM:-m_CodegenOptions[parse("reduceanalysis")]    := reduceanalysis;
-  TrussMe:-FEM:-m_CodegenOptions[parse("defaulttype")]       := defaulttype;
-  TrussMe:-FEM:-m_CodegenOptions[parse("functionprecision")] := functionprecision;
+  TrussMe_FEM:-m_CodegenOptions[parse("optimize")]          := optimize;
+  TrussMe_FEM:-m_CodegenOptions[parse("digits")]            := digits;
+  TrussMe_FEM:-m_CodegenOptions[parse("deducereturn")]      := deducereturn;
+  TrussMe_FEM:-m_CodegenOptions[parse("coercetypes")]       := coercetypes;
+  TrussMe_FEM:-m_CodegenOptions[parse("deducetypes")]       := deducetypes;
+  TrussMe_FEM:-m_CodegenOptions[parse("reduceanalysis")]    := reduceanalysis;
+  TrussMe_FEM:-m_CodegenOptions[parse("defaulttype")]       := defaulttype;
+  TrussMe_FEM:-m_CodegenOptions[parse("functionprecision")] := functionprecision;
   return NULL;
 end proc: # SetCodegenOptions
 
@@ -81,9 +81,9 @@ export GetCodegenOptions := proc(
   description "Get options for code generation.";
 
   if (field = "all") then
-    return TrussMe:-FEM:-m_CodegenOptions;
+    return TrussMe_FEM:-m_CodegenOptions;
   else
-    return TrussMe:-FEM:-m_CodegenOptions[parse(field)];
+    return TrussMe_FEM:-m_CodegenOptions[parse(field)];
   end if;
 end proc: # GetCodegenOptions
 
@@ -306,8 +306,8 @@ export GenerateElements := proc(
   description "Generate code for elements <func> with optional indentation "
     "<indent>.";
 
-  TrussMe:-FEM:-TranslateToMatlab(func);
-  return TrussMe:-FEM:-ApplyIndent(indent,
+  TrussMe_FEM:-TranslateToMatlab(func);
+  return TrussMe_FEM:-ApplyIndent(indent,
     `if`(% = "", "% No body\n", cat(%%, %))
   );
 end proc: # GenerateElements
@@ -374,20 +374,20 @@ export VectorToMatlab := proc(
   local header, properties, inputs, veils, elements, outputs, dims, lst,
     tmp_data, vec_inds, tmp_vars, tmp_vars_rm, tmp_vars_nl, typestr;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("Generating vector function '%s'... ", name);
   end if;
 
   # Extract the function properties
   tmp_data := convert(data, set) intersect indets(vec, symbol);
   tmp_data := remove[flatten](j -> not evalb(j in tmp_data), data);
-  properties := TrussMe:-FEM:-GenerateProperties(
+  properties := TrussMe_FEM:-GenerateProperties(
     tmp_data, parse("indent") = indent
   );
 
   # Extract the function elements
   dims := [LinearAlgebra:-Dimension(vec)];
-  lst, outputs := TrussMe:-FEM:-ExtractElements(
+  lst, outputs := TrussMe_FEM:-ExtractElements(
     name, vec, dims, parse("skipnull") = skipnull, parse("indent") = indent,
     parse("label") = label
     );
@@ -397,18 +397,18 @@ export VectorToMatlab := proc(
   tmp_vars    := map(i -> i intersect vec_inds, map(convert, vars, set));
   tmp_vars_rm := zip((i, j) -> remove[flatten](k -> not evalb(k in j), i), vars, tmp_vars);
   tmp_vars_nl := zip((i, j) -> map(k -> `if`(not evalb(k in j), "", k), i), vars, tmp_vars);
-  inputs := TrussMe:-FEM:-GenerateInputs(
+  inputs := TrussMe_FEM:-GenerateInputs(
     tmp_vars_nl, parse("indent") = indent, parse("skipnull") = true
   );
 
   # Generate the method header
-  header := TrussMe:-FEM:-GenerateHeader(
+  header := TrussMe_FEM:-GenerateHeader(
     name, tmp_vars_rm, parse("info") = info, parse("indent") = indent,
     parse("skipthis") = evalb(nops(tmp_data) = 0)
   );
 
   # Generate the elements
-  elements := TrussMe:-FEM:-GenerateElements(lst);
+  elements := TrussMe_FEM:-GenerateElements(lst);
 
   # Check if the vector is sparse
   if evalb(rtable_scanblock(vec, [], ':-NonZeros') < 0.5*dims[1]) and
@@ -418,12 +418,12 @@ export VectorToMatlab := proc(
     typestr := "zeros";
   end if;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("DONE\n");
   end if;
 
   # Generate the generated code
-  return TrussMe:-FEM:-GenerateBody(
+  return TrussMe_FEM:-GenerateBody(
     name, dims,
     parse("header")  = header, parse("properties") = properties,
     parse("inputs")  = inputs, parse("elements")   = elements,
@@ -454,20 +454,20 @@ export MatrixToMatlab := proc(
   local header, properties, inputs, veils, elements, outputs, dims, lst,
     tmp_data, mat_inds, tmp_vars, tmp_vars_rm, tmp_vars_nl, typestr;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("Generating matrix function '%s'... ", name);
   end if;
 
   # Extract the function properties
   tmp_data := convert(data, set) intersect indets(mat, symbol);
   tmp_data := remove[flatten](j -> not evalb(j in tmp_data), data);
-  properties := TrussMe:-FEM:-GenerateProperties(
+  properties := TrussMe_FEM:-GenerateProperties(
     tmp_data, parse("indent") = indent
   );
 
   # Extract the function elements
   dims := [LinearAlgebra:-Dimensions(mat)];
-  lst, outputs := TrussMe:-FEM:-ExtractElements(
+  lst, outputs := TrussMe_FEM:-ExtractElements(
     name, mat, dims, parse("skipnull") = skipnull, parse("indent") = indent,
     parse("label") = label
   );
@@ -477,18 +477,18 @@ export MatrixToMatlab := proc(
   tmp_vars    := map(i -> i intersect mat_inds, map(convert, vars, set));
   tmp_vars_rm := zip((i, j) -> remove[flatten](k -> not evalb(k in j), i), vars, tmp_vars);
   tmp_vars_nl := zip((i, j) -> map(k -> `if`(not evalb(k in j), "", k), i), vars, tmp_vars);
-  inputs := TrussMe:-FEM:-GenerateInputs(
+  inputs := TrussMe_FEM:-GenerateInputs(
     tmp_vars_nl, parse("indent") = indent, parse("skipnull") = true
   );
 
   # Generate the method header
-  header := TrussMe:-FEM:-GenerateHeader(
+  header := TrussMe_FEM:-GenerateHeader(
     name, tmp_vars_rm, parse("info") = info, parse("indent") = indent,
     parse("skipthis") = evalb(nops(tmp_data) = 0)
   );
 
   # Generate the elements
-  elements := TrussMe:-FEM:-GenerateElements(lst);
+  elements := TrussMe_FEM:-GenerateElements(lst);
 
   # Check if the vector is sparse
   if evalb(rtable_scanblock(mat, [], ':-NonZeros') < 0.5*dims[1]*dims[2]) and
@@ -498,12 +498,12 @@ export MatrixToMatlab := proc(
     typestr := "zeros";
   end if;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("DONE\n");
   end if;
 
   # Store the results
-  return TrussMe:-FEM:-GenerateBody(
+  return TrussMe_FEM:-GenerateBody(
     name, dims,
     parse("header")  = header, parse("properties") = properties,
     parse("inputs")  = inputs, parse("elements")   = elements,
@@ -570,7 +570,7 @@ export GenerateConstructor := proc(
     "<data>, description <info> and indentation <indent>.";
 
   return cat("function this = ", name, "( varargin )\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       indent, cat(
       "% ", info, "\n",
       "\n",
@@ -631,7 +631,7 @@ export SystemToMatlab := proc(
   bar := "% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n";
 
   # Get veiling variables substitution
-  rm_v_deps := TrussMe:-FEM:-GetVeilSubs(lhs~(fem["veils"]));
+  rm_v_deps := TrussMe_FEM:-GetVeilSubs(lhs~(fem["veils"]));
 
   # Retrieve variables and data
   x := vars;
@@ -683,7 +683,7 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       cat(i, i),
       GenerateConstructor(
         name,
@@ -694,9 +694,9 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       cat(i, i),
-      TrussMe:-FEM:-MatrixToMatlab(
+      TrussMe_FEM:-MatrixToMatlab(
         "K", [x, []], subs(op(rm_v_deps), fem["K"]),
         parse("data") = data_vars,
         parse("info") = "Evaluate the stiffness matrix K."
@@ -704,9 +704,9 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       cat(i, i),
-      TrussMe:-FEM:-MatrixToMatlab(
+      TrussMe_FEM:-MatrixToMatlab(
         "K_ff", [x, []], subs(op(rm_v_deps), fem["K_ff"]),
         parse("data") = data_vars,
         parse("info") = "Evaluate the stiffness matrix K_ff."
@@ -714,9 +714,9 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       cat(i, i),
-      TrussMe:-FEM:-MatrixToMatlab(
+      TrussMe_FEM:-MatrixToMatlab(
         "K_fs", [x, []], subs(op(rm_v_deps), fem["K_fs"]),
         parse("data") = data_vars,
         parse("info") = "Evaluate the stiffness matrix K_fs."
@@ -724,9 +724,9 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       cat(i, i),
-      TrussMe:-FEM:-MatrixToMatlab(
+      TrussMe_FEM:-MatrixToMatlab(
         "K_sf", [x, []], subs(op(rm_v_deps), fem["K_sf"]),
         parse("data") = data_vars,
         parse("info") = "Evaluate the stiffness matrix K_sf."
@@ -734,9 +734,9 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       cat(i, i),
-      TrussMe:-FEM:-MatrixToMatlab(
+      TrussMe_FEM:-MatrixToMatlab(
         "K_ss", [x, []], subs(op(rm_v_deps), fem["K_ss"]),
         parse("data") = data_vars,
         parse("info") = "Evaluate the stiffness matrix K_ss."
@@ -744,9 +744,9 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       cat(i, i),
-      TrussMe:-FEM:-VectorToMatlab(
+      TrussMe_FEM:-VectorToMatlab(
         "d", [x, v], subs(op(rm_v_deps), fem["d"]),
         parse("data") = data_vars,
         parse("info") = cat("Evaluate the deformation vector d.", check_str)
@@ -754,9 +754,9 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       cat(i, i),
-      TrussMe:-FEM:-VectorToMatlab(
+      TrussMe_FEM:-VectorToMatlab(
         "d_f", [x, v], subs(op(rm_v_deps), fem["d_f"]),
         parse("data") = data_vars,
         parse("info") = cat("Evaluate the deformation vector d_f.", check_str)
@@ -764,9 +764,9 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       cat(i, i),
-      TrussMe:-FEM:-VectorToMatlab(
+      TrussMe_FEM:-VectorToMatlab(
         "d_s", [x, []], subs(op(rm_v_deps), fem["d_s"]),
         parse("data") = data_vars,
         parse("info") = "Evaluate the deformation vector d_s."
@@ -774,9 +774,9 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       cat(i, i),
-      TrussMe:-FEM:-VectorToMatlab(
+      TrussMe_FEM:-VectorToMatlab(
         "f", [x, v], subs(op(rm_v_deps), fem["f"]),
         parse("data") = data_vars,
         parse("info") = cat("Evaluate the force vector f.", check_str)
@@ -784,9 +784,9 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       cat(i, i),
-      TrussMe:-FEM:-VectorToMatlab(
+      TrussMe_FEM:-VectorToMatlab(
         "f_f", [x, []], subs(op(rm_v_deps), fem["f_f"]),
         parse("data") = data_vars,
         parse("info") = "Evaluate the force vector f_f."
@@ -794,9 +794,9 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       cat(i, i),
-      TrussMe:-FEM:-VectorToMatlab(
+      TrussMe_FEM:-VectorToMatlab(
         "f_s", [x, v], subs(op(rm_v_deps), fem["f_s"]),
         parse("data") = data_vars,
         parse("info") = cat("Evaluate the force vector f_s.", check_str)
@@ -804,9 +804,9 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       cat(i, i),
-      TrussMe:-FEM:-VectorToMatlab(
+      TrussMe_FEM:-VectorToMatlab(
         "f_r", [x, []], subs(op(rm_v_deps), fem["f_r"]),
         parse("data") = data_vars,
         parse("info") = "Evaluate the force vector f_r."
@@ -814,9 +814,9 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       cat(i, i),
-      TrussMe:-FEM:-VectorToMatlab(
+      TrussMe_FEM:-VectorToMatlab(
         "perm", [], subs(op(rm_v_deps), convert(fem["perm"], Vector)),
         parse("data") = data_vars,
         parse("info") = "Evaluate the permutation vector."
@@ -824,9 +824,9 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       cat(i, i),
-      TrussMe:-FEM:-VectorToMatlab(
+      TrussMe_FEM:-VectorToMatlab(
         "unperm", [], subs(op(rm_v_deps), convert(fem["unperm"], Vector)),
         parse("data") = data_vars,
         parse("info") = "Evaluate the unpermutation vector."
@@ -834,9 +834,9 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
-    TrussMe:-FEM:-ApplyIndent(
+    TrussMe_FEM:-ApplyIndent(
       cat(i, i),
-      TrussMe:-FEM:-VectorToMatlab(
+      TrussMe_FEM:-VectorToMatlab(
         "v", [x], subs(op(rm_v_deps), convert(rhs~(fem["veils"]), Vector)),
         parse("data")  = data_vars,
         parse("label") = fem["label"],
@@ -870,9 +870,9 @@ export GenerateMatlabCode := proc(
     "with optional data <data>, description <info>, output label <label> and "
     "indentation <indent>, variables <vars> and output path <path>.";
 
-  TrussMe:-FEM:-GenerateFile(
+  TrussMe_FEM:-GenerateFile(
     cat(path, name, ".m"),
-    TrussMe:-FEM:-SystemToMatlab(
+    TrussMe_FEM:-SystemToMatlab(
       name, fem,
       parse("vars")   = vars,
       parse("data")   = data,

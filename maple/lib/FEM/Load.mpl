@@ -51,7 +51,7 @@ export MakeLoad := proc(
   return table([
     "type"       = LOAD,
     "name"       = name,
-    "id"         = TrussMe:-FEM:-GenerateId(),
+    "id"         = TrussMe_FEM:-GenerateId(),
     "frame"      = frame, # Reference frame from global to local or node id
     "node"       = node["id"],
     "components" = components # Components in the local frame
@@ -80,26 +80,26 @@ export GetNodalLoads := proc(
 
   local F, i, j, R;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("Getting nodal loads... ");
   end if;
 
   F := Vector(6 * nops(nodes), storage = sparse);
   for i from 1 to nops(loads) do
     # Node position
-    j := TrussMe:-FEM:-GetObjById(nodes, loads[i]["node"], parse("position") = true);
+    j := TrussMe_FEM:-GetObjById(nodes, loads[i]["node"], parse("position") = true);
     # Node loads in node frame
     if evalb(loads[i]["frame"] = nodes[j]["id"]) then
       R := Matrix(3, shape = identity);
     else
-      R := TrussMe:-FEM:-Rotation(TrussMe:-FEM:-InverseFrame(nodes[j]["frame"]).loads[i]["frame"]);
+      R := TrussMe_FEM:-Rotation(TrussMe_FEM:-InverseFrame(nodes[j]["frame"]).loads[i]["frame"]);
     end if;
     F[6*j-5..6*j] := F[6*j-5..6*j] + convert(
       <R.loads[i]["components"][1..3], R.loads[i]["components"][4..6]>, Vector
     );
   end do;
 
-  if TrussMe:-FEM:-m_VerboseMode then
+  if TrussMe_FEM:-m_VerboseMode then
     printf("DONE\n");
   end if;
 

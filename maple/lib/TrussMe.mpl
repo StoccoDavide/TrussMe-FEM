@@ -13,8 +13,7 @@
 #
 # License: BSD 3-Clause License
 
-TrussMe := module()
-export FEM := module()
+TrussMe_FEM := module()
 
   description "A package for mixed symbolic-numerical FEM structural analysis.";
 
@@ -74,26 +73,26 @@ export FEM := module()
     end if;
 
     # Define module types
-    TypeTools:-AddType('FRAME',      TrussMe:-FEM:-IsFRAME);      protect('FRAME');
-    TypeTools:-AddType('VECTOR',     TrussMe:-FEM:-IsVECTOR);     protect('VECTOR');
-    TypeTools:-AddType('POINT',      TrussMe:-FEM:-IsPOINT);      protect('POINT');
-    TypeTools:-AddType('MATERIAL',   TrussMe:-FEM:-IsMATERIAL);   protect('MATERIAL');
-    TypeTools:-AddType('DOFS',       TrussMe:-FEM:-IsDOFS);       protect('DOFS');
-    TypeTools:-AddType('NODE',       TrussMe:-FEM:-IsNODE);       protect('NODE');
-    TypeTools:-AddType('NODES',      TrussMe:-FEM:-IsNODES);      protect('NODES');
-    TypeTools:-AddType('SUPPORT',    TrussMe:-FEM:-IsSUPPORT);    protect('SUPPORT');
-    TypeTools:-AddType('SUPPORTS',   TrussMe:-FEM:-IsSUPPORTS);   protect('SUPPORTS');
-    TypeTools:-AddType('STIFFNESS',  TrussMe:-FEM:-IsSTIFFNESS);  protect('STIFFNESS');
-    TypeTools:-AddType('ELEMENT',    TrussMe:-FEM:-IsELEMENT);    protect('ELEMENT');
-    TypeTools:-AddType('ELEMENTS',   TrussMe:-FEM:-IsELEMENTS);   protect('ELEMENTS');
-    TypeTools:-AddType('STRUCTURE',  TrussMe:-FEM:-IsSTRUCTURE);  protect('STRUCTURE');
-    TypeTools:-AddType('COMPONENTS', TrussMe:-FEM:-IsCOMPONENTS); protect('COMPONENTS');
-    TypeTools:-AddType('LOAD',       TrussMe:-FEM:-IsLOAD);       protect('LOAD');
-    TypeTools:-AddType('LOADS',      TrussMe:-FEM:-IsLOADS);      protect('LOADS');
-    TypeTools:-AddType('FEM',        TrussMe:-FEM:-IsFEM);        protect('FEM');
+    TypeTools:-AddType('FRAME',      TrussMe_FEM:-IsFRAME);      protect('FRAME');
+    TypeTools:-AddType('VECTOR',     TrussMe_FEM:-IsVECTOR);     protect('VECTOR');
+    TypeTools:-AddType('POINT',      TrussMe_FEM:-IsPOINT);      protect('POINT');
+    TypeTools:-AddType('MATERIAL',   TrussMe_FEM:-IsMATERIAL);   protect('MATERIAL');
+    TypeTools:-AddType('DOFS',       TrussMe_FEM:-IsDOFS);       protect('DOFS');
+    TypeTools:-AddType('NODE',       TrussMe_FEM:-IsNODE);       protect('NODE');
+    TypeTools:-AddType('NODES',      TrussMe_FEM:-IsNODES);      protect('NODES');
+    TypeTools:-AddType('SUPPORT',    TrussMe_FEM:-IsSUPPORT);    protect('SUPPORT');
+    TypeTools:-AddType('SUPPORTS',   TrussMe_FEM:-IsSUPPORTS);   protect('SUPPORTS');
+    TypeTools:-AddType('STIFFNESS',  TrussMe_FEM:-IsSTIFFNESS);  protect('STIFFNESS');
+    TypeTools:-AddType('ELEMENT',    TrussMe_FEM:-IsELEMENT);    protect('ELEMENT');
+    TypeTools:-AddType('ELEMENTS',   TrussMe_FEM:-IsELEMENTS);   protect('ELEMENTS');
+    TypeTools:-AddType('STRUCTURE',  TrussMe_FEM:-IsSTRUCTURE);  protect('STRUCTURE');
+    TypeTools:-AddType('COMPONENTS', TrussMe_FEM:-IsCOMPONENTS); protect('COMPONENTS');
+    TypeTools:-AddType('LOAD',       TrussMe_FEM:-IsLOAD);       protect('LOAD');
+    TypeTools:-AddType('LOADS',      TrussMe_FEM:-IsLOADS);      protect('LOADS');
+    TypeTools:-AddType('FEM',        TrussMe_FEM:-IsFEM);        protect('FEM');
 
     # Codegen options
-    TrussMe:-FEM:-m_CodegenOptions := table([
+    TrussMe_FEM:-m_CodegenOptions := table([
       optimize          = true,
       digits            = 30,
       deducereturn      = false,
@@ -159,51 +158,51 @@ export FEM := module()
       "support token <SupportToken>.";
 
     if evalb(VerboseMode <> NULL) then
-      TrussMe:-FEM:-m_VerboseMode := VerboseMode;
+      TrussMe_FEM:-m_VerboseMode := VerboseMode;
     end if;
 
     if evalb(WarningMode <> NULL) then
-      TrussMe:-FEM:-m_WarningMode := WarningMode;
+      TrussMe_FEM:-m_WarningMode := WarningMode;
     end if;
 
     if evalb(TimeLimit <> NULL) then
-      TrussMe:-FEM:-m_TimeLimit := TimeLimit;
+      TrussMe_FEM:-m_TimeLimit := TimeLimit;
     end if;
 
     if evalb(IdLength <> NULL) then
-      TrussMe:-FEM:-m_IdLength := IdLength;
+      TrussMe_FEM:-m_IdLength := IdLength;
     end if;
 
     if evalb(NodeColor <> NULL) then
-      TrussMe:-FEM:-m_NodeColor := NodeColor;
+      TrussMe_FEM:-m_NodeColor := NodeColor;
     end if;
 
     if evalb(SupportColor <> NULL) then
-      TrussMe:-FEM:-m_SupportColor := SupportColor;
+      TrussMe_FEM:-m_SupportColor := SupportColor;
     end if;
 
     if evalb(ElementColor <> NULL) then
-      TrussMe:-FEM:-m_ElementColor := ElementColor;
+      TrussMe_FEM:-m_ElementColor := ElementColor;
     end if;
 
     if evalb(ShellColor <> NULL) then
-      TrussMe:-FEM:-m_ShellColor := ShellColor;
+      TrussMe_FEM:-m_ShellColor := ShellColor;
     end if;
 
     if evalb(ForceColor <> NULL) then
-      TrussMe:-FEM:-m_ForceColor := ForceColor;
+      TrussMe_FEM:-m_ForceColor := ForceColor;
     end if;
 
     if evalb(MomentColor <> NULL) then
-      TrussMe:-FEM:-m_MomentColor := MomentColor;
+      TrussMe_FEM:-m_MomentColor := MomentColor;
     end if;
 
     if evalb(NodeToken <> NULL) then
-      TrussMe:-FEM:-m_NodeToken := NodeToken;
+      TrussMe_FEM:-m_NodeToken := NodeToken;
     end if;
 
     if evalb(SupportToken <> NULL) then
-      TrussMe:-FEM:-m_SupportToken := SupportToken;
+      TrussMe_FEM:-m_SupportToken := SupportToken;
     end if;
 
     return NULL;
@@ -305,11 +304,11 @@ export FEM := module()
 
     try
       return timelimit(
-        `if`(procname::indexed, op(procname), TrussMe:-FEM:-m_TimeLimit),
+        `if`(procname::indexed, op(procname), TrussMe_FEM:-m_TimeLimit),
         (simplify(var, opt) assuming real)
       );
     catch "time expired":
-      if TrussMe:-FEM:-m_WarningMode then
+      if TrussMe_FEM:-m_WarningMode then
         WARNING("exceeded time limit, raw solutions is returned.");
       end if;
       return var;
@@ -336,7 +335,7 @@ export FEM := module()
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   export GenerateId := proc({
-      size::positive := TrussMe:-FEM:-m_IdLength,
+      size::positive := TrussMe_FEM:-m_IdLength,
       opts::symbol   := 'alnum'
     }, $)::string;
 
@@ -366,7 +365,6 @@ $include "./lib/FEM/Structure.mpl"
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-end module: # FEM
-end module: # TrussMe
+end module: # TrussMe_FEM
 
 # That's all folks!

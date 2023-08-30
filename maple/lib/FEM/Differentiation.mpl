@@ -55,7 +55,7 @@ export DoGradient := proc(
   # Differentiate
   out := Vector(n);
   for i from 1 to n do
-    out[i] := TrussMe:-FEM:-DoDiff(fnc, lst[i]):
+    out[i] := TrussMe_FEM:-DoDiff(fnc, lst[i]):
   end do;
   return out;
 end proc: # DoGradient
@@ -83,7 +83,7 @@ export DoHessian := proc(
   out := Matrix(n, n);
   for i from 1 to n do
     for j from i to n do
-      out[i, j] := TrussMe:-FEM:-DoDiff(fnc, lst[i], lst[j]);
+      out[i, j] := TrussMe_FEM:-DoDiff(fnc, lst[i], lst[j]);
       out[j, i] := out[i, j];
     end do;
   end do;
@@ -114,7 +114,7 @@ export DoJacobian := proc(
   out := Matrix(m, n);
   for i from 1 to m do
     for j from 1 to n do
-      out[i, j] := TrussMe:-FEM:-DoDiff(fnc[i], lst[j]);
+      out[i, j] := TrussMe_FEM:-DoDiff(fnc[i], lst[j]);
     end do;
   end do;
   return out;
@@ -146,7 +146,7 @@ export DoTensor := proc(
   for i from 1 to m do
     for j from 1 to n do
       for k from 1 to l do
-        out[i, j, k] := TrussMe:-FEM:-DoDiff(mat[i, j], lst[k]);
+        out[i, j, k] := TrussMe_FEM:-DoDiff(mat[i, j], lst[k]);
       end do;
     end do;
   end do;
