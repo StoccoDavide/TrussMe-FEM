@@ -848,24 +848,12 @@ export RecastStiffness := proc(
   K_r := Matrix(LinearAlgebra:-Dimension(d), storage = sparse);
   try
     K_r[1..n, 1..n] := K_11 - K_12.LinearAlgebra:-MatrixInverse(K_22).K_21;
-
-    # Unpermute stiffness matrix
+    # Return recasted unpermuted stiffness matrix
     return K_r[unperm, unperm];
   catch:
-    #print(K, d, K_11, K_12, K_21, K_22);
-    #for i from 1 to n do
-    #  if evalb(add(K_22[i, 1..-1]) = 0) then
-    #    if TrussMe_FEM:-m_WarningMode then
-    #      WARNING("rigid body motion detected in element '%1', dof '%2'.",
-    #        e, unperm[i]);
-    #    end if;
-    #  end if;
-    #end do;
-    #error("stiffness matrix of element '%1' cannot be recasted.", e);
     if TrussMe_FEM:-m_WarningMode then
       WARNING("stiffness matrix of element '%1' cannot be recasted.", e);
     end if;
-
     # Return original stiffness matrix
     return K;
   end try;
@@ -910,11 +898,9 @@ export SplitFEM := proc(
   local d, K, f, n, i;
 
   # Get permutation and unpermutation vectors
-  #fem["perm"]   := sort(fem["dofs"], `>`, output = 'permutation');
-  #fem["unperm"] := [seq(i, i = 1..nops(fem["perm"]))];
   fem["perm"]   := Array(sort(fem["dofs"], `>`, output = 'permutation'));
-  fem["unperm"] := fem["perm"];
-  for i from 1 to nops(fem["unperm"]) do
+  fem["unperm"] := Array([seq(i, i = 1..ArrayNumElems(fem["perm"]))]);
+  for i from 1 to ArrayNumElems(fem["perm"]) do
     fem["unperm"][fem["perm"][i]] := i;
   end do;
   fem["perm"]   := convert(fem["perm"],   list);
