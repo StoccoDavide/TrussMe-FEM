@@ -107,13 +107,21 @@ classdef System < handle
     %>   \right)
     %> \f]
     %>
-    %> \param x States \f$ \mathbf{x} \f$.
-    %> \param v Veils \f$ \mathbf{v} \f$.
+    %> \param x   States \f$ \mathbf{x} \f$.
+    %> \param v   Veils \f$ \mathbf{v} \f$.
+    %> \param tol [optional] Tolerance for the iterative solver.
+    %> \param itr [optional] Maximum number of solver iterations.
     %>
     %> \return The system deformation vector \f$ \mathbf{d}_{f} \f$.
     %
-    function out = compute_d_f( this, x, v )
-      out = this.K_ff(x, v)\(this.f_f(x, v)-this.K_fs(x, v)*this.d_s(x, v));
+    function out = compute_d_f( this, x, v, varargin )
+      if nargin == 3
+        out = this.K_ff(x, v)\(this.f_f(x, v)-this.K_fs(x, v)*this.d_s(x, v)); ...
+      elseif nargin == 5
+        [out, ~] = lsqr(this.K_ff(x, v), this.f_f(x, v)-this.K_fs(x, v)*this.d_s(x, v), varargin{1}, varargin{2});
+      else
+        error('TrussMe.System.compute_d_f(...): Wrong number of arguments.');
+      end
     end
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -126,17 +134,29 @@ classdef System < handle
     %>   \right]
     %> \f]
     %>
-    %> \param x States \f$ \mathbf{x} \f$.
-    %> \param v Veils \f$ \mathbf{v} \f$.
+    %> \param x   States \f$ \mathbf{x} \f$.
+    %> \param v   Veils \f$ \mathbf{v} \f$.
+    %> \param tol [optional] Tolerance for the iterative solver.
+    %> \param itr [optional] Maximum number of solver iterations.
     %>
     %> \return The system deformation vector \f$ \mathbf{d} \f$.
     %
-    function out = compute_d( this, x, v )
+    function out = compute_d( this, x, v, varargin )
+
+      % Compute specified deformations
       d_s = this.d_s(x, v);
-      out = [ ...
-        this.K_ff(x, v)\(this.f_f(x, v)-this.K_fs(x, v)*d_s); ...
-        d_s ...
-      ];
+
+      % Compute free deformations
+      if nargin == 3
+        d_f = this.K_ff(x, v)\(this.f_f(x, v)-this.K_fs(x, v)*d_s); ...
+      elseif nargin == 5
+        [d_f, ~] = lsqr(this.K_ff(x, v), this.f_f(x, v)-this.K_fs(x, v)*d_s, varargin{1}, varargin{2});
+      else
+        error('TrussMe.System.compute_d(...): Wrong number of arguments.');
+      end
+
+      % Permute the result
+      out = [d_f; d_s];
       out = out(this.unperm());
     end
     %
@@ -152,11 +172,13 @@ classdef System < handle
     %>
     %> \param x States \f$ \mathbf{x} \f$.
     %> \param v Veils \f$ \mathbf{v} \f$.
+    %> \param tol [optional] Tolerance for the iterative solver.
+    %> \param itr [optional] Maximum number of solver iterations.
     %>
     %> \return The system force vector \f$ \mathbf{f}_{s} \f$.
     %
-    function out = compute_f_s( this, x, v )
-      out = this.K_sf(x, v)*this.compute_d_f(x, v) + ...
+    function out = compute_f_s( this, x, v, varargin )
+      out = this.K_sf(x, v)*this.compute_d_f(x, v, varargin{:}) + ...
             this.K_ss(x, v)*this.d_s(x, v) - this.f_r(x, v);
     end
     %
@@ -169,15 +191,17 @@ classdef System < handle
     %>     \begin{array}{c} \mathbf{f}_{f} \\ \mathbf{f}_{s} \end{array}
     %>   \right]
     %>
-    %> \param x States \f$ \mathbf{x} \f$.
-    %> \param v Veils \f$ \mathbf{v} \f$.
+    %> \param x   States \f$ \mathbf{x} \f$.
+    %> \param v   Veils \f$ \mathbf{v} \f$.
+    %> \param tol [optional] Tolerance for the iterative solver.
+    %> \param itr [optional] Maximum number of solver iterations.
     %>
     %> \return The system force vector \f$ \mathbf{f} \f$.
     %
-    function out = compute_f( this, x, v )
+    function out = compute_f( this, x, v, varargin )
       out = [ ...
         this.f_f(x, v); ...
-        this.K_sf(x, v)*this.compute_d_f(x, v) + ...
+        this.K_sf(x, v)*this.compute_d_f(x, v, varargin{:}) + ...
         this.K_ss(x, v)*this.d_s(x, v) - this.f_r(x, v); ...
       ];
       out = out(this.unperm());
@@ -185,16 +209,18 @@ classdef System < handle
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    %> Internal matrices size check.
+    %> Internal structure sanity check.
     %>
-    %> \param x States \f$ \mathbf{x} \f$.
-    %> \param v Veils \f$ \mathbf{v} \f$.
+    %> \param x   States \f$ \mathbf{x} \f$.
+    %> \param v   Veils \f$ \mathbf{v} \f$.
+    %> \param tol [optional] Tolerance for the iterative solver.
+    %> \param itr [optional] Maximum number of solver iterations.
     %>
     %> \return An error is thrown if the sizes are not correct.
     %
-    function check_size( this, x, v )
+    function sanity_check( this, x, v, varargin )
 
-      CMD = 'TrussMe.System.check_size(...): ';
+      CMD = 'TrussMe.System.sanity_check(...): ';
 
       % Evaluate stiffness matrices
       K_ff = this.K_ff(x, v);
@@ -216,8 +242,8 @@ classdef System < handle
       f   = this.f(x, v);
 
       % Compute displacements
-      d_fc = this.compute_d_f(x, v);
-      d_c = this.compute_d(x, v);
+      d_fc = this.compute_d_f(x, v, varargin{:});
+      d_c = this.compute_d(x, v, varargin{:});
 
       % Compute force vectors
       f_sc = this.compute_f_s(x, v);

@@ -62,6 +62,7 @@ classdef Test_09 < TrussMe.System
       % Evaluate the stiffness matrix K.
 
       % Extract properties
+      I__x = this.m_data.I__x;
       I__y = this.m_data.I__y;
       I__z = this.m_data.I__z;
       l = this.m_data.l;
@@ -89,18 +90,18 @@ classdef Test_09 < TrussMe.System
       out_5_3 = -t13;
       out_9_3 = -out_3_3;
       out_11_3 = out_5_3;
-      out_4_4 = t2 * (I__y + I__z) * G;
+      out_4_4 = t2 * I__x * G;
       out_10_4 = -out_4_4;
       out_3_5 = out_11_3;
-      t16 = t2 * t10;
-      out_5_5 = 4 * t16;
+      t15 = t2 * t10;
+      out_5_5 = 4 * t15;
       out_9_5 = t13;
-      out_11_5 = 2 * t16;
+      out_11_5 = 2 * t15;
       out_2_6 = out_12_2;
-      t17 = t2 * t3;
-      out_6_6 = 4 * t17;
+      t16 = t2 * t3;
+      out_6_6 = 4 * t16;
       out_8_6 = -out_2_6;
-      out_12_6 = 2 * t17;
+      out_12_6 = 2 * t16;
       out_1_7 = out_7_1;
       out_7_7 = out_1_1;
       out_2_8 = out_8_2;
@@ -172,6 +173,7 @@ classdef Test_09 < TrussMe.System
       % Evaluate the stiffness matrix K_ff.
 
       % Extract properties
+      I__x = this.m_data.I__x;
       I__y = this.m_data.I__y;
       I__z = this.m_data.I__z;
       l = this.m_data.l;
@@ -193,7 +195,7 @@ classdef Test_09 < TrussMe.System
       t11 = I__z * E;
       out_3_3 = 12 * t6 * t11;
       out_5_3 = 6 * t8 * t11;
-      out_4_4 = t2 * (I__y + I__z) * G;
+      out_4_4 = t2 * I__x * G;
       out_3_5 = out_5_3;
       out_5_5 = 4 * t2 * t11;
       out_2_6 = out_6_2;
@@ -219,6 +221,7 @@ classdef Test_09 < TrussMe.System
       % Evaluate the stiffness matrix K_fs.
 
       % Extract properties
+      I__x = this.m_data.I__x;
       I__y = this.m_data.I__y;
       I__z = this.m_data.I__z;
       l = this.m_data.l;
@@ -241,7 +244,7 @@ classdef Test_09 < TrussMe.System
       out_3_3 = -12 * t7 * t12;
       t16 = 6 * t10 * t12;
       out_5_3 = -t16;
-      out_4_4 = -t2 * (I__y + I__z) * G;
+      out_4_4 = -t2 * I__x * G;
       out_3_5 = t16;
       out_5_5 = 2 * t2 * t12;
       out_2_6 = -out_6_2;
@@ -267,6 +270,7 @@ classdef Test_09 < TrussMe.System
       % Evaluate the stiffness matrix K_sf.
 
       % Extract properties
+      I__x = this.m_data.I__x;
       I__y = this.m_data.I__y;
       I__z = this.m_data.I__z;
       l = this.m_data.l;
@@ -289,7 +293,7 @@ classdef Test_09 < TrussMe.System
       t13 = I__z * E;
       out_3_3 = -12 * t7 * t13;
       out_5_3 = 6 * t10 * t13;
-      out_4_4 = -t2 * (I__y + I__z) * G;
+      out_4_4 = -t2 * I__x * G;
       out_3_5 = -out_5_3;
       out_5_5 = 2 * t2 * t13;
       out_2_6 = t12;
@@ -315,6 +319,7 @@ classdef Test_09 < TrussMe.System
       % Evaluate the stiffness matrix K_ss.
 
       % Extract properties
+      I__x = this.m_data.I__x;
       I__y = this.m_data.I__y;
       I__z = this.m_data.I__z;
       l = this.m_data.l;
@@ -336,7 +341,7 @@ classdef Test_09 < TrussMe.System
       t10 = I__z * E;
       out_3_3 = 12 * t6 * t10;
       out_5_3 = -6 * t8 * t10;
-      out_4_4 = t2 * (I__y + I__z) * G;
+      out_4_4 = t2 * I__x * G;
       out_3_5 = out_5_3;
       out_5_5 = 4 * t2 * t10;
       out_2_6 = out_6_2;
@@ -368,6 +373,7 @@ classdef Test_09 < TrussMe.System
       M__x = this.m_data.M__x;
       M__y = this.m_data.M__y;
       M__z = this.m_data.M__z;
+      I__x = this.m_data.I__x;
       I__y = this.m_data.I__y;
       I__z = this.m_data.I__z;
       l = this.m_data.l;
@@ -387,7 +393,7 @@ classdef Test_09 < TrussMe.System
       t14 = F__z * l;
       t20 = 0.1e1 / I__z * t3;
       out_9 = t20 * (2 * t14 - 3 * M__y) * t5 / 6;
-      out_10 = M__x * l / G / (I__y + I__z);
+      out_10 = M__x * l / G / I__x;
       out_11 = -t20 * (t14 - 2 * M__y) * l / 2;
       out_12 = t12 * (t6 + 2 * M__z) * l / 2;
 
@@ -413,6 +419,7 @@ classdef Test_09 < TrussMe.System
       M__x = this.m_data.M__x;
       M__y = this.m_data.M__y;
       M__z = this.m_data.M__z;
+      I__x = this.m_data.I__x;
       I__y = this.m_data.I__y;
       I__z = this.m_data.I__z;
       l = this.m_data.l;
@@ -432,7 +439,7 @@ classdef Test_09 < TrussMe.System
       t14 = F__z * l;
       t20 = 0.1e1 / I__z * t3;
       out_3 = t20 * (2 * t14 - 3 * M__y) * t5 / 6;
-      out_4 = M__x * l / G / (I__y + I__z);
+      out_4 = M__x * l / G / I__x;
       out_5 = -t20 * (t14 - 2 * M__y) * l / 2;
       out_6 = t12 * (t6 + 2 * M__z) * l / 2;
 

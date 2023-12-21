@@ -10,7 +10,7 @@ Then test the module in a Maple worksheet or document by typing:
 > TrussMe_FEM:-Info();
 ```
 
-Alternatively, you can use one of the tests file provided in the `tests` folder. If the module is loaded without errors, it is done!
+Alternatively, you can use one of the test files provided in the `tests` folder. If the module is loaded without errors, it is done!
 
 ## Module description
 
@@ -28,12 +28,12 @@ In case you have no time to read the description and realize how it should or sh
 
 ## Authors
 
-- *Davide Stocco*,
-  Department of Industrial Engineering,
+- *Davide Stocco*, \
+  Department of Industrial Engineering, \
   University of Trento \
   email: davide.stocco@unitn.it
 
-- *Matteo Larcher*,
-  Department of Industrial Engineering,
+- *Matteo Larcher*, \
+  Department of Industrial Engineering, \
   University of Trento \
   email: matteo.larcher@unitn.it

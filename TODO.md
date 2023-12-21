@@ -1,3 +1,0 @@
-# TODO
-
-- [ ] Debug plots

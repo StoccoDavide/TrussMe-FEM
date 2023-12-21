@@ -76,7 +76,7 @@ export MakeNode := proc(
   coordinates::{Vector, POINT, VECTOR},
   {
   frame::FRAME                     := Matrix(4, shape = identity),
-  dofs:: DOFS                      := <1, 1, 1, 1, 1, 1>,
+  dofs::DOFS                       := <1, 1, 1, 1, 1, 1>,
   displacements::Vector(algebraic) := <0, 0, 0, 0, 0, 0>
   }, $)::NODE;
 
@@ -127,7 +127,7 @@ export MakeCompliantNode := proc(
   coordinates::{Vector, POINT, VECTOR},
   {
   frame::FRAME                     := Matrix(4, shape = identity),
-  dofs:: DOFS                      := <1, 1, 1, 1, 1, 1>,
+  dofs::DOFS                       := <1, 1, 1, 1, 1, 1>,
   displacements::Vector(algebraic) := <0, 0, 0, 0, 0, 0>,
   K::{algebraic, list(algebraic)}  := 0,
   T::{algebraic, list(algebraic)}  := 0
@@ -262,7 +262,7 @@ export GetRodStiffness := proc(
     if type(L, numeric) and evalb(L <= 0) then
       WARNING("null or negative length detected.");
     end if;
-    if evalb(I_x <> 0) then
+    if type(I_x, numeric) and evalb(I_x <= 0) then
       WARNING("non null x-axis inertia detected.");
     end if;
     if type(I_y, numeric) and evalb(I_y <= 0) then
@@ -271,9 +271,12 @@ export GetRodStiffness := proc(
     if type(I_z, numeric) and evalb(I_z <= 0) then
       WARNING("null or negative z-axis inertia detected.");
     end if;
+    if evalb(I_x <> I_y + I_z) then
+      WARNING("possible incoherent cross-section inertias detected (I_x <> I_y+I_z).");
+    end if;
   end if;
 
-  return TrussMe_FEM:-GetSpringStiffness([E*A/L, 0, 0], [G*(I_y+I_z)/L, 0, 0]);
+  return TrussMe_FEM:-GetSpringStiffness([E*A/L, 0, 0], [G*I_x/L, 0, 0]);
 
 end proc: # GetRodStiffness
 
@@ -317,10 +320,13 @@ export GetBeamStiffness := proc(
     if type(I_z, numeric) and evalb(I_z <= 0) then
       WARNING("null or negative z-axis inertia detected.");
     end if;
+    if evalb(I_x <> I_y + I_z) then
+      WARNING("possible incoherent cross-section inertias detected (I_x <> I_y+I_z).");
+    end if;
   end if;
 
   EA_L  := E*A/L;
-  GJ_L  := G*(I_y+I_z)/L;
+  GJ_L  := G*I_x/L;
   EIy_L := E*I_y/L; EIy_L2 := EIy_L/L; EIy_L3 := EIy_L2/L;
   EIz_L := E*I_z/L; EIz_L2 := EIz_L/L; EIz_L3 := EIz_L2/L;
 
@@ -487,7 +493,7 @@ export MakeElement := proc(
   # Ni::{NODE, list({NODE, DOFS}), Vector({NODE, DOFS})},
   # K::STIFFNESS,
   {
-  frame::FRAME := TrussMe_FEM:-GenerateGenericFrame(name)
+  frame::FRAME := Matrix(4, shape = identity)
   })::ELEMENT;
 
   description "Make an element with name <name> on reference frame <frame>, "
@@ -537,7 +543,7 @@ export MakeSpring := proc(
   {
   K::{algebraic, list(algebraic)} := 0,
   T::{algebraic, list(algebraic)} := 0,
-  frame::FRAME                    := TrussMe_FEM:-GenerateGenericFrame(name),
+  frame::FRAME                    := Matrix(4, shape = identity),
   distance::algebraic             := 0
   }, $)::ELEMENT;
 
@@ -562,7 +568,7 @@ export MakeRod := proc(
   material::MATERIAL       := TrussMe_FEM:-MakeCarbonSteel(),
   area::algebraic          := 0,
   inertia::list(algebraic) := [0, 0, 0],
-  frame::FRAME             := TrussMe_FEM:-GenerateGenericFrame(name),
+  frame::FRAME             := Matrix(4, shape = identity),
   distance::algebraic      := -1
   }, $)::ELEMENT;
 
@@ -610,7 +616,7 @@ export MakeBeam := proc(
   material::MATERIAL       := TrussMe_FEM:-MakeCarbonSteel(),
   area::algebraic          := 0,
   inertia::list(algebraic) := [0, 0, 0],
-  frame::FRAME             := TrussMe_FEM:-GenerateGenericFrame(name),
+  frame::FRAME             := Matrix(4, shape = identity),
   distance::algebraic      := -1,
   timoshenko::boolean      := false
   }, $)::ELEMENT;
@@ -784,7 +790,7 @@ end proc: # StiffnessTransformation
 
     # Recast stiffness matrix if necessary
     if evalb(add(d_i) <> 12) then
-      K_i := TrussMe_FEM:-RecastStiffness(elements[i]["stiffness"], d_i);
+      K_i := TrussMe_FEM:-RecastStiffness(elements[i]["stiffness"], d_i, elements[i]["name"]);
     else
       K_i := elements[i]["stiffness"];
     end if;
@@ -813,10 +819,11 @@ end proc: # GlobalStiffness
 export RecastStiffness := proc(
   K::STIFFNESS,
   d::Vector,
+  e::string,
   $)::Matrix;
 
   description "Recast the stiffness matrix <K> according to the constrained "
-    "negated dofs <d>.";
+    "negated dofs <d> of the element name <e>.";
 
   local perm, unperm, i, n, K_r, K_11, K_12, K_21, K_22;
 
@@ -839,10 +846,29 @@ export RecastStiffness := proc(
 
   # Recast stiffness matrix
   K_r := Matrix(LinearAlgebra:-Dimension(d), storage = sparse);
-  K_r[1..n, 1..n] := K_11 - K_12.LinearAlgebra:-MatrixInverse(K_22).K_21;
+  try
+    K_r[1..n, 1..n] := K_11 - K_12.LinearAlgebra:-MatrixInverse(K_22).K_21;
 
-  # Unpermute stiffness matrix
-  return K_r[unperm, unperm];
+    # Unpermute stiffness matrix
+    return K_r[unperm, unperm];
+  catch:
+    #print(K, d, K_11, K_12, K_21, K_22);
+    #for i from 1 to n do
+    #  if evalb(add(K_22[i, 1..-1]) = 0) then
+    #    if TrussMe_FEM:-m_WarningMode then
+    #      WARNING("rigid body motion detected in element '%1', dof '%2'.",
+    #        e, unperm[i]);
+    #    end if;
+    #  end if;
+    #end do;
+    #error("stiffness matrix of element '%1' cannot be recasted.", e);
+    if TrussMe_FEM:-m_WarningMode then
+      WARNING("stiffness matrix of element '%1' cannot be recasted.", e);
+    end if;
+
+    # Return original stiffness matrix
+    return K;
+  end try;
 end proc: # RecastStiffness
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -884,11 +910,15 @@ export SplitFEM := proc(
   local d, K, f, n, i;
 
   # Get permutation and unpermutation vectors
-  fem["perm"]   := sort(fem["dofs"], `>`, output = 'permutation');
-  fem["unperm"] := [seq(i, i = 1..nops(fem["perm"]))];
+  #fem["perm"]   := sort(fem["dofs"], `>`, output = 'permutation');
+  #fem["unperm"] := [seq(i, i = 1..nops(fem["perm"]))];
+  fem["perm"]   := Array(sort(fem["dofs"], `>`, output = 'permutation'));
+  fem["unperm"] := fem["perm"];
   for i from 1 to nops(fem["unperm"]) do
     fem["unperm"][fem["perm"][i]] := i;
   end do;
+  fem["perm"]   := convert(fem["perm"],   list);
+  fem["unperm"] := convert(fem["unperm"], list);
 
   # Compute global stiffness matrix, displacements and loads vectors
   fem["K"] := TrussMe_FEM:-Simplify(
@@ -1023,6 +1053,69 @@ end proc: # GenerateFEM
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+export NumericalSolveFEM := proc(
+  fem::FEM,
+  {
+  data::list := []
+  }, $)
+
+  description "Solve numerically the FEM structure <fem> provided with optional "
+    "data <data>.";
+
+  local K_ff, K_fs, K_sf, K_ss, f_f, f_s, f_r, d_f, d_s, d, f, i;
+
+  # Substitute data
+  K_ff := subs(op(data), fem["K_ff"]);
+  K_fs := subs(op(data), fem["K_fs"]);
+  K_sf := subs(op(data), fem["K_sf"]);
+  K_ss := subs(op(data), fem["K_ss"]);
+  d_s  := subs(op(data), fem["d_s"]);
+  f_f  := subs(op(data), fem["f_f"]);
+  f_s  := subs(op(data), fem["f_s"]);
+  f_r  := subs(op(data), fem["f_r"]);
+
+  if TrussMe_FEM:-m_VerboseMode then
+    printf("Solving system deformations... ");
+  end if;
+
+  # Solve free dofs
+  d_f := LinearAlgebra:-LinearSolve(K_ff, f_f - K_fs.f_s) assuming real;
+
+  if TrussMe_FEM:-m_VerboseMode then
+    printf("DONE\n");
+    printf("Solving system reactions... ");
+  end if;
+
+  # Solve reactions
+  f_s := K_sf.d_f + K_ss.f_s - f_r;
+
+  if TrussMe_FEM:-m_VerboseMode then
+    printf("DONE\n");
+    printf("Applying inverse permutation... ");
+  end if;
+
+  # Store output displacements and reactions
+  d := convert(<d_f, d_s>[fem["unperm"]], Vector);
+  f := convert(<f_f, f_s>[fem["unperm"]], Vector);
+
+  if TrussMe_FEM:-m_VerboseMode then
+    printf("DONE\n");
+  end if;
+
+  # Return the solution
+  if _nresults = 1 then
+    return d;
+  elif _nresults = 2 then
+    return d, f;
+  elif _nresults = 4 then
+    return d_f, d_s, f_f, f_s;
+  else
+    error("too many output arguments.");
+  end if;
+end proc: # NumericalSolveFEM
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 export SolveFEM := proc(
   fem::FEM,
   {
@@ -1030,16 +1123,19 @@ export SolveFEM := proc(
   use_LEM::boolean      := true,
   use_SIG::boolean      := true,
   factorization::string := "LU",
-  label::string         := "V"
+  label::string         := "V",
+  time_limit::positive  := 1.0,
+  maxcost::nonnegint    := 15
   }, $)
 
   description "Solve the FEM structure <fem> and optionally use LAST LU "
     "decompostion <use_LAST> and veil the expressions <use_LEM> with "
     "signature mode <use_SIG> and label <label>. Factorization method "
     "<factorization> can be choosen between 'LU', fraction-free 'FFLU', 'QR', "
-    "and Gauss-Jordan 'GJ'.";
+    "and Gauss-Jordan 'GJ'. Time limit <time_limit> and maximum veiling cost "
+    "<maxcost> can be specified.";
 
-  local dofs, LAST_obj, LEM_obj, i;
+  local LAST_obj, LEM_obj, i;
 
   # Solve free dofs
   if use_LAST then
@@ -1050,6 +1146,8 @@ export SolveFEM := proc(
       LAST_obj := Object(LAST);
       LAST_obj:-InitLEM(LAST_obj, label);
       LEM_obj := LAST_obj:-GetLEM(LAST_obj);
+      LAST_obj:-SetTimeLimit(LAST_obj, time_limit);
+      LEM_obj:-SetVeilingStrategyPars(LEM_obj, parse("maxcost") = maxcost);
       if TrussMe_FEM:-m_VerboseMode then
         printf("DONE\n");
       end if;

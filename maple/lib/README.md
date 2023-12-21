@@ -1,8 +1,8 @@
 # MAPLE API
 
 ```
-# A package for mixed symbolic-numerical FEM structural analysis.
-module :
+## A package for mixed symbolic-numerical FEM structural analysis.
+module TrussMe_FEM:
 
     # Print module information.
     Info( )
@@ -31,12 +31,6 @@ module :
                         TimeLimit::{nothing, nonnegative} := NULL,
                         VerboseMode::{boolean, nothing} := NULL,
                         WarningMode::{boolean, nothing} := NULL }, $ )
-
-    # Set gravity vector with [x, y, z]^T components of <vec>.
-    SetGravity( g::VECTOR, $ )
-
-    # Get gravity vector.
-    GetGravity( $ )
 
     # Get object which field name is <name> from a list or set of objects
     # <objs>.
@@ -72,9 +66,15 @@ module :
 
     # Generate a reference frame matrix from three points or vectors <p_1>,
     # <p_2> and vector <vec> ortogonal to XY-plane <vec>
-    GenerateFrame( p_1::{POINT, VECTOR, Vector, list},
-                   p_2::{POINT, VECTOR, Vector, list},
-                   vec::{VECTOR, Vector, list}, $ ) :: FRAME
+    GenerateFrameXY( p_1::{POINT, VECTOR, Vector, list},
+                     p_2::{POINT, VECTOR, Vector, list},
+                     vec::{VECTOR, Vector, list}, $ ) :: FRAME
+
+    # Generate a reference frame matrix from three points or vectors <p_1>,
+    # <p_2> and vector <vec> ortogonal to XZ-plane <vec>
+    GenerateFrameXZ( p_1::{POINT, VECTOR, Vector, list},
+                     p_2::{POINT, VECTOR, Vector, list},
+                     vec::{VECTOR, Vector, list}, $ ) :: FRAME
 
     # Generate a generic reference frame matrix from a string label <label>.
     # Optional arguments <e>, <p>, <x>, <y>, <z> and <s> are used to customize
@@ -136,288 +136,6 @@ module :
     # reference frame <RF_end>.
     Project( x::{POINT, VECTOR}, RF_ini::FRAME, RF_end::FRAME, $ )
            :: {POINT, VECTOR}
-
-    # Check if the variable <var> is of MATERIAL type.
-    IsMATERIAL( var::anything, $ ) :: boolean
-
-    # Define material with inputs: name <name>, elastic modulus (E)
-    # <elastic_modulus>, Poisson's ratio (nu) <poisson_ratio>, shear modulus
-    # <shear_modulus> (default = E/(2*(1+nu))), and density <density>.
-    MakeMaterial( { density::algebraic := 0, elastic_modulus::algebraic := 0,
-                    name::string := "Undefined",
-                    poisson_ratio::algebraic := 0,
-                    shear_modulus::algebraic :=
-                      elastic_modulus/(2+2*poisson_ratio) },
-                  $ ) :: MATERIAL
-
-    # Get default steel material with 'CarbonSteel' name, elastic modulus E =
-    # 210.0e+09 (Pa), Poisson's ratio nu = 0.3 (-), shear modulusE/(2*(1+nu),
-    # density rho = 7850.0 (kg/m^3).
-    MakeCarbonSteel( $ )
-
-    # Get default steel material with 'InoxSteel' name, elastic modulus E =
-    # 200.0e+09 (Pa), Poisson's ratio nu = 0.3 (-), shear modulusE/(2*(1+nu),
-    # density rho = 8000.0 (kg/m^3).
-    MakeInoxSteel( $ )
-
-    # Get default titanium material with 'Titanium' name, elastic modulus E =
-    # 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
-    # density rho = 4500.0 (kg/m^3).
-    MakeTitanium( $ )
-
-    # Get default copper material with 'Copper' name, elastic modulus E =
-    # 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
-    # density rho = 4500.0 (kg/m^3).
-    MakeCopper( $ )
-
-    # Get default brass material with 'Brass' name, elastic modulus E =
-    # 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
-    # density rho = 4500.0 (kg/m^3).
-    MakeBrass( $ )
-
-    # Get default bronze material with 'Bronze' name, elastic modulus E =
-    # 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
-    # density rho = 4500.0 (kg/m^3).
-    MakeBronze( $ )
-
-    # Get default lead material with 'Lead' name, elastic modulus E = 110.0e+09
-    # (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu), density
-    # rho = 4500.0 (kg/m^3).
-    MakeLead( $ )
-
-    # Get default zinc material with 'Zinc' name, elastic modulus E = 110.0e+09
-    # (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu), density
-    # rho = 4500.0 (kg/m^3).
-    MakeZinc( $ )
-
-    # Get default magnesium material with 'Magnesium' name, elastic modulus E =
-    # 45.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
-    # density rho = 1800.0 (kg/m^3).
-    MakeMagnesium( $ )
-
-    # Get default alluminium material with 'Alluminium' name, elastic modulus E
-    # = 69.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
-    # density rho = 8000.0 (kg/m^3).
-    MakeAlluminium( $ )
-
-    # Get default avional material with 'Avional' name, elastic modulus E =
-    # 70.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
-    # density rho = 2690.0 (kg/m^3).
-    MakeAvional( $ )
-
-    # Get default peraluman material with 'Peraluman' name, elastic modulus E =
-    # 70.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
-    # density rho = 2700.0 (kg/m^3).
-    MakePeraluman( $ )
-
-    # Get default anticorodal material with 'Anticorodal' name, elastic modulus
-    # E = 69.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear
-    # modulusE/(2*(1+nu), density rho = 2700.0 (kg/m^3).
-    MakeAnticorodal( $ )
-
-    # Get default carpental material with 'Carpental' name, elastic modulus E =
-    # 72.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
-    # density rho = 2780.0 (kg/m^3).
-    MakeCarpental( $ )
-
-    # Get default ergal material with 'Ergal' name, elastic modulus E =
-    # 72.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
-    # density rho = 2780.0 (kg/m^3).
-    MakeErgal( $ )
-
-    # Check if the variable <var> is of NODE type.
-    IsNODE( var::anything, $ ) :: boolean
-
-    # Check if the variable <var> is of NODES type.
-    IsNODES( var::anything, $ ) :: boolean
-
-    # Check if the variable <var> is of SUPPORT type.
-    IsSUPPORT( var::anything, $ ) :: boolean
-
-    # Check if the variable <var> is of SUPPORTS type.
-    IsSUPPORTS( var::anything, $ ) :: boolean
-
-    # Check if the variable <var> is of DOFS type.
-    IsDOFS( var::anything, $ ) :: boolean
-
-    # Create a node with name <name> at coordinates <coordinates> in the
-    # reference frame <frame>. The constraints on dofs are specified by <dofs>,
-    # where 1 means free and 0 means that the dof is constrained in the
-    # direction given from (global to local) <frame>.
-    MakeNode( name::string, coordinates::{POINT, VECTOR, Vector},
-              { displacements::Vector(algebraic) := <0, 0, 0, 0, 0, 0>,
-                dofs::DOFS := <1, 1, 1, 1, 1, 1>,
-                frame::FRAME := Matrix(4,shape = identity) }, $ ) :: NODE
-
-    # Create a node with name <name> at coordinates <coordinates> in the
-    # reference frame <frame>. The constraints on dofs are specified by <dofs>,
-    # where 1 means free and 0 means that the dof is constrained in the
-    # direction given from (global to local) <frame>. The node is also
-    # connected to a compliant spring element with traslational stiffness <K>
-    # and torsional stiffness <T>.
-    MakeCompliantNode( name::string, coordinates::{POINT, VECTOR, Vector},
-                       { K::{algebraic, list(algebraic)} := 0,
-                         T::{algebraic, list(algebraic)} := 0,
-                         displacements::Vector(algebraic) := <0, 0, 0, 0, 0,
-                           0>,
-                         dofs::DOFS := <1, 1, 1, 1, 1, 1>,
-                         frame::FRAME := Matrix(4,shape = identity) }, $ )
-                     :: NODE
-
-    # Check if the variable <var> is of STIFFNESS type.
-    IsSTIFFNESS( var::anything, $ ) :: boolean
-
-    # Get the stiffness matrix of a spring given the translational stiffnesses
-    # <K> or <K_x, K_y, K_z>, and the torsional stiffnesses <T> or <T_x, T_y,
-    # T_z>.
-    GetSpringStiffness( K::{algebraic, list(algebraic)},
-                        T::{algebraic, list(algebraic)}, $ ) :: STIFFNESS
-
-    # Get the stiffness matrix of a rod (only axial-stiffness) given the
-    # cross-section area <A>, the Young's modulus <E>, the shear modulus <G>,
-    # the length <L>, and the cross-section inertia <I_x>, <I_y> and <I_z>.
-    GetRodStiffness( A::algebraic, E::algebraic, G::algebraic, L::algebraic,
-                     I_x::algebraic, I_y::algebraic, I_z::algebraic, $ )
-                   :: STIFFNESS
-
-    # Get the stiffness matrix of a lean beam given the cross-section area <A>,
-    # the Young's modulus <E>, the shear modulus <G>, the length <L>, and the
-    # inertia of the cross-section <I_x>, <I_y> and <I_z>.
-    GetBeamStiffness( A::algebraic, E::algebraic, G::algebraic, L::algebraic,
-                      I_x::algebraic, I_y::algebraic, I_z::algebraic, $ )
-                    :: STIFFNESS
-
-    # Get the stiffness matrix of a Timoshenko's (thick) beam given the
-    # cross-section area <A>, the Young's modulus <E>, the shear modulus <G>,
-    # the length <L>, and the inertia of the cross-section <I_x>, <I_y> and
-    # <I_z>.
-    GetTimoshenkoBeamStiffness( A::algebraic, E::algebraic, G::algebraic,
-                                L::algebraic, I_x::algebraic, I_y::algebraic,
-                                I_z::algebraic, $ ) :: STIFFNESS
-
-    # Get the output displacements of a solved and stored FEMstructure <fem>.
-    GetOutputDisplacements( fem::_FEM, $ ) :: Matrix
-
-    # Get the output reactions of a solved and stored FEMstructure <fem>.
-    GetOutputReactions( fem::_FEM, $ ) :: Matrix
-
-    # Check if the variable <var> is of ELEMENT type.
-    IsELEMENT( var::anything, $ ) :: boolean
-
-    # Check if the variable <var> is of ELEMENTS type.
-    IsELEMENTS( var::anything, $ ) :: boolean
-
-    # Make an element with name <name> on reference frame <frame>, connecting
-    # the dofs <Ni_dofs> on i-th node i <[Ni, Ni_dofs]>, connecting with
-    # stiffness <K>.
-    MakeElement( name::string,
-                 { frame::FRAME := TrussMe_FEM:-GenerateGenericFrame(name) } )
-               :: ELEMENT
-
-    # Make a spring element with name <name> on reference frame <frame>,
-    # connecting the dofs <N1_dofs> on node 1 <[N1, N1_dofs]>, connecting the
-    # dofs <N2_dofs> on node 2 <[N2, N2_dofs]> with translational stiffnesses
-    # <K> or <K_x, K_y, K_z>, and torsional stiffnesses <T> or <T_x, T_y, T_z>.
-    # Optional nodes distance <distance> can be specified.
-    MakeSpring( name::string, N1::{NODE, list({DOFS, NODE})},
-                N2::{NODE, list({DOFS, NODE})},
-                { K::{algebraic, list(algebraic)} := 0,
-                  T::{algebraic, list(algebraic)} := 0,
-                  distance::algebraic := 0,
-                  frame::FRAME := TrussMe_FEM:-GenerateGenericFrame(name) },
-                $ ) :: ELEMENT
-
-    # Make a rod element with name <name> on reference frame <frame>,
-    # connecting the dofs <N1_dofs> on node 1 <[N1, N1_dofs]>, connecting the
-    # dofs <N2_dofs> on node 2 <[N2, N2_dofs]> with material <material>,
-    # cross-section area <area>and inertia <inertia>. Optional nodes distance
-    # <distance> can be specified.
-    MakeRod( name::string,
-             N1::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})},
-             N2::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})},
-             { area::algebraic := 0, distance::algebraic := -1,
-               frame::FRAME := TrussMe_FEM:-GenerateGenericFrame(name),
-               inertia::list(algebraic) := [0, 0, 0],
-               material::MATERIAL := TrussMe_FEM:-MakeCarbonSteel() }, $ )
-           :: ELEMENT
-
-    # Make a beam element with name <name> on reference frame <frame>,
-    # connecting the dofs <N1_dofs> on node 1 <[N1, N1_dofs]>, connecting the
-    # dofs <N2_dofs> on node 2 <[N2, N2_dofs]> with material <material> and
-    # cross-section area <area> and inertia <inertia>. Optional nodes distance
-    # <distance> and Timoshenko's beam boolean <timoshenko> can be specified.
-    MakeBeam( name::string,
-              N1::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})},
-              N2::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})},
-              { area::algebraic := 0, distance::algebraic := -1,
-                frame::FRAME := TrussMe_FEM:-GenerateGenericFrame(name),
-                inertia::list(algebraic) := [0, 0, 0],
-                material::MATERIAL := TrussMe_FEM:-MakeCarbonSteel(),
-                timoshenko::boolean := false }, $ ) :: ELEMENT
-
-    # Check if the variable <var> is of STRUCTURE type.
-    IsSTRUCTURE( var::anything, $ ) :: boolean
-
-    # Get nodal dofs of nodes <nodes>.
-    GetNodalDofs( nodes::NODES, $ ) :: Vector
-
-    # Get the vector of nodal displacements of nodes <nodes>.
-    GetNodalDisplacements( nodes::NODES, $ ) :: Vector
-
-    # Compute the transformation matrix of the nodes <nodes>.
-    StiffnessTransformation( nodes::NODES, $ ) :: Matrix
-
-    # Compute the global stiffness matrix of the nodes <nodes> and elements
-    # <elements>.
-    GlobalStiffness( nodes::NODES, elements::ELEMENTS, $ ) :: Matrix
-
-    # Compute the global stiffness matrix of the nodes <nodes> and elements
-    # <elements>.
-    GlobalStiffnessPrime( nodes::NODES, elements::ELEMENTS, $ ) :: Matrix
-
-    # Check if the variable <var> is of FEM type.
-    IsFEM( var::anything, $ ) :: boolean
-
-    # Split the FEM structure <fem> in free and constrained dofs.
-    SplitFEM( fem::_FEM, $ )
-
-    # Recast the system <fem> to avoid singularities.
-    RecastFEM( fem::_FEM, $ )
-
-    # Generate a FEM structure from the nodes <nodes>, elements <elements>, and
-    # loads <loads>. If <tryhard> is enabled, the stiffness matrix will be
-    # recasted to avoid singularities.
-    GenerateFEM( nodes::NODES, elements::ELEMENTS, loads::LOADS,
-                 { tryhard::boolean := false }, $ ) :: _FEM
-
-    # Solve the FEM structure <fem> and optionally use LAST LU decompostion
-    # <use_LAST> and veil the expressions <use_LEM> with signature mode
-    # <use_SIG> and label <label>. Factorization method <factorization> can be
-    # choosen between 'LU', fraction-free 'FFLU', 'QR', and Gauss-Jordan 'GJ'.
-    SolveFEM( fem::_FEM,
-              { factorization::string := "LU", label::string := "V",
-                use_LAST::boolean := false, use_LEM::boolean := true,
-                use_SIG::boolean := true }, $ )
-
-    # Store the FEM structure <fem> in the nodes <nodes>.
-    StoreFEM( fem::_FEM, $ )
-
-    # Check if the variable <var> is of LOAD type.
-    IsLOAD( var::anything, $ ) :: boolean
-
-    # Check if the variable <var> is of COMPONENTS type.
-    IsCOMPONENTS( var::anything, $ ) :: boolean
-
-    # Create a load with name <name> acting on the node (or its id) <node> on
-    # the frame <frame> with components <components>.
-    MakeLoad( name::string, node::NODE, components::COMPONENTS,
-              { frame::{FRAME, string} := node["id"] }, $ ) :: LOAD
-
-    # Check if the variable <var> is of LOADS type.
-    IsLOADS( var::anything, $ ) :: boolean
-
-    # Get the vector of nodal loads <loads> of nodes <nodes>.
-    GetNodalLoads( nodes::NODES, loads::LOADS, $ ) :: Vector
 
     # Generate a file named <fname> with the content <str>.
     GenerateFile( fname::string, str::string, $ )
@@ -516,7 +234,7 @@ module :
                       info::string := "No info", label::string := "out",
                       skipnull::boolean := true }, $ ) :: string
 
-    # Get the substitutions to transform veils <vars> from (v[j])(f) to v_j.
+    # Get the substitutions to transform veils <veil> from (v[j])(f) to v_j.
     GetVeilSubs( veil::{Vector(algebraic), list(algebraic)}, $ )
 
     # Generate a constructor for a system named <name> system data <data>,
@@ -529,7 +247,7 @@ module :
 
     # Generate a FEM system <fem> with name <name>, with optional data <data>,
     # description <info>, output label <label> and indentation <indent>.
-    SystemToMatlab( name::string, fem::_FEM,
+    SystemToMatlab( name::string, fem::FEM,
                     { data::list(symbol = algebraic) := [],
                       indent::string := "  ",
                       info::string := "No class description provided.",
@@ -539,19 +257,142 @@ module :
     # Generate Matlab code for the FEM system <fem> with name <name>, with
     # optional data <data>, description <info>, output label <label> and
     # indentation <indent>, variables <vars> and output path <path>.
-    GenerateMatlabCode( name::string, fem::_FEM,
+    GenerateMatlabCode( name::string, fem::FEM,
                         { data::list(symbol = algebraic) := [],
                           indent::string := "  ",
                           info::string := "No class description provided.",
                           label::string := "out", path::string := "./",
                           vars::list(symbol) := [] }, $ )
 
+    # Differentiate an expression with respect to a function.
+    DoDiff( )
+
+    # Differentiate a scalar expression <fnc> with respect to a list of
+    # functions <lst>.
+    DoGradient( fnc::algebraic, lst::{Vector, list}, $ ) :: Vector
+
+    # Differentiate a vector of expressions (gradient) <fnc> with respect to a
+    # list <lst> of functions.
+    DoHessian( fnc::algebraic, lst::{Vector, list}, $ ) :: Matrix
+
+    # Differentiate a vector of expressions <fnc> with respect to a list <lst>
+    # of functions.
+    DoJacobian( fnc::Vector, lst::{Vector, list}, $ ) :: Matrix
+
+    # Differentiate a matrix <mat> with respect to a list of functions <lst>.
+    DoTensor( mat::Matrix, lst::{Vector, list}, $ ) :: Array
+
+    # Check if the variable <var> is of LOAD type.
+    IsLOAD( var::anything, $ ) :: boolean
+
+    # Check if the variable <var> is of COMPONENTS type.
+    IsCOMPONENTS( var::anything, $ ) :: boolean
+
+    # Create a load with name <name> acting on the node (or its id) <node> on
+    # the frame <frame> with components <components>.
+    MakeLoad( name::string, node::NODE, components::COMPONENTS,
+              { frame::{FRAME, string} := node["id"] }, $ ) :: LOAD
+
+    # Check if the variable <var> is of LOADS type.
+    IsLOADS( var::anything, $ ) :: boolean
+
+    # Get the vector of nodal loads <loads> of nodes <nodes>.
+    GetNodalLoads( nodes::NODES, loads::LOADS, $ ) :: Vector
+
+    # Check if the variable <var> is of MATERIAL type.
+    IsMATERIAL( var::anything, $ ) :: boolean
+
+    # Define material with inputs: name <name>, elastic modulus (E)
+    # <elastic_modulus>, Poisson's ratio (nu) <poisson_ratio>, shear modulus
+    # <shear_modulus> (default = E/(2*(1+nu))), and density <density>.
+    MakeMaterial( { density::algebraic := 0, elastic_modulus::algebraic := 0,
+                    name::string := "Undefined",
+                    poisson_ratio::algebraic := 0,
+                    shear_modulus::algebraic :=
+                      elastic_modulus/(2+2*poisson_ratio) },
+                  $ ) :: MATERIAL
+
+    # Get default steel material with 'CarbonSteel' name, elastic modulus E =
+    # 210.0e+09 (Pa), Poisson's ratio nu = 0.3 (-), shear modulusE/(2*(1+nu),
+    # density rho = 7850.0 (kg/m^3).
+    MakeCarbonSteel( $ )
+
+    # Get default steel material with 'InoxSteel' name, elastic modulus E =
+    # 200.0e+09 (Pa), Poisson's ratio nu = 0.3 (-), shear modulusE/(2*(1+nu),
+    # density rho = 8000.0 (kg/m^3).
+    MakeInoxSteel( $ )
+
+    # Get default titanium material with 'Titanium' name, elastic modulus E =
+    # 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
+    # density rho = 4500.0 (kg/m^3).
+    MakeTitanium( $ )
+
+    # Get default copper material with 'Copper' name, elastic modulus E =
+    # 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
+    # density rho = 4500.0 (kg/m^3).
+    MakeCopper( $ )
+
+    # Get default brass material with 'Brass' name, elastic modulus E =
+    # 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
+    # density rho = 4500.0 (kg/m^3).
+    MakeBrass( $ )
+
+    # Get default bronze material with 'Bronze' name, elastic modulus E =
+    # 110.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
+    # density rho = 4500.0 (kg/m^3).
+    MakeBronze( $ )
+
+    # Get default lead material with 'Lead' name, elastic modulus E = 110.0e+09
+    # (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu), density
+    # rho = 4500.0 (kg/m^3).
+    MakeLead( $ )
+
+    # Get default zinc material with 'Zinc' name, elastic modulus E = 110.0e+09
+    # (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu), density
+    # rho = 4500.0 (kg/m^3).
+    MakeZinc( $ )
+
+    # Get default magnesium material with 'Magnesium' name, elastic modulus E =
+    # 45.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
+    # density rho = 1800.0 (kg/m^3).
+    MakeMagnesium( $ )
+
+    # Get default alluminium material with 'Alluminium' name, elastic modulus E
+    # = 69.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
+    # density rho = 8000.0 (kg/m^3).
+    MakeAlluminium( $ )
+
+    # Get default avional material with 'Avional' name, elastic modulus E =
+    # 70.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
+    # density rho = 2690.0 (kg/m^3).
+    MakeAvional( $ )
+
+    # Get default peraluman material with 'Peraluman' name, elastic modulus E =
+    # 70.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
+    # density rho = 2700.0 (kg/m^3).
+    MakePeraluman( $ )
+
+    # Get default anticorodal material with 'Anticorodal' name, elastic modulus
+    # E = 69.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear
+    # modulusE/(2*(1+nu), density rho = 2700.0 (kg/m^3).
+    MakeAnticorodal( $ )
+
+    # Get default carpental material with 'Carpental' name, elastic modulus E =
+    # 72.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
+    # density rho = 2780.0 (kg/m^3).
+    MakeCarpental( $ )
+
+    # Get default ergal material with 'Ergal' name, elastic modulus E =
+    # 72.0e+09 (Pa), Poisson's ratio nu = 0.33 (-), shear modulusE/(2*(1+nu),
+    # density rho = 2780.0 (kg/m^3).
+    MakeErgal( $ )
+
     # Return the color of the object <obj>.
     ObjectColor( obj::{ELEMENT, LOAD, NODE, SUPPORT}, $ ) :: string
 
     # Return the graph of the structure given a list of nodes <nodes> and
     # elements <elements>.
-    StructureGraph( fem::_FEM,
+    StructureGraph( fem::FEM,
                     { disp::boolean := true, id::boolean := false }, $ )
                   :: function
 
@@ -597,7 +438,7 @@ module :
     # Plot the undeformed <fem> structure given a list or set of substitution
     # data <data>, a frame scaling factor <frame_scaling> or <nodes_scaling,
     # elements_scaling>, and a loads scaling factor <scaling>.
-    PlotStructure( fem::_FEM,
+    PlotStructure( fem::FEM,
                    { data::{list(`=`), set(`=`)} := [],
                      frame_scaling::{numeric, list(numeric)} := 0.,
                      load_scaling::numeric := 1.0 }, $ )
@@ -607,11 +448,198 @@ module :
     # data <data>, a frame scaling factor <frame_scaling> or <nodes_scaling,
     # elements_scaling>, a loads scaling factor <load_scaling>, and a
     # deformation magnification factor <deformation_scaling>.
-    PlotDeformedStructure( fem::_FEM,
+    PlotDeformedStructure( fem::FEM,
                            { data::{list(`=`), set(`=`)} := [],
                              deformation_scaling::numeric := 1.0,
                              frame_scaling::{numeric, list(numeric)} := 0.,
                              interpolate::boolean := true,
                              load_scaling::numeric := 1.0 }, $ )
                          :: {function, list(function)}
+
+    # Check if the variable <var> is of NODE type.
+    IsNODE( var::anything, $ ) :: boolean
+
+    # Check if the variable <var> is of NODES type.
+    IsNODES( var::anything, $ ) :: boolean
+
+    # Check if the variable <var> is of SUPPORT type.
+    IsSUPPORT( var::anything, $ ) :: boolean
+
+    # Check if the variable <var> is of SUPPORTS type.
+    IsSUPPORTS( var::anything, $ ) :: boolean
+
+    # Check if the variable <var> is of DOFS type.
+    IsDOFS( var::anything, $ ) :: boolean
+
+    # Create a node with name <name> at coordinates <coordinates> in the
+    # reference frame <frame>. The constraints on dofs are specified by <dofs>,
+    # where 1 means free and 0 means that the dof is constrained in the
+    # direction given from (global to local) <frame>.
+    MakeNode( name::string, coordinates::{POINT, VECTOR, Vector},
+              { displacements::Vector(algebraic) := <0, 0, 0, 0, 0, 0>,
+                dofs::DOFS := <1, 1, 1, 1, 1, 1>,
+                frame::FRAME := Matrix(4,shape = identity) }, $ ) :: NODE
+
+    # Create a node with name <name> at coordinates <coordinates> in the
+    # reference frame <frame>. The constraints on dofs are specified by <dofs>,
+    # where 1 means free and 0 means that the dof is constrained in the
+    # direction given from (global to local) <frame>. The node is also
+    # connected to a compliant spring element with traslational stiffness <K>
+    # and torsional stiffness <T>.
+    MakeCompliantNode( name::string, coordinates::{POINT, VECTOR, Vector},
+                       { K::{algebraic, list(algebraic)} := 0,
+                         T::{algebraic, list(algebraic)} := 0,
+                         displacements::Vector(algebraic) := <0, 0, 0, 0, 0,
+                           0>,
+                         dofs::DOFS := <1, 1, 1, 1, 1, 1>,
+                         frame::FRAME := Matrix(4,shape = identity) }, $ )
+                     :: NODE
+
+    # Check if the variable <var> is of STIFFNESS type.
+    IsSTIFFNESS( var::anything, $ ) :: boolean
+
+    # Get the stiffness matrix of a spring given the translational stiffnesses
+    # <K> or <K_x, K_y, K_z>, and the torsional stiffnesses <T> or <T_x, T_y,
+    # T_z>.
+    GetSpringStiffness( K::{algebraic, list(algebraic)},
+                        T::{algebraic, list(algebraic)}, $ ) :: STIFFNESS
+
+    # Get the stiffness matrix of a rod (only axial-stiffness) given the
+    # cross-section area <A>, the Young's modulus <E>, the shear modulus <G>,
+    # the length <L>, and the cross-section inertia <I_x>, <I_y> and <I_z>.
+    GetRodStiffness( A::algebraic, E::algebraic, G::algebraic, L::algebraic,
+                     I_x::algebraic, I_y::algebraic, I_z::algebraic, $ )
+                   :: STIFFNESS
+
+    # Get the stiffness matrix of a lean beam given the cross-section area <A>,
+    # the Young's modulus <E>, the shear modulus <G>, the length <L>, and the
+    # inertia of the cross-section <I_x>, <I_y> and <I_z>.
+    GetBeamStiffness( A::algebraic, E::algebraic, G::algebraic, L::algebraic,
+                      I_x::algebraic, I_y::algebraic, I_z::algebraic, $ )
+                    :: STIFFNESS
+
+    # Get the stiffness matrix of a Timoshenko's (thick) beam given the
+    # cross-section area <A>, the Young's modulus <E>, the shear modulus <G>,
+    # the length <L>, and the inertia of the cross-section <I_x>, <I_y> and
+    # <I_z>.
+    GetTimoshenkoBeamStiffness( A::algebraic, E::algebraic, G::algebraic,
+                                L::algebraic, I_x::algebraic, I_y::algebraic,
+                                I_z::algebraic, $ ) :: STIFFNESS
+
+    # Get the output displacements of a solved and stored FEMstructure <fem>.
+    GetOutputDisplacements( fem::FEM, $ ) :: Matrix
+
+    # Get the output reactions of a solved and stored FEMstructure <fem>.
+    GetOutputReactions( fem::FEM, $ ) :: Matrix
+
+    # Check if the variable <var> is of ELEMENT type.
+    IsELEMENT( var::anything, $ ) :: boolean
+
+    # Check if the variable <var> is of ELEMENTS type.
+    IsELEMENTS( var::anything, $ ) :: boolean
+
+    # Make an element with name <name> on reference frame <frame>, connecting
+    # the dofs <Ni_dofs> on i-th node i <[Ni, Ni_dofs]>, connecting with
+    # stiffness <K>.
+    MakeElement( name::string,
+                 { frame::FRAME := Matrix(4,shape = identity) } ) :: ELEMENT
+
+    # Make a spring element with name <name> on reference frame <frame>,
+    # connecting the dofs <N1_dofs> on node 1 <[N1, N1_dofs]>, connecting the
+    # dofs <N2_dofs> on node 2 <[N2, N2_dofs]> with translational stiffnesses
+    # <K> or <K_x, K_y, K_z>, and torsional stiffnesses <T> or <T_x, T_y, T_z>.
+    # Optional nodes distance <distance> can be specified.
+    MakeSpring( name::string, N1::{NODE, list({DOFS, NODE})},
+                N2::{NODE, list({DOFS, NODE})},
+                { K::{algebraic, list(algebraic)} := 0,
+                  T::{algebraic, list(algebraic)} := 0,
+                  distance::algebraic := 0,
+                  frame::FRAME := Matrix(4,shape = identity) }, $ ) :: ELEMENT
+
+    # Make a rod element with name <name> on reference frame <frame>,
+    # connecting the dofs <N1_dofs> on node 1 <[N1, N1_dofs]> and the dofs
+    # <N2_dofs> on node 2 <[N2, N2_dofs]>, with material <material>,
+    # cross-section area <area> and inertia <inertia>. Optional nodes distance
+    # <distance> can be specified.
+    MakeRod( name::string,
+             N1::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})},
+             N2::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})},
+             { area::algebraic := 0, distance::algebraic := -1,
+               frame::FRAME := Matrix(4,shape = identity),
+               inertia::list(algebraic) := [0, 0, 0],
+               material::MATERIAL := TrussMe_FEM:-MakeCarbonSteel() }, $ )
+           :: ELEMENT
+
+    # Make a beam element with name <name> on reference frame <frame>,
+    # connecting the dofs <N1_dofs> on node 1 <[N1, N1_dofs]>, connecting the
+    # dofs <N2_dofs> on node 2 <[N2, N2_dofs]> with material <material> and
+    # cross-section area <area> and inertia <inertia>. Optional nodes distance
+    # <distance> and Timoshenko's beam boolean <timoshenko> can be specified.
+    MakeBeam( name::string,
+              N1::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})},
+              N2::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})},
+              { area::algebraic := 0, distance::algebraic := -1,
+                frame::FRAME := Matrix(4,shape = identity),
+                inertia::list(algebraic) := [0, 0, 0],
+                material::MATERIAL := TrussMe_FEM:-MakeCarbonSteel(),
+                timoshenko::boolean := false }, $ ) :: ELEMENT
+
+    # Check if the variable <var> is of STRUCTURE type.
+    IsSTRUCTURE( var::anything, $ ) :: boolean
+
+    # Get nodal dofs of nodes <nodes>.
+    GetNodalDofs( nodes::NODES, $ ) :: Vector
+
+    # Get the vector of nodal displacements of nodes <nodes>.
+    GetNodalDisplacements( nodes::NODES, $ ) :: Vector
+
+    # Compute the transformation matrix of the nodes <nodes>.
+    StiffnessTransformation( nodes::NODES, $ ) :: Matrix
+
+    # Compute the global stiffness matrix of the nodes <nodes> and elements
+    # <elements>.
+    GlobalStiffness( nodes::NODES, elements::ELEMENTS, $ ) :: Matrix
+
+    # Recast the stiffness matrix <K> according to the constrained negated dofs
+    # <d> of the element name <e>.
+    RecastStiffness( K::STIFFNESS, d::Vector, e::string, $ ) :: Matrix
+
+    # Compute the global stiffness matrix of the nodes <nodes> and elements
+    # <elements>.
+    GlobalStiffnessPrime( nodes::NODES, elements::ELEMENTS, $ ) :: Matrix
+
+    # Check if the variable <var> is of FEM type.
+    IsFEM( var::anything, $ ) :: boolean
+
+    # Split the FEM structure <fem> in free and constrained dofs.
+    SplitFEM( fem::FEM, $ )
+
+    # Recast the system <fem> to avoid singularities.
+    RecastFEM( fem::FEM, $ )
+
+    # Generate a FEM structure from the nodes <nodes>, elements <elements>, and
+    # loads <loads>. If <tryhard> is enabled, the stiffness matrix will be
+    # recasted to avoid singularities.
+    GenerateFEM( nodes::NODES, elements::ELEMENTS, loads::LOADS,
+                 { tryhard::boolean := false }, $ ) :: FEM
+
+    # Solve numerically the FEM structure <fem> provided with optional data
+    # <data>.
+    NumericalSolveFEM( fem::FEM,
+                       { data::list := [] }, $ )
+
+    # Solve the FEM structure <fem> and optionally use LAST LU decompostion
+    # <use_LAST> and veil the expressions <use_LEM> with signature mode
+    # <use_SIG> and label <label>. Factorization method <factorization> can be
+    # choosen between 'LU', fraction-free 'FFLU', 'QR', and Gauss-Jordan 'GJ'.
+    # Time limit <time_limit> and maximum veiling cost <maxcost> can be
+    # specified.
+    SolveFEM( fem::FEM,
+              { factorization::string := "LU", label::string := "V",
+                maxcost::nonnegint := 15, time_limit::positive := 1.0,
+                use_LAST::boolean := false, use_LEM::boolean := true,
+                use_SIG::boolean := true }, $ )
+
+    # Store the FEM structure <fem> in the nodes <nodes>.
+    StoreFEM( fem::FEM, $ )
 ```

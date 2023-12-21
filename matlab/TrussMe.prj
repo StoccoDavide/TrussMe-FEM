@@ -1,20 +1,21 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="52771418" file="/Users/davide/Documents/Git/TrussMe-FEM/matlab/TrussMe.prj" location="/Users/davide/Documents/Git/TrussMe-FEM/matlab" name="TrussMe" target="target.toolbox" target-name="Package Toolbox">
-    <param.appname>TrussMe</param.appname>
-    <param.authnamewatermark>D. Stocco, M. Larcher</param.authnamewatermark>
+  <configuration build-checksum="1008707969" file="/Users/davide/Documents/Git/TrussMe-FEM/matlab/TrussMe.prj" location="/Users/davide/Documents/Git/TrussMe-FEM/matlab" name="TrussMe" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>TrussMe-FEM</param.appname>
+    <param.authnamewatermark>Davide Stocco, Matteo Larcher</param.authnamewatermark>
     <param.email>davide.stocco@unitn.it</param.email>
-    <param.company>UNITN</param.company>
-    <param.summary>A package for hybrid symbolic-numerical FEM structural analysis</param.summary>
+    <param.company>University of Trento</param.company>
+    <param.summary>A Toolbox for Symbolic-Numerical Analysis and Solution of Structures</param.summary>
     <param.description />
     <param.screenshot>/Users/davide/Documents/Git/TrussMe-FEM/logo.png</param.screenshot>
-    <param.version>0.0</param.version>
-    <param.output>${PROJECT_ROOT}/TrussMe.mltbx</param.output>
+    <param.version>1.0</param.version>
+    <param.output>${PROJECT_ROOT}/TrussMe-FEM.mltbx</param.output>
     <param.products.name />
     <param.products.id />
     <param.products.version />
     <param.platforms />
     <param.guid>dd12544a-13a4-45ac-988d-819b17c69ecf</param.guid>
-    <param.exclude.filters>.DS_Store</param.exclude.filters>
+    <param.exclude.filters>.DS_Store
+*.asv</param.exclude.filters>
     <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
     <param.examples />
     <param.demosxml />
@@ -43,6 +44,7 @@
     <param.additional.sw.linux.url />
     <unset>
       <param.description />
+      <param.version />
       <param.output />
       <param.products.name />
       <param.products.id />
@@ -86,7 +88,7 @@
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}" name="TrussMe.mltbx" optional="false">/Users/davide/Documents/Git/TrussMe-FEM/matlab/TrussMe.mltbx</file>
+      <file location="${PROJECT_ROOT}" name="TrussMe-FEM.mltbx" optional="false">/Users/davide/Documents/Git/TrussMe-FEM/matlab/TrussMe-FEM.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
@@ -109,7 +111,7 @@
       <vista>false</vista>
       <linux>false</linux>
       <solaris>false</solaris>
-      <osver>13.2.1</osver>
+      <osver>14.1.2</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>maci64</arch>

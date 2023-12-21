@@ -37,8 +37,8 @@ d_c  = obj.compute_d([], []);
 f_sc = obj.compute_f_s([], []);
 f_c  = obj.compute_f([], []);
 
-% Check size of matrices and vectors
-obj.check_size([], []);
+% Sanity check system structure
+obj.sanity_check([], []);
 
 % Check symmetry of stiffness matrices
 obj.check_symmetry([], []);
