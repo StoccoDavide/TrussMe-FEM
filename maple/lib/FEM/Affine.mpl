@@ -149,12 +149,12 @@ end proc: # GenerateFrameXZ
 export GenerateGenericFrame := proc(
   label::string := "",
   {
-  e := "e",
-  p := "p",
-  x := "x",
-  y := "y",
-  z := "z",
-  s := "__"
+  e::string := "e",
+  p::string := "p",
+  x::string := "x",
+  y::string := "y",
+  z::string := "z",
+  s::string := "__"
   }, $)::FRAME;
 
   description "Generate a generic reference frame matrix from a string label "

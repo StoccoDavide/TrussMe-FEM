@@ -1,0 +1,2485 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>TrussME-FEM Documentation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/quarto.js"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="index_files/libs/quarto-html/anchor.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="index_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#requirements" id="toc-requirements" class="nav-link active" data-scroll-target="#requirements"><span class="header-section-number">1</span> Requirements</a></li>
+  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation"><span class="header-section-number">2</span> Installation</a>
+  <ul class="collapse">
+  <li><a href="#maple" id="toc-maple" class="nav-link" data-scroll-target="#maple"><span class="header-section-number">2.1</span> Maple</a></li>
+  <li><a href="#matlab" id="toc-matlab" class="nav-link" data-scroll-target="#matlab"><span class="header-section-number">2.2</span> Matlab</a></li>
+  </ul></li>
+  <li><a href="#module-description" id="toc-module-description" class="nav-link" data-scroll-target="#module-description"><span class="header-section-number">3</span> Module description</a>
+  <ul class="collapse">
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage"><span class="header-section-number">3.1</span> Usage</a></li>
+  </ul></li>
+  <li><a href="#maple-api" id="toc-maple-api" class="nav-link" data-scroll-target="#maple-api"><span class="header-section-number">4</span> Maple API</a>
+  <ul class="collapse">
+  <li><a href="#module-utilities" id="toc-module-utilities" class="nav-link" data-scroll-target="#module-utilities"><span class="header-section-number">4.1</span> Module Utilities</a>
+  <ul class="collapse">
+  <li><a href="#info" id="toc-info" class="nav-link" data-scroll-target="#info">Info</a></li>
+  <li><a href="#moduleload" id="toc-moduleload" class="nav-link" data-scroll-target="#moduleload">ModuleLoad</a></li>
+  <li><a href="#moduleunload" id="toc-moduleunload" class="nav-link" data-scroll-target="#moduleunload">ModuleUnload</a></li>
+  <li><a href="#setmoduleoptions" id="toc-setmoduleoptions" class="nav-link" data-scroll-target="#setmoduleoptions">SetModuleOptions</a></li>
+  <li><a href="#getobjbyname" id="toc-getobjbyname" class="nav-link" data-scroll-target="#getobjbyname">GetObjByName</a></li>
+  <li><a href="#getobjbyid" id="toc-getobjbyid" class="nav-link" data-scroll-target="#getobjbyid">GetObjById</a></li>
+  <li><a href="#getobjsbytype" id="toc-getobjsbytype" class="nav-link" data-scroll-target="#getobjsbytype">GetObjsByType</a></li>
+  <li><a href="#simplify" id="toc-simplify" class="nav-link" data-scroll-target="#simplify">Simplify</a></li>
+  <li><a href="#norm2" id="toc-norm2" class="nav-link" data-scroll-target="#norm2">Norm2</a></li>
+  <li><a href="#generateid" id="toc-generateid" class="nav-link" data-scroll-target="#generateid">GenerateId</a></li>
+  <li><a href="#spy" id="toc-spy" class="nav-link" data-scroll-target="#spy">Spy</a></li>
+  </ul></li>
+  <li><a href="#reference-frames-points-and-vector" id="toc-reference-frames-points-and-vector" class="nav-link" data-scroll-target="#reference-frames-points-and-vector"><span class="header-section-number">4.2</span> Reference Frames, Points and Vector</a>
+  <ul class="collapse">
+  <li><a href="#isframe" id="toc-isframe" class="nav-link" data-scroll-target="#isframe">IsFRAME</a></li>
+  <li><a href="#generateframexy" id="toc-generateframexy" class="nav-link" data-scroll-target="#generateframexy">GenerateFrameXY</a></li>
+  <li><a href="#generateframexz" id="toc-generateframexz" class="nav-link" data-scroll-target="#generateframexz">GenerateFrameXZ</a></li>
+  <li><a href="#generategenericframe" id="toc-generategenericframe" class="nav-link" data-scroll-target="#generategenericframe">GenerateGenericFrame</a></li>
+  <li><a href="#inverseframe" id="toc-inverseframe" class="nav-link" data-scroll-target="#inverseframe">InverseFrame</a></li>
+  <li><a href="#translate" id="toc-translate" class="nav-link" data-scroll-target="#translate">Translate</a></li>
+  <li><a href="#translation" id="toc-translation" class="nav-link" data-scroll-target="#translation">Translation</a></li>
+  <li><a href="#rotate" id="toc-rotate" class="nav-link" data-scroll-target="#rotate">Rotate</a></li>
+  <li><a href="#rotation" id="toc-rotation" class="nav-link" data-scroll-target="#rotation">Rotation</a></li>
+  <li><a href="#isvector" id="toc-isvector" class="nav-link" data-scroll-target="#isvector">IsVECTOR</a></li>
+  <li><a href="#ispoint" id="toc-ispoint" class="nav-link" data-scroll-target="#ispoint">IsPOINT</a></li>
+  <li><a href="#origin" id="toc-origin" class="nav-link" data-scroll-target="#origin">Origin</a></li>
+  <li><a href="#compx" id="toc-compx" class="nav-link" data-scroll-target="#compx">CompX</a></li>
+  <li><a href="#compy" id="toc-compy" class="nav-link" data-scroll-target="#compy">CompY</a></li>
+  <li><a href="#compz" id="toc-compz" class="nav-link" data-scroll-target="#compz">CompZ</a></li>
+  <li><a href="#compxyz" id="toc-compxyz" class="nav-link" data-scroll-target="#compxyz">CompXYZ</a></li>
+  <li><a href="#uvecx" id="toc-uvecx" class="nav-link" data-scroll-target="#uvecx">UvecX</a></li>
+  <li><a href="#uvecy" id="toc-uvecy" class="nav-link" data-scroll-target="#uvecy">UvecY</a></li>
+  <li><a href="#uvecz" id="toc-uvecz" class="nav-link" data-scroll-target="#uvecz">UvecZ</a></li>
+  <li><a href="#uvecxyz" id="toc-uvecxyz" class="nav-link" data-scroll-target="#uvecxyz">UvecXYZ</a></li>
+  <li><a href="#project" id="toc-project" class="nav-link" data-scroll-target="#project">Project</a></li>
+  </ul></li>
+  <li><a href="#differentiation-utilities" id="toc-differentiation-utilities" class="nav-link" data-scroll-target="#differentiation-utilities"><span class="header-section-number">4.3</span> Differentiation Utilities</a>
+  <ul class="collapse">
+  <li><a href="#dodiff" id="toc-dodiff" class="nav-link" data-scroll-target="#dodiff">DoDiff</a></li>
+  <li><a href="#dogradient" id="toc-dogradient" class="nav-link" data-scroll-target="#dogradient">DoGradient</a></li>
+  <li><a href="#dohessian" id="toc-dohessian" class="nav-link" data-scroll-target="#dohessian">DoHessian</a></li>
+  <li><a href="#dojacobian" id="toc-dojacobian" class="nav-link" data-scroll-target="#dojacobian">DoJacobian</a></li>
+  <li><a href="#dotensor" id="toc-dotensor" class="nav-link" data-scroll-target="#dotensor">DoTensor</a></li>
+  </ul></li>
+  <li><a href="#external-loads" id="toc-external-loads" class="nav-link" data-scroll-target="#external-loads"><span class="header-section-number">4.4</span> External Loads</a>
+  <ul class="collapse">
+  <li><a href="#isload" id="toc-isload" class="nav-link" data-scroll-target="#isload">IsLOAD</a></li>
+  <li><a href="#iscomponents" id="toc-iscomponents" class="nav-link" data-scroll-target="#iscomponents">IsCOMPONENTS</a></li>
+  <li><a href="#makeload" id="toc-makeload" class="nav-link" data-scroll-target="#makeload">MakeLoad</a></li>
+  <li><a href="#isloads" id="toc-isloads" class="nav-link" data-scroll-target="#isloads">IsLOADS</a></li>
+  <li><a href="#getnodalloads" id="toc-getnodalloads" class="nav-link" data-scroll-target="#getnodalloads">GetNodalLoads</a></li>
+  </ul></li>
+  <li><a href="#materials" id="toc-materials" class="nav-link" data-scroll-target="#materials"><span class="header-section-number">4.5</span> Materials</a>
+  <ul class="collapse">
+  <li><a href="#ismaterial" id="toc-ismaterial" class="nav-link" data-scroll-target="#ismaterial">IsMATERIAL</a></li>
+  <li><a href="#makematerial" id="toc-makematerial" class="nav-link" data-scroll-target="#makematerial">MakeMaterial</a></li>
+  <li><a href="#makecarbonsteel" id="toc-makecarbonsteel" class="nav-link" data-scroll-target="#makecarbonsteel">MakeCarbonSteel</a></li>
+  <li><a href="#makeinoxsteel" id="toc-makeinoxsteel" class="nav-link" data-scroll-target="#makeinoxsteel">MakeInoxSteel</a></li>
+  <li><a href="#maketitanium" id="toc-maketitanium" class="nav-link" data-scroll-target="#maketitanium">MakeTitanium</a></li>
+  <li><a href="#makecopper" id="toc-makecopper" class="nav-link" data-scroll-target="#makecopper">MakeCopper</a></li>
+  <li><a href="#makebrass" id="toc-makebrass" class="nav-link" data-scroll-target="#makebrass">MakeBrass</a></li>
+  <li><a href="#makebronze" id="toc-makebronze" class="nav-link" data-scroll-target="#makebronze">MakeBronze</a></li>
+  <li><a href="#makelead" id="toc-makelead" class="nav-link" data-scroll-target="#makelead">MakeLead</a></li>
+  <li><a href="#makezinc" id="toc-makezinc" class="nav-link" data-scroll-target="#makezinc">MakeZinc</a></li>
+  <li><a href="#makemagnesium" id="toc-makemagnesium" class="nav-link" data-scroll-target="#makemagnesium">MakeMagnesium</a></li>
+  <li><a href="#makealluminium" id="toc-makealluminium" class="nav-link" data-scroll-target="#makealluminium">MakeAlluminium</a></li>
+  <li><a href="#makeavional" id="toc-makeavional" class="nav-link" data-scroll-target="#makeavional">MakeAvional</a></li>
+  <li><a href="#makeperaluman" id="toc-makeperaluman" class="nav-link" data-scroll-target="#makeperaluman">MakePeraluman</a></li>
+  <li><a href="#makeanticorodal" id="toc-makeanticorodal" class="nav-link" data-scroll-target="#makeanticorodal">MakeAnticorodal</a></li>
+  <li><a href="#makecarpental" id="toc-makecarpental" class="nav-link" data-scroll-target="#makecarpental">MakeCarpental</a></li>
+  <li><a href="#makeergal" id="toc-makeergal" class="nav-link" data-scroll-target="#makeergal">MakeErgal</a></li>
+  </ul></li>
+  <li><a href="#plotting" id="toc-plotting" class="nav-link" data-scroll-target="#plotting"><span class="header-section-number">4.6</span> Plotting</a>
+  <ul class="collapse">
+  <li><a href="#objectcolor" id="toc-objectcolor" class="nav-link" data-scroll-target="#objectcolor">ObjectColor</a></li>
+  <li><a href="#structuregraph" id="toc-structuregraph" class="nav-link" data-scroll-target="#structuregraph">StructureGraph</a></li>
+  <li><a href="#drawframe" id="toc-drawframe" class="nav-link" data-scroll-target="#drawframe">DrawFrame</a></li>
+  <li><a href="#plotnode" id="toc-plotnode" class="nav-link" data-scroll-target="#plotnode">PlotNode</a></li>
+  <li><a href="#plotelement" id="toc-plotelement" class="nav-link" data-scroll-target="#plotelement">PlotElement</a></li>
+  <li><a href="#plotdeformedelement" id="toc-plotdeformedelement" class="nav-link" data-scroll-target="#plotdeformedelement">PlotDeformedElement</a></li>
+  <li><a href="#plotload" id="toc-plotload" class="nav-link" data-scroll-target="#plotload">PlotLoad</a></li>
+  <li><a href="#plotstructure" id="toc-plotstructure" class="nav-link" data-scroll-target="#plotstructure">PlotStructure</a></li>
+  <li><a href="#plotdeformedstructure" id="toc-plotdeformedstructure" class="nav-link" data-scroll-target="#plotdeformedstructure">PlotDeformedStructure</a></li>
+  </ul></li>
+  <li><a href="#nodes-and-supports" id="toc-nodes-and-supports" class="nav-link" data-scroll-target="#nodes-and-supports"><span class="header-section-number">4.7</span> Nodes and Supports</a>
+  <ul class="collapse">
+  <li><a href="#isnode" id="toc-isnode" class="nav-link" data-scroll-target="#isnode">IsNODE</a></li>
+  <li><a href="#isnodes" id="toc-isnodes" class="nav-link" data-scroll-target="#isnodes">IsNODES</a></li>
+  <li><a href="#issupport" id="toc-issupport" class="nav-link" data-scroll-target="#issupport">IsSUPPORT</a></li>
+  <li><a href="#issupports" id="toc-issupports" class="nav-link" data-scroll-target="#issupports">IsSUPPORTS</a></li>
+  <li><a href="#isdofs" id="toc-isdofs" class="nav-link" data-scroll-target="#isdofs">IsDOFS</a></li>
+  <li><a href="#makenode" id="toc-makenode" class="nav-link" data-scroll-target="#makenode">MakeNode</a></li>
+  <li><a href="#makecompliantnode" id="toc-makecompliantnode" class="nav-link" data-scroll-target="#makecompliantnode">MakeCompliantNode</a></li>
+  </ul></li>
+  <li><a href="#stiffness-matrices" id="toc-stiffness-matrices" class="nav-link" data-scroll-target="#stiffness-matrices"><span class="header-section-number">4.8</span> Stiffness Matrices</a>
+  <ul class="collapse">
+  <li><a href="#isstiffness" id="toc-isstiffness" class="nav-link" data-scroll-target="#isstiffness">IsSTIFFNESS</a></li>
+  <li><a href="#getspringstiffness" id="toc-getspringstiffness" class="nav-link" data-scroll-target="#getspringstiffness">GetSpringStiffness</a></li>
+  <li><a href="#getrodstiffness" id="toc-getrodstiffness" class="nav-link" data-scroll-target="#getrodstiffness">GetRodStiffness</a></li>
+  <li><a href="#getbeamstiffness" id="toc-getbeamstiffness" class="nav-link" data-scroll-target="#getbeamstiffness">GetBeamStiffness</a></li>
+  <li><a href="#gettimoshenkobeamstiffness" id="toc-gettimoshenkobeamstiffness" class="nav-link" data-scroll-target="#gettimoshenkobeamstiffness">GetTimoshenkoBeamStiffness</a></li>
+  </ul></li>
+  <li><a href="#elements" id="toc-elements" class="nav-link" data-scroll-target="#elements"><span class="header-section-number">4.9</span> Elements</a>
+  <ul class="collapse">
+  <li><a href="#iselement" id="toc-iselement" class="nav-link" data-scroll-target="#iselement">IsELEMENT</a></li>
+  <li><a href="#iselements" id="toc-iselements" class="nav-link" data-scroll-target="#iselements">IsELEMENTS</a></li>
+  <li><a href="#makeelement" id="toc-makeelement" class="nav-link" data-scroll-target="#makeelement">MakeElement</a></li>
+  <li><a href="#makespring" id="toc-makespring" class="nav-link" data-scroll-target="#makespring">MakeSpring</a></li>
+  <li><a href="#makerod" id="toc-makerod" class="nav-link" data-scroll-target="#makerod">MakeRod</a></li>
+  <li><a href="#makebeam" id="toc-makebeam" class="nav-link" data-scroll-target="#makebeam">MakeBeam</a></li>
+  </ul></li>
+  <li><a href="#fem-structure" id="toc-fem-structure" class="nav-link" data-scroll-target="#fem-structure"><span class="header-section-number">4.10</span> FEM Structure</a>
+  <ul class="collapse">
+  <li><a href="#isstructure" id="toc-isstructure" class="nav-link" data-scroll-target="#isstructure">IsSTRUCTURE</a></li>
+  <li><a href="#getnodaldofs" id="toc-getnodaldofs" class="nav-link" data-scroll-target="#getnodaldofs">GetNodalDofs</a></li>
+  <li><a href="#getnodaldisplacements" id="toc-getnodaldisplacements" class="nav-link" data-scroll-target="#getnodaldisplacements">GetNodalDisplacements</a></li>
+  <li><a href="#stiffnesstransformation" id="toc-stiffnesstransformation" class="nav-link" data-scroll-target="#stiffnesstransformation">StiffnessTransformation</a></li>
+  <li><a href="#globalstiffness" id="toc-globalstiffness" class="nav-link" data-scroll-target="#globalstiffness">GlobalStiffness</a></li>
+  <li><a href="#recaststiffness" id="toc-recaststiffness" class="nav-link" data-scroll-target="#recaststiffness">RecastStiffness</a></li>
+  <li><a href="#globalstiffnessprime" id="toc-globalstiffnessprime" class="nav-link" data-scroll-target="#globalstiffnessprime">GlobalStiffnessPrime</a></li>
+  <li><a href="#isfem" id="toc-isfem" class="nav-link" data-scroll-target="#isfem">IsFEM</a></li>
+  <li><a href="#splitfem" id="toc-splitfem" class="nav-link" data-scroll-target="#splitfem">SplitFEM</a></li>
+  <li><a href="#recastfem" id="toc-recastfem" class="nav-link" data-scroll-target="#recastfem">RecastFEM</a></li>
+  <li><a href="#generatefem" id="toc-generatefem" class="nav-link" data-scroll-target="#generatefem">GenerateFEM</a></li>
+  <li><a href="#numericalsolvefem" id="toc-numericalsolvefem" class="nav-link" data-scroll-target="#numericalsolvefem">NumericalSolveFEM</a></li>
+  <li><a href="#solvefem" id="toc-solvefem" class="nav-link" data-scroll-target="#solvefem">SolveFEM</a></li>
+  <li><a href="#storefem" id="toc-storefem" class="nav-link" data-scroll-target="#storefem">StoreFEM</a></li>
+  </ul></li>
+  <li><a href="#output-data" id="toc-output-data" class="nav-link" data-scroll-target="#output-data"><span class="header-section-number">4.11</span> Output Data</a>
+  <ul class="collapse">
+  <li><a href="#getoutputdisplacements" id="toc-getoutputdisplacements" class="nav-link" data-scroll-target="#getoutputdisplacements">GetOutputDisplacements</a></li>
+  <li><a href="#getoutputreactions" id="toc-getoutputreactions" class="nav-link" data-scroll-target="#getoutputreactions">GetOutputReactions</a></li>
+  </ul></li>
+  <li><a href="#code-generation-and-export" id="toc-code-generation-and-export" class="nav-link" data-scroll-target="#code-generation-and-export"><span class="header-section-number">4.12</span> Code Generation and Export</a>
+  <ul class="collapse">
+  <li><a href="#generatefile" id="toc-generatefile" class="nav-link" data-scroll-target="#generatefile">GenerateFile</a></li>
+  <li><a href="#clearfile" id="toc-clearfile" class="nav-link" data-scroll-target="#clearfile">ClearFile</a></li>
+  <li><a href="#setcodegenoptions" id="toc-setcodegenoptions" class="nav-link" data-scroll-target="#setcodegenoptions">SetCodegenOptions</a></li>
+  <li><a href="#getcodegenoptions" id="toc-getcodegenoptions" class="nav-link" data-scroll-target="#getcodegenoptions">GetCodegenOptions</a></li>
+  <li><a href="#translatetomatlab" id="toc-translatetomatlab" class="nav-link" data-scroll-target="#translatetomatlab">TranslateToMatlab</a></li>
+  <li><a href="#applyindent" id="toc-applyindent" class="nav-link" data-scroll-target="#applyindent">ApplyIndent</a></li>
+  <li><a href="#generateproperties" id="toc-generateproperties" class="nav-link" data-scroll-target="#generateproperties">GenerateProperties</a></li>
+  <li><a href="#generateinputs" id="toc-generateinputs" class="nav-link" data-scroll-target="#generateinputs">GenerateInputs</a></li>
+  <li><a href="#extractelements" id="toc-extractelements" class="nav-link" data-scroll-target="#extractelements">ExtractElements</a></li>
+  <li><a href="#generateheader" id="toc-generateheader" class="nav-link" data-scroll-target="#generateheader">GenerateHeader</a></li>
+  <li><a href="#generateelements" id="toc-generateelements" class="nav-link" data-scroll-target="#generateelements">GenerateElements</a></li>
+  <li><a href="#generatebody" id="toc-generatebody" class="nav-link" data-scroll-target="#generatebody">GenerateBody</a></li>
+  <li><a href="#vectortomatlab" id="toc-vectortomatlab" class="nav-link" data-scroll-target="#vectortomatlab">VectorToMatlab</a></li>
+  <li><a href="#matrixtomatlab" id="toc-matrixtomatlab" class="nav-link" data-scroll-target="#matrixtomatlab">MatrixToMatlab</a></li>
+  <li><a href="#getveilsubs" id="toc-getveilsubs" class="nav-link" data-scroll-target="#getveilsubs">GetVeilSubs</a></li>
+  <li><a href="#generateconstructor" id="toc-generateconstructor" class="nav-link" data-scroll-target="#generateconstructor">GenerateConstructor</a></li>
+  <li><a href="#systemtomatlab" id="toc-systemtomatlab" class="nav-link" data-scroll-target="#systemtomatlab">SystemToMatlab</a></li>
+  <li><a href="#generatematlabcode" id="toc-generatematlabcode" class="nav-link" data-scroll-target="#generatematlabcode">GenerateMatlabCode</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#matlab-api" id="toc-matlab-api" class="nav-link" data-scroll-target="#matlab-api"><span class="header-section-number">5</span> Matlab API</a>
+  <ul class="collapse">
+  <li><a href="#class-methods" id="toc-class-methods" class="nav-link" data-scroll-target="#class-methods"><span class="header-section-number">5.1</span> Class Methods</a>
+  <ul class="collapse">
+  <li><a href="#system" id="toc-system" class="nav-link" data-scroll-target="#system">System</a></li>
+  <li><a href="#get_data" id="toc-get_data" class="nav-link" data-scroll-target="#get_data">get_data</a></li>
+  <li><a href="#set_data" id="toc-set_data" class="nav-link" data-scroll-target="#set_data">set_data</a></li>
+  <li><a href="#get_data_field" id="toc-get_data_field" class="nav-link" data-scroll-target="#get_data_field">get_data_field</a></li>
+  <li><a href="#set_data_field" id="toc-set_data_field" class="nav-link" data-scroll-target="#set_data_field">set_data_field</a></li>
+  <li><a href="#compute_k" id="toc-compute_k" class="nav-link" data-scroll-target="#compute_k">compute_K</a></li>
+  <li><a href="#compute_d_f" id="toc-compute_d_f" class="nav-link" data-scroll-target="#compute_d_f">compute_d_f</a></li>
+  <li><a href="#compute_d" id="toc-compute_d" class="nav-link" data-scroll-target="#compute_d">compute_d</a></li>
+  <li><a href="#compute_f_s" id="toc-compute_f_s" class="nav-link" data-scroll-target="#compute_f_s">compute_f_s</a></li>
+  <li><a href="#compute_f" id="toc-compute_f" class="nav-link" data-scroll-target="#compute_f">compute_f</a></li>
+  <li><a href="#sanity_check" id="toc-sanity_check" class="nav-link" data-scroll-target="#sanity_check">sanity_check</a></li>
+  <li><a href="#check_symmetry" id="toc-check_symmetry" class="nav-link" data-scroll-target="#check_symmetry">check_symmetry</a></li>
+  </ul></li>
+  <li><a href="#abstract-methods" id="toc-abstract-methods" class="nav-link" data-scroll-target="#abstract-methods"><span class="header-section-number">5.2</span> Abstract Methods</a>
+  <ul class="collapse">
+  <li><a href="#k" id="toc-k" class="nav-link" data-scroll-target="#k">K</a></li>
+  <li><a href="#k_ff" id="toc-k_ff" class="nav-link" data-scroll-target="#k_ff">K_ff</a></li>
+  <li><a href="#k_fs" id="toc-k_fs" class="nav-link" data-scroll-target="#k_fs">K_fs</a></li>
+  <li><a href="#k_sf" id="toc-k_sf" class="nav-link" data-scroll-target="#k_sf">K_sf</a></li>
+  <li><a href="#k_ss" id="toc-k_ss" class="nav-link" data-scroll-target="#k_ss">K_ss</a></li>
+  <li><a href="#d" id="toc-d" class="nav-link" data-scroll-target="#d">d</a></li>
+  <li><a href="#d_f" id="toc-d_f" class="nav-link" data-scroll-target="#d_f">d_f</a></li>
+  <li><a href="#d_s" id="toc-d_s" class="nav-link" data-scroll-target="#d_s">d_s</a></li>
+  <li><a href="#f" id="toc-f" class="nav-link" data-scroll-target="#f">f</a></li>
+  <li><a href="#f_f" id="toc-f_f" class="nav-link" data-scroll-target="#f_f">f_f</a></li>
+  <li><a href="#f_s" id="toc-f_s" class="nav-link" data-scroll-target="#f_s">f_s</a></li>
+  <li><a href="#f_r" id="toc-f_r" class="nav-link" data-scroll-target="#f_r">f_r</a></li>
+  <li><a href="#perm" id="toc-perm" class="nav-link" data-scroll-target="#perm">perm</a></li>
+  <li><a href="#unperm" id="toc-unperm" class="nav-link" data-scroll-target="#unperm">unperm</a></li>
+  <li><a href="#v" id="toc-v" class="nav-link" data-scroll-target="#v">v</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">TrussME-FEM Documentation</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This is the documentation for the TrussME-FEM package. This package is a mixed symbolic-numerical Finite Element Method (FEM) structural analysis tool. The solution of the FEM system is based on the Direct Stiffness Method (DSM). The package is designed to be used in the <strong>Maple</strong> environment for the symbolic manipulation of the FEM system, and Matlab for the numerical solution of the system. Code generation is available for translating the symbolic FEM system into Matlab code.</p>
+<section id="requirements" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Requirements</h1>
+<ul>
+<li><a href="https://www.maplesoft.com/products/maple/">Maple</a> 2020 or later.</li>
+<li><a href="https://www.mathworks.com/products/matlab.html">Matlab</a> R2020a or later.</li>
+</ul>
+</section>
+<section id="installation" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Installation</h1>
+<p>Download the package from the <a href="https://github.com/StoccoDavide/TrussMe-FEM">GitHub repository</a>.</p>
+<section id="maple" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="maple"><span class="header-section-number">2.1</span> Maple</h2>
+<p>To install the module you must have first installed Maple. Then open the <code>PackAndGo.mw</code> file and use the <code>!!!</code> button to execute the <em>entire</em> worksheet.</p>
+<p>Then test the module in a Maple worksheet or document by executing</p>
+<pre><code>&gt; TrussMe_FEM:-Info();</code></pre>
+<p>or</p>
+<pre><code>&gt; Describe(TrussMe_FEM);</code></pre>
+<p>Alternatively, you can use one of the test files provided in the <code>tests</code> folder. If the module is loaded without errors, it is done!</p>
+</section>
+<section id="matlab" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="matlab"><span class="header-section-number">2.2</span> Matlab</h2>
+<p>To install the Matlab toolbox, you must have first installed Matlab. Then open the <code>TrussMe-FEM.mtlbx</code> file and follow the instructions.</p>
+</section>
+</section>
+<section id="module-description" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Module description</h1>
+<p>If you want a full description of the <code>TrussMe_FEM</code> module:</p>
+<pre><code>&gt; Describe(TrussMe_FEM);</code></pre>
+<p>This command will generate a brief description of the module and all the procedures and other objects present in <code>TrussMe_FEM.mpl</code> file.</p>
+<section id="usage" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="usage"><span class="header-section-number">3.1</span> Usage</h2>
+<p>In case you have no time to read the description and realize how it should or should not work, refer to the files in the <code>tests</code> folder.</p>
+</section>
+</section>
+<section id="maple-api" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Maple API</h1>
+<section id="module-utilities" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="module-utilities"><span class="header-section-number">4.1</span> Module Utilities</h2>
+<section id="info" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="info">Info</h3>
+<p>Print module information.</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>NULL</code></li>
+</ul>
+<p>Proto: <code>Info()</code></p>
+</section>
+<section id="moduleload" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="moduleload">ModuleLoad</h3>
+<p>Module load procedure.</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>NULL</code></li>
+</ul>
+<p>Proto: <code>ModuleLoad()</code></p>
+</section>
+<section id="moduleunload" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="moduleunload">ModuleUnload</h3>
+<p>Module unload procedure.</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>NULL</code></li>
+</ul>
+<p>Proto: <code>ModuleLoad()</code></p>
+</section>
+<section id="setmoduleoptions" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="setmoduleoptions">SetModuleOptions</h3>
+<p>Set the module options.</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>:
+<ul>
+<li><code>ElementColor::{nothing, string} := NULL</code>: element color (2+ nodes)</li>
+<li><code>ForceColor::{nothing, string} := NULL</code>: force color</li>
+<li><code>IdLength::{nothing, positive} := NULL</code>: ID length</li>
+<li><code>MomentColor::{nothing, string} := NULL</code>: moment color</li>
+<li><code>NodeColor::{nothing, string} := NULL</code>: node color</li>
+<li><code>NodeToken::{nothing, string} := NULL</code>: node token</li>
+<li><code>ShellColor::{nothing, string} := NULL</code>: shell color</li>
+<li><code>SupportColor::{nothing, string} := NULL</code>: support color</li>
+<li><code>SupportToken::{nothing, string} := NULL</code>: support token</li>
+<li><code>TimeLimit::{nothing, nonnegative} := NULL</code>: time limit</li>
+<li><code>VerboseMode::{boolean, nothing} := NULL</code>: verbose mode</li>
+<li><code>WarningMode::{boolean, nothing} := NULL</code>: warning mode</li>
+</ul></li>
+<li><strong>Returns</strong>: <code>NULL</code></li>
+</ul>
+<p>Proto: <code>SetModuleOptions(ElementColor = NULL, ForceColor = NULL, IdLength = NULL, MomentColor = NULL, NodeColor = NULL, NodeToken = NULL, ShellColor = NULL, SupportColor = NULL, SupportToken = NULL, TimeLimit = NULL, VerboseMode = NULL, WarningMode = NULL)</code></p>
+</section>
+<section id="getobjbyname" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="getobjbyname">GetObjByName</h3>
+<p>Get object which field name is <code>name</code> from a list or set of objects <code>objs</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>objs::list(anything)</code>, <code>name::string</code></li>
+<li><strong>Returns</strong>: <code>anything</code></li>
+</ul>
+<p>Proto: <code>GetObjByName(objs, name)</code></p>
+</section>
+<section id="getobjbyid" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="getobjbyid">GetObjById</h3>
+<p>Get object which field <code>id</code> is equal to <code>id_fld</code>, between the objects <code>objs</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>objs::list(anything)</code>, <code>id_fld::string</code></li>
+<li><strong>Optional inputs</strong>: <code>position::boolean := false</code></li>
+<li><strong>Returns</strong>: <code>anything</code></li>
+</ul>
+<p>Proto: <code>GetObjById(objs, id_fld, position = false)</code></p>
+</section>
+<section id="getobjsbytype" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="getobjsbytype">GetObjsByType</h3>
+<p>Get objects which field <code>type</code> is equal to <code>type_fld</code>, between the objects <code>objs</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>objs::list(anything)</code>, <code>type_fld::{symbol, list(symbol), set(symbol)}</code></li>
+<li><strong>Optional inputs</strong>: <code>position::boolean := false</code></li>
+<li><strong>Returns</strong>: <code>list(anything)</code></li>
+</ul>
+<p>Proto: <code>GetObjsByType(objs, type_fld, position = false)</code></p>
+</section>
+<section id="simplify" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="simplify">Simplify</h3>
+<p>Try to simplify an algebraic expression <code>var</code> with optional simplification options <code>opt</code>. The simplification is performed within the internal or indexed time limit.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code>, <code>opt::anything := NULL</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>anything</code></li>
+</ul>
+<p>Proto: <code>Simplify(var, opt = NULL)</code></p>
+</section>
+<section id="norm2" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="norm2">Norm2</h3>
+<p>Compute the Euclidean norm of list or vector <code>x</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>x::{Vector, list}</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>algebraic</code></li>
+</ul>
+<p>Proto: <code>Norm2(x)</code></p>
+</section>
+<section id="generateid" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="generateid">GenerateId</h3>
+<p>Generate a random string id of length <code>size</code> with options <code>opts</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: <code>opts::symbol := 'alnum'</code>, <code>size::positive := m_IdLength</code></li>
+<li><strong>Returns</strong>: <code>string</code></li>
+</ul>
+<p>Proto: <code>GenerateId(opts = 'alnum', size = m_IdLength)</code></p>
+</section>
+<section id="spy" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="spy">Spy</h3>
+<p>Plot of non-zero values of matrix <code>A</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>A::Matrix</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>anything</code></li>
+</ul>
+<p>Proto: <code>Spy(A)</code></p>
+</section>
+</section>
+<section id="reference-frames-points-and-vector" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="reference-frames-points-and-vector"><span class="header-section-number">4.2</span> Reference Frames, Points and Vector</h2>
+<section id="isframe" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="isframe">IsFRAME</h3>
+<p>Check if the variable <code>var</code> is of <code>FRAME</code> type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsFRAME(var)</code></p>
+</section>
+<section id="generateframexy" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="generateframexy">GenerateFrameXY</h3>
+<p>Generate a reference frame matrix from three points or vectors <code>p_1</code>, <code>p_2</code> and vector <code>vec</code> orthogonal to XY-plane <code>vec</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>p_1::{POINT, VECTOR, Vector, list}</code>, <code>p_2::{POINT, VECTOR, Vector, list}</code>, <code>vec::{VECTOR, Vector, list}</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>FRAME</code></li>
+</ul>
+<p>Proto: <code>GenerateFrameXY(p_1, p_2, vec)</code></p>
+</section>
+<section id="generateframexz" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="generateframexz">GenerateFrameXZ</h3>
+<p>Generate a reference frame matrix from three points or vectors <code>p_1</code>, <code>p_2</code> and vector <code>vec</code> orthogonal to XZ-plane <code>vec</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>p_1::{POINT, VECTOR, Vector, list}</code>, <code>p_2::{POINT, VECTOR, Vector, list}</code>, <code>vec::{VECTOR, Vector, list}</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>FRAME</code></li>
+</ul>
+<p>Proto: <code>GenerateFrameXZ(p_1, p_2, vec)</code></p>
+</section>
+<section id="generategenericframe" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="generategenericframe">GenerateGenericFrame</h3>
+<p>Generate a generic reference frame matrix from a string label <code>label</code>. Optional arguments <code>e</code>, <code>p</code>, <code>x</code>, <code>y</code>, <code>z</code> and <code>s</code> are used to customize the output, e.g., ‘exx := e||s||x||x’.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>label::string := ""</code></li>
+<li><strong>Optional inputs</strong>: <code>e::string := "e"</code>, <code>p::string := "p"</code>, <code>s::string := "__"</code>, <code>x::string := "x"</code>, <code>y::string := "y"</code>, <code>z::string := "z"</code></li>
+<li><strong>Returns</strong>: <code>FRAME</code></li>
+</ul>
+<p>Proto: <code>GenerateGenericFrame(label, e = "e", p = "p", s = "__", x = "x", y = "y", z = "z")</code></p>
+</section>
+<section id="inverseframe" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="inverseframe">InverseFrame</h3>
+<p>Inverse affine transformation matrix <code>RF</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>RF::FRAME</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>FRAME</code></li>
+</ul>
+<p>Proto: <code>InverseFrame(RF)</code></p>
+</section>
+<section id="translate" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="translate">Translate</h3>
+<p>Affine transformation matrix corresponding to a translation <code>x</code>, <code>y</code>, <code>z</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>x::algebraic</code>, <code>y::algebraic</code>, <code>z::algebraic</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>FRAME</code></li>
+</ul>
+<p>Proto: <code>Translate(x, y, z)</code></p>
+</section>
+<section id="translation" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="translation">Translation</h3>
+<p>Extract the translation vector of the reference frame <code>RF</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>RF::FRAME</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>Vector</code></li>
+</ul>
+<p>Proto: <code>Translation(RF)</code></p>
+</section>
+<section id="rotate" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="rotate">Rotate</h3>
+<p>Affine transformation matrix corresponding to the rotation <code>angle</code> around the given <code>axis</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>axis::{string, symbol}</code>, <code>angle::algebraic</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>FRAME</code></li>
+</ul>
+<p>Proto: <code>Rotate(axis, angle)</code></p>
+</section>
+<section id="rotation" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="rotation">Rotation</h3>
+<p>Extract the rotation matrix of the reference frame <code>RF</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>RF::FRAME</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>Matrix</code></li>
+</ul>
+<p>Proto: <code>Rotation(RF)</code></p>
+</section>
+<section id="isvector" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="isvector">IsVECTOR</h3>
+<p>Check if the variable <code>var</code> is of <code>VECTOR</code> type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsVECTOR(var)</code></p>
+</section>
+<section id="ispoint" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="ispoint">IsPOINT</h3>
+<p>Check if the variable <code>var</code> is of <code>POINT</code> type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsPOINT(var)</code></p>
+</section>
+<section id="origin" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="origin">Origin</h3>
+<p>Extract the origin point of the reference frame <code>RF</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>RF::FRAME</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>POINT</code></li>
+</ul>
+<p>Proto: <code>Origin(RF)</code></p>
+</section>
+<section id="compx" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="compx">CompX</h3>
+<p>Extract the x-axis component of the vector or point <code>x</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>x::{POINT, VECTOR}</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>algebraic</code></li>
+</ul>
+<p>Proto: <code>CompX(x)</code></p>
+</section>
+<section id="compy" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="compy">CompY</h3>
+<p>Extract the y-axis component of the vector or point <code>x</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>x::{POINT, VECTOR}</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>algebraic</code></li>
+</ul>
+<p>Proto: <code>CompY(x)</code></p>
+</section>
+<section id="compz" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="compz">CompZ</h3>
+<p>Extract the z-axis component of the vector or point <code>x</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>x::{POINT, VECTOR}</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>algebraic</code></li>
+</ul>
+<p>Proto: <code>CompZ(x)</code></p>
+</section>
+<section id="compxyz" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="compxyz">CompXYZ</h3>
+<p>Extract the x, y and z-axis components of the vector or point <code>x</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>x::{POINT, VECTOR}</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>algebraic</code></li>
+</ul>
+<p>Proto: <code>CompXYZ(x)</code></p>
+</section>
+<section id="uvecx" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="uvecx">UvecX</h3>
+<p>Extract the x-axis unit vector of the reference frame <code>RF</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>RF::FRAME := Matrix(4,shape = identity)</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>VECTOR</code></li>
+</ul>
+<p>Proto: <code>UvecX(RF)</code></p>
+</section>
+<section id="uvecy" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="uvecy">UvecY</h3>
+<p>Extract the y-axis unit vector of the reference frame <code>RF</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>RF::FRAME</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>VECTOR</code></li>
+</ul>
+<p>Proto: <code>UvecY(RF)</code></p>
+</section>
+<section id="uvecz" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="uvecz">UvecZ</h3>
+<p>Extract the z-axis unit vector of the reference frame <code>RF</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>RF::FRAME := Matrix(4,shape = identity)</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>VECTOR</code></li>
+</ul>
+<p>Proto: <code>UvecZ(RF)</code></p>
+</section>
+<section id="uvecxyz" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="uvecxyz">UvecXYZ</h3>
+<p>Extract the x, y and z-axis unit vectors of the reference frame <code>RF</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>RF::FRAME := Matrix(4,shape = identity)</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>VECTOR</code></li>
+</ul>
+<p>Proto: <code>UvecXYZ(RF)</code></p>
+</section>
+<section id="project" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="project">Project</h3>
+<p>Project the vector or point <code>x</code> from reference frame <code>RF_ini</code> to reference frame <code>RF_end</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>x::{POINT, VECTOR}</code>, <code>RF_ini::FRAME</code>, <code>RF_end::FRAME</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>{POINT, VECTOR}</code></li>
+</ul>
+<p>Proto: <code>Project(x, RF_ini, RF_end)</code></p>
+</section>
+</section>
+<section id="differentiation-utilities" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="differentiation-utilities"><span class="header-section-number">4.3</span> Differentiation Utilities</h2>
+<section id="dodiff" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="dodiff">DoDiff</h3>
+<p>Differentiate an expression with respect to a function.</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>anything</code></li>
+</ul>
+<p>Proto: <code>DoDiff()</code></p>
+</section>
+<section id="dogradient" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="dogradient">DoGradient</h3>
+<p>Differentiate a scalar expression <code>fnc</code> with respect to a list of functions <code>lst</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>fnc::algebraic</code>, <code>lst::{Vector, list}</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>Vector</code></li>
+</ul>
+<p>Proto: <code>DoGradient(fnc, lst)</code></p>
+</section>
+<section id="dohessian" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="dohessian">DoHessian</h3>
+<p>Differentiate a vector of expressions (gradient) <code>fnc</code> with respect to a list <code>lst</code> of functions.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>fnc::algebraic</code>, <code>lst::{Vector, list}</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>Matrix</code></li>
+</ul>
+<p>Proto: <code>DoHessian(fnc, lst)</code></p>
+</section>
+<section id="dojacobian" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="dojacobian">DoJacobian</h3>
+<p>Differentiate a vector of expressions <code>fnc</code> with respect to a list <code>lst</code> of functions.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>fnc::Vector</code>, <code>lst::{Vector, list}</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>Matrix</code></li>
+</ul>
+<p>Proto: <code>DoJacobian(fnc, lst)</code></p>
+</section>
+<section id="dotensor" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="dotensor">DoTensor</h3>
+<p>Differentiate a matrix <code>mat</code> with respect to a list of functions <code>lst</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>mat::Matrix</code>, <code>lst::{Vector, list}</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>Array</code></li>
+</ul>
+<p>Proto: <code>DoTensor(mat, lst)</code></p>
+</section>
+</section>
+<section id="external-loads" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="external-loads"><span class="header-section-number">4.4</span> External Loads</h2>
+<section id="isload" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="isload">IsLOAD</h3>
+<p>Check if the variable <code>var</code> is of <code>LOAD</code> type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsLOAD(var)</code></p>
+</section>
+<section id="iscomponents" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="iscomponents">IsCOMPONENTS</h3>
+<p>Check if the variable <code>var</code> is of <code>COMPONENTS</code> type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsCOMPONENTS(var)</code></p>
+</section>
+<section id="makeload" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makeload">MakeLoad</h3>
+<p>Create a load with name <code>name</code> acting on the node (or its id) <code>node</code> on the frame <code>frame</code> with components <code>components</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>node::NODE</code>, <code>components::COMPONENTS</code></li>
+<li><strong>Optional inputs</strong>: <code>frame::{FRAME, string} := node["id"]</code></li>
+<li><strong>Returns</strong>: <code>LOAD</code></li>
+</ul>
+<p>Proto: <code>MakeLoad(name, node, components, frame = node["id"])</code></p>
+</section>
+<section id="isloads" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="isloads">IsLOADS</h3>
+<p>Check if the variable <code>var</code> is of <code>LOADS</code> type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsLOADS(var)</code></p>
+</section>
+<section id="getnodalloads" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="getnodalloads">GetNodalLoads</h3>
+<p>Get the vector of nodal loads <code>loads</code> of nodes <code>nodes</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>nodes::NODES</code>, <code>loads::LOADS</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>Vector</code></li>
+</ul>
+<p>Proto: <code>GetNodalLoads(nodes, loads)</code></p>
+</section>
+</section>
+<section id="materials" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="materials"><span class="header-section-number">4.5</span> Materials</h2>
+<section id="ismaterial" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="ismaterial">IsMATERIAL</h3>
+<p>Check if the variable <code>var</code> is of <code>MATERIAL</code> type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsMATERIAL(var)</code></p>
+</section>
+<section id="makematerial" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makematerial">MakeMaterial</h3>
+<p>Define material with inputs: name <code>name</code>, elastic modulus <code>elastic_modulus</code>, Poisson’s ratio <code>poisson_ratio</code>, shear modulus <code>shear_modulus</code> (default = <code>E/(2*(1+nu))</code>), and density <code>density</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: <code>density::algebraic := 0</code>, <code>elastic_modulus::algebraic := 0</code>, <code>name::string := "Undefined"</code>, <code>poisson_ratio::algebraic := 0</code>, <code>shear_modulus::algebraic := elastic_modulus/(2+2*poisson_ratio)</code></li>
+<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+</ul>
+<p>Proto: <code>MakeMaterial(density = 0, elastic_modulus = 0, name = "Undefined", poisson_ratio = 0, shear_modulus = elastic_modulus/(2+2*poisson_ratio))</code></p>
+</section>
+<section id="makecarbonsteel" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makecarbonsteel">MakeCarbonSteel</h3>
+<p>Get default steel material with <code>CarbonSteel</code> name, elastic modulus <code>E = 210.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.3</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 7850.0</code> (kg/m^3).</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+</ul>
+<p>Proto: <code>MakeCarbonSteel()</code></p>
+</section>
+<section id="makeinoxsteel" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makeinoxsteel">MakeInoxSteel</h3>
+<p>Get default steel material with <code>InoxSteel</code> name, elastic modulus <code>E = 200.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.3</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 8000.0</code> (kg/m^3).</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+</ul>
+<p>Proto: <code>MakeInoxSteel()</code></p>
+</section>
+<section id="maketitanium" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="maketitanium">MakeTitanium</h3>
+<p>Get default titanium material with <code>Titanium</code> name, elastic modulus <code>E = 110.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 4500.0</code> (kg/m^3).</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+</ul>
+<p>Proto: <code>MakeTitanium()</code></p>
+</section>
+<section id="makecopper" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makecopper">MakeCopper</h3>
+<p>Get default copper material with <code>Copper</code> name, elastic modulus <code>E = 110.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 4500.0</code> (kg/m^3).</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+</ul>
+<p>Proto: <code>MakeCopper()</code></p>
+</section>
+<section id="makebrass" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makebrass">MakeBrass</h3>
+<p>Get default brass material with <code>Brass</code> name, elastic modulus <code>E = 110.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 4500.0</code> (kg/m^3).</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+</ul>
+<p>Proto: <code>MakeBrass()</code></p>
+</section>
+<section id="makebronze" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makebronze">MakeBronze</h3>
+<p>Get default bronze material with <code>Bronze</code> name, elastic modulus <code>E = 110.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 4500.0</code> (kg/m^3).</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+</ul>
+<p>Proto: <code>MakeBronze()</code></p>
+</section>
+<section id="makelead" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makelead">MakeLead</h3>
+<p>Get default lead material with <code>Lead</code> name, elastic modulus <code>E = 110.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 4500.0</code> (kg/m^3).</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+</ul>
+<p>Proto: <code>MakeLead()</code></p>
+</section>
+<section id="makezinc" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makezinc">MakeZinc</h3>
+<p>Get default zinc material with <code>Zinc</code> name, elastic modulus <code>E = 110.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 4500.0</code> (kg/m^3).</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+</ul>
+<p>Proto: <code>MakeZinc()</code></p>
+</section>
+<section id="makemagnesium" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makemagnesium">MakeMagnesium</h3>
+<p>Get default magnesium material with <code>Magnesium</code> name, elastic modulus <code>E = 45.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 1800.0</code> (kg/m^3).</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+</ul>
+<p>Proto: <code>MakeMagnesium()</code></p>
+</section>
+<section id="makealluminium" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makealluminium">MakeAlluminium</h3>
+<p>Get default alluminium material with <code>Alluminium</code> name, elastic modulus <code>E = 69.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 8000.0</code> (kg/m^3).</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+</ul>
+<p>Proto: <code>MakeAlluminium()</code></p>
+</section>
+<section id="makeavional" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makeavional">MakeAvional</h3>
+<p>Get default avional material with <code>Avional</code> name, elastic modulus <code>E = 70.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 2690.0</code> (kg/m^3).</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+</ul>
+<p>Proto: <code>MakeAvional()</code></p>
+</section>
+<section id="makeperaluman" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makeperaluman">MakePeraluman</h3>
+<p>Get default peraluman material with <code>Peraluman</code> name, elastic modulus <code>E = 70.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 2690.0</code> (kg/m^3).</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+</ul>
+<p>Proto: <code>MakePeraluman()</code></p>
+</section>
+<section id="makeanticorodal" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makeanticorodal">MakeAnticorodal</h3>
+<p>Get default anticorodal material with <code>Anticorodal</code> name, elastic modulus <code>E = 69.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 2700.0</code> (kg/m^3).</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+</ul>
+<p>Proto: <code>MakeAnticorodal()</code></p>
+</section>
+<section id="makecarpental" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makecarpental">MakeCarpental</h3>
+<p>Get default carpental material with <code>Carpental</code> name, elastic modulus <code>E = 72.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 2780.0</code> (kg/m^3).</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+</ul>
+<p>Proto: <code>MakeCarpental()</code></p>
+</section>
+<section id="makeergal" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makeergal">MakeErgal</h3>
+<p>Get default ergal material with <code>Ergal</code> name, elastic modulus <code>E = 72.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 2780.0</code> (kg/m^3).</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+</ul>
+<p>Proto: <code>MakeErgal()</code></p>
+</section>
+</section>
+<section id="plotting" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="plotting"><span class="header-section-number">4.6</span> Plotting</h2>
+<section id="objectcolor" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="objectcolor">ObjectColor</h3>
+<p>Return the color of the object <code>obj</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>obj::{ELEMENT, LOAD, NODE, SUPPORT}</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>string</code></li>
+</ul>
+<p>Proto: <code>ObjectColor(obj)</code></p>
+</section>
+<section id="structuregraph" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="structuregraph">StructureGraph</h3>
+<p>Return the graph of the structure given a list of nodes <code>nodes</code> and elements <code>elements</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
+<li><strong>Optional inputs</strong>: <code>disp::boolean := true</code>, <code>id::boolean := false</code></li>
+<li><strong>Returns</strong>: <code>function</code></li>
+</ul>
+<p>Proto: <code>StructureGraph(fem, disp = true, id = false)</code></p>
+</section>
+<section id="drawframe" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="drawframe">DrawFrame</h3>
+<p>Draw a reference frame <code>frame</code> given a list of substitution data <code>data</code>, an axes scaling factor <code>scaling</code>, and axes colors <code>colors</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>frame::FRAME</code></li>
+<li><strong>Optional inputs</strong>: <code>colors::list(string) := ["Red", "Green", "Blue"]</code>, <code>data::{list('='), set('=')} := []</code>, <code>scaling::numeric := 1.0</code></li>
+<li><strong>Returns</strong>: <code>function</code></li>
+</ul>
+<p>Proto: <code>DrawFrame(frame, colors = ["Red", "Green", "Blue"], data = [], scaling = 1.0)</code></p>
+</section>
+<section id="plotnode" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="plotnode">PlotNode</h3>
+<p>Plot the node (or support) at point <code>p</code> given a list or set of data for substitution <code>data</code>, a display token <code>token</code> and a display color <code>color</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>p::{Vector(algebraic), list(algebraic)}</code></li>
+<li><strong>Optional inputs</strong>: <code>color::string := TrussMe_FEM:-m_NodeColor</code>, <code>data::{list('='), set('=')} := [],</code>token::symbol := TrussMe_FEM:-m_NodeToken`</li>
+<li><strong>Returns</strong>: <code>function</code></li>
+</ul>
+<p>Proto: <code>PlotNode(p, color = TrussMe_FEM:-m_NodeColor, data = [], token = TrussMe_FEM:-m_NodeToken)</code></p>
+</section>
+<section id="plotelement" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="plotelement">PlotElement</h3>
+<p>Plot the element from point <code>p_1</code> and <code>p_2</code> given a list or set of data for substitution <code>data</code> and a display color <code>color</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>p_1::{Vector(algebraic), list(algebraic)}</code>, <code>p_2::{Vector(algebraic), list(algebraic)}</code></li>
+<li><strong>Optional inputs</strong>: <code>color::string := TrussMe_FEM:-m_ElementColor</code>, <code>data::{list('='), set('=')} := []</code></li>
+<li><strong>Returns</strong>: <code>function</code></li>
+</ul>
+<p>Proto: <code>PlotElement(p_1, p_2, color = TrussMe_FEM:-m_ElementColor, data = [])</code></p>
+</section>
+<section id="plotdeformedelement" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="plotdeformedelement">PlotDeformedElement</h3>
+<p>Plot the element from diplacements <code>d_1</code> and <code>d_2</code> given a list or set of data for substitution <code>data</code> and a display color <code>color</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>p_1::{Vector(algebraic), list(algebraic)}</code>, <code>p_2::{Vector(algebraic), list(algebraic)}</code>, <code>d_1::{Vector(algebraic), list(algebraic)}</code>, <code>d_2::{Vector(algebraic), list(algebraic)}</code></li>
+<li><strong>Optional inputs</strong>: <code>color::string := TrussMe_FEM:-m_ElementColor</code>, <code>data::{list('='), set('=')} := []</code>, <code>scaling::nonnegative := 1.0</code></li>
+<li><strong>Returns</strong>: <code>function</code></li>
+</ul>
+<p>Proto: <code>PlotDeformedElement(p_1, p_2, d_1, d_2, color = TrussMe_FEM:-m_ElementColor, data = [], scaling = 1.0)</code></p>
+</section>
+<section id="plotload" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="plotload">PlotLoad</h3>
+<p>Plot the load arrow from point <code>p_1</code> and <code>p_2</code> given a list or set of data for substitution <code>data</code> and a display color <code>color</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>p_1::{Vector(algebraic), list(algebraic)}</code>, <code>p_2::{Vector(algebraic), list(algebraic)}</code></li>
+<li><strong>Optional inputs</strong>: <code>color::string := TrussMe_FEM:-m_LoadColor</code>, <code>data::{list('='), set('=')} := []</code>, <code>scaling::nonnegative := 1.0</code></li>
+<li><strong>Returns</strong>: <code>function</code></li>
+</ul>
+<p>Proto: <code>PlotLoad(p_1, p_2, color = TrussMe_FEM:-m_LoadColor, data = [], scaling = 1.0)</code></p>
+</section>
+<section id="plotstructure" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="plotstructure">PlotStructure</h3>
+<p>Plot the undeformed <code>fem</code> structure given a list or set of substitution data <code>data</code>, a frame scaling factor <code>frame_scaling</code> or <code>nodes_scaling, elements_scaling</code>, and a loads scaling factor <code>scaling</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
+<li><strong>Optional inputs</strong>: <code>data::{list('='), set('=')} := []</code>, <code>frame_scaling::{numeric, list(numeric)} := 0.</code>, <code>load_scaling::numeric := 1.0</code></li>
+<li><strong>Returns</strong>: <code>{function, list(function)}</code></li>
+</ul>
+<p>Proto: <code>PlotStructure(fem, data = [], frame_scaling = 0., load_scaling = 1.0)</code></p>
+</section>
+<section id="plotdeformedstructure" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="plotdeformedstructure">PlotDeformedStructure</h3>
+<p>Plot the deformed <code>fem</code> structure given a list or set of substitution data <code>data</code>, a frame scaling factor <code>frame_scaling</code> or <code>nodes_scaling, elements_scaling</code>, a loads scaling factor <code>load_scaling</code>, and a deformation magnification factor <code>deformation_scaling</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
+<li><strong>Optional inputs</strong>: <code>data::{list('='), set('=')} := []</code>, <code>deformation_scaling::numeric := 1.0</code>, <code>frame_scaling::{numeric, list(numeric)} := 0.</code>, <code>interpolate::boolean := true</code>, <code>load_scaling::numeric := 1.0</code></li>
+<li><strong>Returns</strong>: <code>{function, list(function)}</code></li>
+</ul>
+<p>Proto: <code>PlotDeformedStructure(fem, data = [], deformation_scaling = 1.0, frame_scaling = 0.0, interpolate = true, load_scaling = 1.0)</code></p>
+</section>
+</section>
+<section id="nodes-and-supports" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="nodes-and-supports"><span class="header-section-number">4.7</span> Nodes and Supports</h2>
+<section id="isnode" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="isnode">IsNODE</h3>
+<p>Check if the variable <code>var</code> is of <code>NODE</code> type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsNODE(var)</code></p>
+</section>
+<section id="isnodes" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="isnodes">IsNODES</h3>
+<p>Check if the variable <code>var</code> is of <code>NODES</code> type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsNODES(var)</code></p>
+</section>
+<section id="issupport" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="issupport">IsSUPPORT</h3>
+<p>Check if the variable <code>var</code> is of <code>SUPPORT</code> type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsSUPPORT(var)</code></p>
+</section>
+<section id="issupports" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="issupports">IsSUPPORTS</h3>
+<p>Check if the variable <code>var</code> is of <code>SUPPORTS</code> type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsSUPPORTS(var)</code></p>
+</section>
+<section id="isdofs" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="isdofs">IsDOFS</h3>
+<p>Check if the variable <code>var</code> is of <code>DOFS</code> type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsDOFS(var)</code></p>
+</section>
+<section id="makenode" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makenode">MakeNode</h3>
+<p>Create a node with name <code>name</code> at coordinates <code>coordinates</code> in the reference frame <code>frame</code>. The constraints on dofs are specified by <code>dofs</code>, where 1 means free and 0 means that the dof is constrained in the direction given from (global to local) <code>frame</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>coordinates::{POINT, VECTOR, Vector}</code></li>
+<li><strong>Optional inputs</strong>: <code>displacements::Vector(algebraic) := &lt;0, 0, 0, 0, 0, 0&gt;</code>, <code>dofs::DOFS := &lt;1, 1, 1, 1, 1, 1&gt;</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code></li>
+<li><strong>Returns</strong>: <code>NODE</code></li>
+</ul>
+<p>Proto: <code>MakeNode(name, coordinates, displacements = &lt;0, 0, 0, 0, 0, 0&gt;, dofs = &lt;1, 1, 1, 1, 1, 1&gt;, frame = Matrix(4,shape = identity))</code></p>
+</section>
+<section id="makecompliantnode" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makecompliantnode">MakeCompliantNode</h3>
+<p>Create a node with name <code>name</code> at coordinates <code>coordinates</code> in the reference frame <code>frame</code>. The constraints on dofs are specified by <code>dofs</code>, where 1 means free and 0 means that the dof is constrained in the direction given from (global to local) <code>frame</code>. The node is also connected to a compliant spring element with traslational stiffness <code>K</code> and torsional stiffness <code>T</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>coordinates::{POINT, VECTOR, Vector}</code></li>
+<li><strong>Optional inputs</strong>: <code>K::{algebraic, list(algebraic)} := 0</code>, <code>T::{algebraic, list(algebraic)} := 0</code>, <code>displacements::Vector(algebraic) := &lt;0, 0, 0, 0, 0, 0&gt;</code>, <code>dofs::DOFS := &lt;1, 1, 1, 1, 1, 1&gt;</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code></li>
+<li><strong>Returns</strong>: <code>NODE</code></li>
+</ul>
+<p>Proto: <code>MakeCompliantNode(name, coordinates, K = 0, T = 0, displacements = &lt;0, 0, 0, 0, 0, 0&gt;, dofs = &lt;1, 1, 1, 1, 1, 1&gt;, frame = Matrix(4,shape = identity))</code></p>
+</section>
+</section>
+<section id="stiffness-matrices" class="level2" data-number="4.8">
+<h2 data-number="4.8" class="anchored" data-anchor-id="stiffness-matrices"><span class="header-section-number">4.8</span> Stiffness Matrices</h2>
+<section id="isstiffness" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="isstiffness">IsSTIFFNESS</h3>
+<p>Check if the variable <code>var</code> is of <code>STIFFNESS</code> type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsSTIFFNESS(var)</code></p>
+</section>
+<section id="getspringstiffness" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="getspringstiffness">GetSpringStiffness</h3>
+<p>Get the stiffness matrix of a spring given the translational stiffnesses <code>K</code> or <code>K_x, K_y, K_z</code>, and the torsional stiffnesses <code>T</code> or <code>T_x, T_y, T_z</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>K::{algebraic, list(algebraic)}</code>, <code>T::{algebraic, list(algebraic)}</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>STIFFNESS</code></li>
+</ul>
+<p>Proto: <code>GetSpringStiffness(K, T)</code></p>
+</section>
+<section id="getrodstiffness" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="getrodstiffness">GetRodStiffness</h3>
+<p>Get the stiffness matrix of a rod (only axial-stiffness) given the cross-section area <code>A</code>, the Young’s modulus <code>E</code>, the shear modulus <code>G</code>, the length <code>L</code>, and the cross-section inertia <code>I_x</code>, <code>I_y</code> and <code>I_z</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>A::algebraic</code>, <code>E::algebraic</code>, <code>G::algebraic</code>, <code>L::algebraic</code>, <code>I_x::algebraic</code>, <code>I_y::algebraic</code>, <code>I_z::algebraic</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>STIFFNESS</code></li>
+</ul>
+<p>Proto: <code>GetRodStiffness(A, E, G, L, I_x, I_y, I_z)</code></p>
+</section>
+<section id="getbeamstiffness" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="getbeamstiffness">GetBeamStiffness</h3>
+<p>Get the stiffness matrix of a lean beam given the cross-section area <code>A</code>, the Young’s modulus <code>E</code>, the shear modulus <code>G</code>, the length <code>L</code>, and the inertia of the cross-section <code>I_x</code>, <code>I_y</code> and <code>I_z</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>A::algebraic</code>, <code>E::algebraic</code>, <code>G::algebraic</code>, <code>L::algebraic</code>, <code>I_x::algebraic</code>, <code>I_y::algebraic</code>, <code>I_z::algebraic</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>STIFFNESS</code></li>
+</ul>
+<p>Proto: <code>GetBeamStiffness(A, E, G, L, I_x, I_y, I_z)</code></p>
+</section>
+<section id="gettimoshenkobeamstiffness" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="gettimoshenkobeamstiffness">GetTimoshenkoBeamStiffness</h3>
+<p>Get the stiffness matrix of a Timoshenko’s (thick) beam given the cross-section area <code>A</code>, the Young’s modulus <code>E</code>, the shear modulus <code>G</code>, the length <code>L</code>, and the inertia of the cross-section <code>I_x</code>, <code>I_y</code> and <code>I_z</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>A::algebraic</code>, <code>E::algebraic</code>, <code>G::algebraic</code>, <code>L::algebraic</code>, <code>I_x::algebraic</code>, <code>I_y::algebraic</code>, <code>I_z::algebraic</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>STIFFNESS</code></li>
+</ul>
+<p>Proto: <code>GetTimoshenkoBeamStiffness(A, E, G, L, I_x, I_y, I_z)</code></p>
+</section>
+</section>
+<section id="elements" class="level2" data-number="4.9">
+<h2 data-number="4.9" class="anchored" data-anchor-id="elements"><span class="header-section-number">4.9</span> Elements</h2>
+<section id="iselement" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="iselement">IsELEMENT</h3>
+<p>Check if the variable <code>var</code> is of <code>ELEMENT</code> type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsELEMENT(var)</code></p>
+</section>
+<section id="iselements" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="iselements">IsELEMENTS</h3>
+<p>Check if the variable <code>var</code> is of <code>ELEMENTS</code> type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsELEMENTS(var)</code></p>
+</section>
+<section id="makeelement" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makeelement">MakeElement</h3>
+<p>Make an element with name <code>name</code> on reference frame <code>frame</code>, connecting the dofs <code>Ni_dofs</code> on i-th node i <code>[Ni, Ni_dofs]</code>, connecting with stiffness <code>K</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>ELEMENT</code></li>
+</ul>
+<p>Proto: <code>MakeElement(name, frame = Matrix(4,shape = identity))</code></p>
+</section>
+<section id="makespring" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makespring">MakeSpring</h3>
+<p>Make a spring element with name <code>name</code> on reference frame <code>frame</code>, connecting the dofs <code>N1_dofs</code> on node 1 <code>[N1, N1_dofs]</code>, connecting the dofs <code>N2_dofs</code> on node 2 <code>[N2, N2_dofs]</code> with translational stiffnesses <code>K</code> or <code>K_x, K_y, K_z</code>, and torsional stiffnesses <code>T</code> or <code>T_x, T_y, T_z</code>. Optional nodes distance <code>distance</code> can be specified.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>N1::{NODE, list({DOFS, NODE})}</code>, <code>N2::{NODE, list({DOFS, NODE})}</code></li>
+<li><strong>Optional inputs</strong>: <code>K::{algebraic, list(algebraic)} := 0</code>, <code>T::{algebraic, list(algebraic)} := 0</code>, <code>distance::algebraic := 0</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code></li>
+<li><strong>Returns</strong>: <code>ELEMENT</code></li>
+</ul>
+<p>Proto: <code>MakeSpring(name, N1, N2, K = 0, T = 0, distance = 0, frame = Matrix(4,shape = identity))</code></p>
+</section>
+<section id="makerod" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makerod">MakeRod</h3>
+<p>Make a rod element with name <code>name</code> on reference frame <code>frame</code>, connecting the dofs <code>N1_dofs</code> on node 1 <code>[N1, N1_dofs]</code> and the dofs <code>N2_dofs</code> on node 2 <code>[N2, N2_dofs]</code>, with material <code>material</code>, cross-section area <code>area</code> and inertia <code>inertia</code>. Optional nodes distance <code>distance</code> can be specified.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>N1::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})}</code>, <code>N2::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})}</code></li>
+<li><strong>Optional inputs</strong>: <code>area::algebraic := 0</code>, <code>distance::algebraic := -1</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code>, <code>inertia::list(algebraic) := [0, 0, 0]</code>, <code>material::MATERIAL := TrussMe_FEM:-MakeCarbonSteel()</code></li>
+<li><strong>Returns</strong>: <code>ELEMENT</code></li>
+</ul>
+<p>Proto: <code>MakeRod(name, N1, N2, area = 0, distance = -1, frame = Matrix(4,shape = identity), inertia = [0, 0, 0], material = TrussMe_FEM:-MakeCarbonSteel())</code></p>
+</section>
+<section id="makebeam" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="makebeam">MakeBeam</h3>
+<p>Make a beam element with name <code>name</code> on reference frame <code>frame</code>, connecting the dofs <code>N1_dofs</code> on node 1 <code>[N1, N1_dofs]</code>, connecting the dofs <code>N2_dofs</code> on node 2 <code>[N2, N2_dofs]</code> with material <code>material</code> and cross-section area <code>area</code> and inertia <code>inertia</code>. Optional nodes distance <code>distance</code> and Timoshenko’s beam boolean <code>timoshenko</code> can be specified.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>N1::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})}</code>, <code>N2::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})}</code></li>
+<li><strong>Optional inputs</strong>: <code>area::algebraic := 0</code>, <code>distance::algebraic := -1</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code>, <code>inertia::list(algebraic) := [0, 0, 0]</code>, <code>material::MATERIAL := TrussMe_FEM:-MakeCarbonSteel()</code>, <code>timoshenko::boolean := false</code></li>
+<li><strong>Returns</strong>: <code>ELEMENT</code></li>
+</ul>
+<p>Proto: <code>MakeBeam(name, N1, N2, area = 0, distance = -1, frame = Matrix(4,shape = identity), inertia = [0, 0, 0], material = TrussMe_FEM:-MakeCarbonSteel(), timoshenko = false)</code></p>
+</section>
+</section>
+<section id="fem-structure" class="level2" data-number="4.10">
+<h2 data-number="4.10" class="anchored" data-anchor-id="fem-structure"><span class="header-section-number">4.10</span> FEM Structure</h2>
+<section id="isstructure" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="isstructure">IsSTRUCTURE</h3>
+<p>Check if the variable <code>var</code> is of <code>STRUCTURE</code> type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsSTRUCTURE(var)</code></p>
+</section>
+<section id="getnodaldofs" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="getnodaldofs">GetNodalDofs</h3>
+<p>Get nodal dofs of nodes <code>nodes</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>nodes::NODES</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>Vector</code></li>
+</ul>
+<p>Proto: <code>GetNodalDofs(nodes)</code></p>
+</section>
+<section id="getnodaldisplacements" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="getnodaldisplacements">GetNodalDisplacements</h3>
+<p>Get the vector of nodal displacements of nodes <code>nodes</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>nodes::NODES</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>Vector</code></li>
+</ul>
+<p>Proto: <code>GetNodalDisplacements(nodes)</code></p>
+</section>
+<section id="stiffnesstransformation" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="stiffnesstransformation">StiffnessTransformation</h3>
+<p>Compute the transformation matrix of the nodes <code>nodes</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>nodes::NODES</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>Matrix</code></li>
+</ul>
+<p>Proto: <code>StiffnessTransformation(nodes)</code></p>
+</section>
+<section id="globalstiffness" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="globalstiffness">GlobalStiffness</h3>
+<p>Compute the global stiffness matrix of the nodes <code>nodes</code> and elements <code>elements</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>nodes::NODES</code>, <code>elements::ELEMENTS</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>Matrix</code></li>
+</ul>
+<p>Proto: <code>GlobalStiffness(nodes, elements)</code></p>
+</section>
+<section id="recaststiffness" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="recaststiffness">RecastStiffness</h3>
+<p>Recast the stiffness matrix <code>K</code> according to the constrained negated dofs <code>d</code> of the element name <code>e</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>K::STIFFNESS</code>, <code>d::Vector</code>, <code>e::string</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>Matrix</code></li>
+</ul>
+<p>Proto: <code>RecastStiffness(K, d, e)</code></p>
+</section>
+<section id="globalstiffnessprime" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="globalstiffnessprime">GlobalStiffnessPrime</h3>
+<p>Compute the global stiffness matrix of the nodes <code>nodes</code> and elements <code>elements</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>nodes::NODES</code>, <code>elements::ELEMENTS</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>Matrix</code></li>
+</ul>
+<p>Proto: <code>GlobalStiffnessPrime(nodes, elements)</code></p>
+</section>
+<section id="isfem" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="isfem">IsFEM</h3>
+<p>Check if the variable <code>var</code> is of FEM type.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>var::anything</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>boolean</code></li>
+</ul>
+<p>Proto: <code>IsFEM(var)</code></p>
+</section>
+<section id="splitfem" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="splitfem">SplitFEM</h3>
+<p>Split the FEM structure <code>fem</code> in free and constrained dofs.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>NULL</code></li>
+</ul>
+<p>Proto: <code>SplitFEM(fem)</code></p>
+</section>
+<section id="recastfem" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="recastfem">RecastFEM</h3>
+<p>Recast the system <code>fem</code> to avoid singularities.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>NULL</code></li>
+</ul>
+<p>Proto: <code>RecastFEM(fem)</code></p>
+</section>
+<section id="generatefem" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="generatefem">GenerateFEM</h3>
+<p>Generate a FEM structure from the nodes <code>nodes</code>, elements <code>elements</code>, and loads <code>loads</code>. If <code>tryhard</code> is enabled, the stiffness matrix will be recasted to avoid singularities.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>nodes::NODES</code>, <code>elements::ELEMENTS</code>, <code>loads::LOADS</code></li>
+<li><strong>Optional inputs</strong>: <code>tryhard::boolean := false</code></li>
+<li><strong>Returns</strong>: <code>FEM</code></li>
+</ul>
+<p>Proto: <code>GenerateFEM(nodes, elements, loads, tryhard = false)</code></p>
+</section>
+<section id="numericalsolvefem" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="numericalsolvefem">NumericalSolveFEM</h3>
+<p>Solve numerically the FEM structure <code>fem</code> provided with optional data <code>data</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
+<li><strong>Optional inputs</strong>: <code>data::list := []</code></li>
+<li><strong>Returns</strong>: <code>NULL</code></li>
+</ul>
+<p>Proto: <code>NumericalSolveFEM(fem, data = [])</code></p>
+</section>
+<section id="solvefem" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="solvefem">SolveFEM</h3>
+<p>Solve the FEM structure <code>fem</code> and optionally use LAST LU decompostion <code>use_LAST</code> and veil the expressions <code>use_LEM</code> with signature mode <code>use_SIG</code> and label <code>label</code>. Factorization method <code>factorization</code> can be choosen between <code>LU</code>, fraction-free <code>FFLU</code>, <code>QR</code>, and Gauss-Jordan <code>GJ</code>. Time limit <code>time_limit</code> and maximum veiling cost <code>maxcost</code> can be specified.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
+<li><strong>Optional inputs</strong>: <code>factorization::string := "LU"</code>, <code>label::string := "V"</code>, <code>maxcost::nonnegint := 15</code>, <code>time_limit::positive := 1.0</code>, <code>use_LAST::boolean := false</code>, <code>use_LEM::boolean := true</code>, <code>use_SIG::boolean := true</code></li>
+<li><strong>Returns</strong>: <code>NULL</code></li>
+</ul>
+<p>Proto: <code>SolveFEM(fem, factorization = "LU", label = "V", maxcost = 15, time_limit = 1.0, use_LAST = false, use_LEM = true, use_SIG = true)</code></p>
+</section>
+<section id="storefem" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="storefem">StoreFEM</h3>
+<p>Store the FEM structure <code>fem</code> in the nodes <code>nodes</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>NULL</code></li>
+</ul>
+<p>Proto: <code>StoreFEM(fem)</code></p>
+</section>
+</section>
+<section id="output-data" class="level2" data-number="4.11">
+<h2 data-number="4.11" class="anchored" data-anchor-id="output-data"><span class="header-section-number">4.11</span> Output Data</h2>
+<section id="getoutputdisplacements" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="getoutputdisplacements">GetOutputDisplacements</h3>
+<p>Get the output displacements of a solved and stored <code>fem</code> structure.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>Matrix</code></li>
+</ul>
+<p>Proto: <code>GetOutputDisplacements(fem)</code></p>
+</section>
+<section id="getoutputreactions" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="getoutputreactions">GetOutputReactions</h3>
+<p>Get the output reactions of a solved and stored <code>fem</code> structure.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>Matrix</code></li>
+</ul>
+<p>Proto: <code>GetOutputReactions(fem)</code></p>
+</section>
+</section>
+<section id="code-generation-and-export" class="level2" data-number="4.12">
+<h2 data-number="4.12" class="anchored" data-anchor-id="code-generation-and-export"><span class="header-section-number">4.12</span> Code Generation and Export</h2>
+<section id="generatefile" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="generatefile">GenerateFile</h3>
+<p>Generate a file named <code>fname</code> with the content <code>str</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>fname::string</code>, <code>str::string</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>NULL</code></li>
+</ul>
+<p>Proto: <code>GenerateFile(fname, str)</code></p>
+</section>
+<section id="clearfile" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="clearfile">ClearFile</h3>
+<p>Procedure that creates an empty file <code>fname</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>fname::string</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>NULL</code></li>
+</ul>
+<p>Proto: <code>ClearFile(fname)</code></p>
+</section>
+<section id="setcodegenoptions" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="setcodegenoptions">SetCodegenOptions</h3>
+<p>Set options for code generation optimization.</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: <code>coercetypes::boolean := m_CodegenOptions[parse("coercetypes")]</code>, <code>deducereturn::boolean := m_CodegenOptions[parse("deducereturn")]</code>, <code>deducetypes::boolean := m_CodegenOptions[parse("deducetypes")]</code>, <code>defaulttype::symbol := m_CodegenOptions[parse("defaulttype")]</code>, <code>digits::posint := m_CodegenOptions[parse("digits")]</code>, <code>functionprecision::symbol := m_CodegenOptions[parse("functionprecision")]</code>, <code>optimize::boolean := m_CodegenOptions[parse("optimize")]</code>, <code>reduceanalysis::boolean := m_CodegenOptions[parse("reduceanalysis")]</code></li>
+<li><strong>Returns</strong>: <code>NULL</code></li>
+</ul>
+<p>Proto: <code>SetCodegenOptions(coercetypes = m_CodegenOptions[parse("coercetypes")], deducereturn = m_CodegenOptions[parse("deducereturn")], deducetypes = m_CodegenOptions[parse("deducetypes")], defaulttype = m_CodegenOptions[parse("defaulttype")], digits = m_CodegenOptions[parse("digits")], functionprecision = m_CodegenOptions[parse("functionprecision")], optimize = m_CodegenOptions[parse("optimize")], reduceanalysis = m_CodegenOptions[parse("reduceanalysis")])</code></p>
+</section>
+<section id="getcodegenoptions" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="getcodegenoptions">GetCodegenOptions</h3>
+<p>Get options for code generation.</p>
+<ul>
+<li><strong>Inputs</strong>: None</li>
+<li><strong>Optional inputs</strong>: <code>field::string := "all"</code></li>
+<li><strong>Returns</strong>: <code>anything</code></li>
+</ul>
+<p>Proto: <code>GetCodegenOptions(field = "all")</code></p>
+</section>
+<section id="translatetomatlab" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="translatetomatlab">TranslateToMatlab</h3>
+<p>Convert a list of expressions <code>expr_list</code> into Matlab code.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>expr_list::list</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>NULL</code></li>
+</ul>
+<p>Proto: <code>TranslateToMatlab(expr_list)</code></p>
+</section>
+<section id="applyindent" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="applyindent">ApplyIndent</h3>
+<p>Apply indentation <code>ind</code> to string <code>str</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>ind::string</code>, <code>str::string</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>string</code></li>
+</ul>
+<p>Proto: <code>ApplyIndent(ind, str)</code></p>
+</section>
+<section id="generateproperties" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="generateproperties">GenerateProperties</h3>
+<p>Generate properties code from a list of data <code>data</code> and optional indentation <code>indent</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>data::list(symbol)</code></li>
+<li><strong>Optional inputs</strong>: <code>indent::string := "  "</code></li>
+<li><strong>Returns</strong>: <code>string</code></li>
+</ul>
+<p>Proto: <code>GenerateProperties(data, indent = "  ")</code></p>
+</section>
+<section id="generateinputs" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="generateinputs">GenerateInputs</h3>
+<p>Generate inputs code from a list of variables <code>vars</code> and optional indentation <code>indent</code> and skip null inputs <code>skipnull</code> flag.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>vars::list(list({string, symbol}))</code></li>
+<li><strong>Optional inputs</strong>: <code>indent::string := "  "</code>, <code>skipnull::boolean := true</code></li>
+<li><strong>Returns</strong>: <code>string</code></li>
+</ul>
+<p>Proto: <code>GenerateInputs(vars, indent = "  ", skipnull = true)</code></p>
+</section>
+<section id="extractelements" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="extractelements">ExtractElements</h3>
+<p>Extract elements for a n-dimensional function <code>func</code> with name <code>name</code>, dimensions <code>dims</code>, and optional veiling label <code>label</code>, indentation <code>indent</code> and skip null inputs <code>skipnull</code> flag.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>func::{Array, Matrix, Vector, list}</code>, <code>dims::list(nonnegint)</code></li>
+<li><strong>Optional inputs</strong>: <code>indent::string := "  "</code>, <code>label::string := "out"</code>, <code>skipnull::boolean := true</code></li>
+<li><strong>Returns</strong>: <code>list</code></li>
+</ul>
+<p>Proto: <code>ExtractElements(name, func, dims, indent = "  ", label = "out", skipnull = true)</code></p>
+</section>
+<section id="generateheader" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="generateheader">GenerateHeader</h3>
+<p>Generate a function header for a function <code>name</code> with variables <code>vars</code>, optional description <code>info</code> and indentation <code>indent</code> and skip class object input <code>skipthis</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>vars::list(list(symbol))</code></li>
+<li><strong>Optional inputs</strong>: <code>indent::string := "  "</code>, <code>info::string := "No description provided."</code>, <code>skipthis::boolean := false</code></li>
+<li><strong>Returns</strong>: <code>string</code></li>
+</ul>
+<p>Proto: <code>GenerateHeader(name, vars, indent = "  ", info = "No description provided.", skipthis = false)</code></p>
+</section>
+<section id="generateelements" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="generateelements">GenerateElements</h3>
+<p>Generate code for elements <code>func</code> with optional indentation <code>indent</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>func::{Array, Matrix, Vector, list}</code></li>
+<li><strong>Optional inputs</strong>: <code>indent::string := "  "</code></li>
+<li><strong>Returns</strong>: <code>string</code></li>
+</ul>
+<p>Proto: <code>GenerateElements(func, indent = "  ")</code></p>
+</section>
+<section id="generatebody" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="generatebody">GenerateBody</h3>
+<p>Generate code for function body for a function <code>name</code> with dimensions <code>dims</code>, optional header <code>header</code>, properties <code>properties</code>, inputs <code>inputs</code>, veils <code>veils</code>, elements <code>elements</code>, indentation <code>indent</code>, outputs <code>outputs</code> and vector type <code>typestr</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>dims::list(nonnegint)</code></li>
+<li><strong>Optional inputs</strong>: <code>elements::string := "No elements"</code>, <code>header::string := "No header"</code>, <code>indent::string := "  "</code>, <code>inputs::string := "No inputs"</code>, <code>outputs::string := "No outputs"</code>, <code>properties::string := "No properties"</code>, <code>typestr::string := "zeros"</code>, <code>veils::string := "No veils"</code></li>
+<li><strong>Returns</strong>: <code>string</code></li>
+</ul>
+<p>Proto: <code>GenerateBody(name, dims, elements = "No elements", header = "No header", indent = "  ", inputs = "No inputs", outputs = "No outputs", properties = "No properties", typestr = "zeros", veils = "No veils")</code></p>
+</section>
+<section id="vectortomatlab" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="vectortomatlab">VectorToMatlab</h3>
+<p>Translate the vector <code>vec</code> with variables <code>vars</code> into a Matlab function named <code>name</code> and return it as a string. The optional arguments and class properties <code>data</code>, function description <code>info</code>, veiling label <code>label</code>, and indentation string <code>indent</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>vars::list(list(symbol))</code>, <code>vec::Vector</code></li>
+<li><strong>Optional inputs</strong>: <code>data::list(symbol) := []</code>, <code>indent::string := "  "</code>, <code>info::string := "No info"</code>, <code>label::string := "out"</code>, <code>skipnull::boolean := true</code></li>
+<li><strong>Returns</strong>: <code>string</code></li>
+</ul>
+<p>Proto: <code>VectorToMatlab(name, vars, vec, data = [], indent = "  ", info = "No info", label = "out", skipnull = true)</code></p>
+</section>
+<section id="matrixtomatlab" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="matrixtomatlab">MatrixToMatlab</h3>
+<p>Translate the vector <code>vec</code> with variables <code>vars</code> into a Matlab function named <code>name</code> and return it as a string. The optional arguments and class properties <code>data</code>, function description <code>info</code>, veiling label <code>label</code>, and indentation string <code>indent</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>vars::list(list(symbol))</code>, <code>mat::Matrix</code></li>
+<li><strong>Optional inputs</strong>: <code>data::list(symbol) := []</code>, <code>indent::string := "  "</code>, <code>info::string := "No info"</code>, <code>label::string := "out"</code>, <code>skipnull::boolean := true</code></li>
+<li><strong>Returns</strong>: <code>string</code></li>
+</ul>
+<p>Proto: <code>MatrixToMatlab(name, vars, mat, data = [], indent = "  ", info = "No info", label = "out", skipnull = true)</code></p>
+</section>
+<section id="getveilsubs" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="getveilsubs">GetVeilSubs</h3>
+<p>Get the substitutions to transform veils <code>veil</code> from <code>(v[j])(f)</code> to <code>v_j</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>veil::{Vector(algebraic), list(algebraic)}</code></li>
+<li><strong>Optional inputs</strong>: None</li>
+<li><strong>Returns</strong>: <code>NULL</code></li>
+</ul>
+<p>Proto: <code>GetVeilSubs(veil)</code></p>
+</section>
+<section id="generateconstructor" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="generateconstructor">GenerateConstructor</h3>
+<p>Generate a constructor for a system named <code>name</code> system data <code>data</code>, description <code>info</code> and indentation <code>indent</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>name::string</code></li>
+<li><strong>Optional inputs</strong>: <code>data::list(symbol := algebraic) := []</code>, <code>indent::string := "  "</code>, <code>info::string := "Class constructor."</code></li>
+<li><strong>Returns</strong>: <code>string</code></li>
+</ul>
+<p>Proto: <code>GenerateConstructor(name, data = [], indent = "  ", info = "Class constructor.")</code></p>
+</section>
+<section id="systemtomatlab" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="systemtomatlab">SystemToMatlab</h3>
+<p>Generate a FEM system <code>fem</code> with name <code>name</code>, with optional data <code>data</code>, description <code>info</code>, output label <code>label</code> and indentation <code>indent</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>fem::FEM</code></li>
+<li><strong>Optional inputs</strong>: <code>data::list(symbol := algebraic) := []</code>, <code>indent::string := "  "</code>, <code>info::string := "No class description provided."</code>, <code>label::string := "out"</code>, <code>vars::list(symbol) := []</code></li>
+<li><strong>Returns</strong>: <code>string</code></li>
+</ul>
+<p>Proto: <code>SystemToMatlab(name, fem, data = [], indent = "  ", info = "No class description provided.", label = "out", vars = [])</code></p>
+</section>
+<section id="generatematlabcode" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="generatematlabcode">GenerateMatlabCode</h3>
+<p>Generate Matlab code for the FEM system <code>fem</code> with name <code>name</code>, with optional data <code>data</code>, description <code>info</code>, output label <code>label</code> and indentation <code>indent</code>, variables <code>vars</code> and output path <code>path</code>.</p>
+<ul>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>fem::FEM</code></li>
+<li><strong>Optional inputs</strong>: <code>data::list(symbol := algebraic) := []</code>, <code>indent::string := "  "</code>, <code>info::string := "No class description provided."</code>, <code>label::string := "out"</code>, <code>path::string := "./"</code>, <code>vars::list(symbol) := []</code></li>
+<li><strong>Returns</strong>: <code>NULL</code></li>
+</ul>
+<p>Proto: <code>GenerateMatlabCode(name, fem, data = [], indent = "  ", info = "No class description provided.", label = "out", path = "./", vars = [])</code></p>
+</section>
+</section>
+</section>
+<section id="matlab-api" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Matlab API</h1>
+<section id="class-methods" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="class-methods"><span class="header-section-number">5.1</span> Class Methods</h2>
+<section id="system" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="system">System</h3>
+<p>Class constructor for a system.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>t_data</code>: The system data</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system object</li>
+</ul></li>
+</ul>
+<p>Proto: <code>obj = System(t_data)</code></p>
+</section>
+<section id="get_data" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="get_data">get_data</h3>
+<p>Get the system data.</p>
+<ul>
+<li><strong>Parameters</strong>: None</li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system data</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.get_data()</code></p>
+</section>
+<section id="set_data" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="set_data">set_data</h3>
+<p>Set the system data field.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>t_data</code>: The system data</li>
+</ul></li>
+<li><strong>Returns</strong>: None</li>
+</ul>
+<p>Proto: <code>obj.set_data(t_data)</code></p>
+</section>
+<section id="get_data_field" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="get_data_field">get_data_field</h3>
+<p>Get the system data field.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>field</code>: The system data field</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system data field value</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.get_data_field(field)</code></p>
+</section>
+<section id="set_data_field" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="set_data_field">set_data_field</h3>
+<p>Set the system data field.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>field</code>: The system data field</li>
+<li><code>value</code>: The system data field value</li>
+</ul></li>
+<li><strong>Returns</strong>: None</li>
+</ul>
+<p>Proto: <code>obj.set_data_field(field, value)</code></p>
+</section>
+<section id="compute_k" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="compute_k">compute_K</h3>
+<p>Compute the system stiffness matrix <span class="math inline">\(\mathbf{K}\)</span> as:</p>
+<p><span class="math display">\[
+\mathbf{K} = \left[
+  \begin{array}{cc}
+    \mathbf{K}_{ff} &amp; \mathbf{K}_{fs} \\
+    \mathbf{K}_{sf} &amp; \mathbf{K}_{ss}
+  \end{array}
+\right]
+\]</span></p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system stiffness matrix <span class="math inline">\(\mathbf{K}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.compute_K(x, v)</code></p>
+</section>
+<section id="compute_d_f" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="compute_d_f">compute_d_f</h3>
+<p>Compute the system deformation vector of free dofs <span class="math inline">\(\mathbf{d}_{f}\)</span> as:</p>
+<p><span class="math display">\[
+\mathbf{d}_{f} = \mathbf{K}_{ff}^{-1} \left(
+  \mathbf{f}_{f} - \mathbf{K}_{fs} \mathbf{d}_{s}
+\right)
+\]</span></p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+<li><code>tol</code> [optional]: Tolerance for the iterative solver.</li>
+<li><code>itr</code> [optional]: Maximum number of solver iterations.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system deformation vector <span class="math inline">\(\mathbf{d}_{f}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.compute_d_f(x, v, tol, itr)</code></p>
+</section>
+<section id="compute_d" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="compute_d">compute_d</h3>
+<p>Compute the system deformation vector <span class="math inline">\(\mathbf{d}\)</span> as:</p>
+<p><span class="math display">\[
+\mathbf{d} = \left[
+  \begin{array}{c}
+    \mathbf{d}_{f} \\
+    \mathbf{d}_{s}
+  \end{array}
+\right]
+\]</span></p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+<li><code>tol</code> [optional]: Tolerance for the iterative solver.</li>
+<li><code>itr</code> [optional]: Maximum number of solver iterations.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system deformation vector <span class="math inline">\(\mathbf{d}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.compute_d(x, v, tol, itr)</code></p>
+</section>
+<section id="compute_f_s" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="compute_f_s">compute_f_s</h3>
+<p>Compute the system force vector of specified dofs <span class="math inline">\(\mathbf{f}_{s}\)</span> as:</p>
+<p><span class="math display">\[
+\mathbf{f}_{s} = \mathbf{K}_{sf} \mathbf{d}_{f} +
+  \mathbf{K}_{ss} \mathbf{d}_{s} - \mathbf{f}_{r}
+\]</span></p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+<li><code>tol</code> [optional]: Tolerance for the iterative solver.</li>
+<li><code>itr</code> [optional]: Maximum number of solver iterations.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system force vector <span class="math inline">\(\mathbf{f}_{s}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.compute_f_s(x, v, tol, itr)</code></p>
+</section>
+<section id="compute_f" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="compute_f">compute_f</h3>
+<p>Compute the system force vector <span class="math inline">\(\mathbf{f}\)</span> as:</p>
+<p><span class="math display">\[
+\mathbf{f} = \left[
+  \begin{array}{c}
+    \mathbf{f}_{f} \\
+    \mathbf{f}_{s}
+  \end{array}
+\right]
+\]</span></p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+<li><code>tol</code> [optional]: Tolerance for the iterative solver.</li>
+<li><code>itr</code> [optional]: Maximum number of solver iterations.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system force vector <span class="math inline">\(\mathbf{f}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.compute_f(x, v, tol, itr)</code></p>
+</section>
+<section id="sanity_check" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="sanity_check">sanity_check</h3>
+<p>Internal structure sanity check.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+<li><code>tol</code> [optional]: Tolerance for the iterative solver.</li>
+<li><code>itr</code> [optional]: Maximum number of solver iterations.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>An error is thrown if the sizes are not correct.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>obj.sanity_check(x, v, tol, itr)</code></p>
+</section>
+<section id="check_symmetry" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="check_symmetry">check_symmetry</h3>
+<p>Check symmetry of stiffness matrices.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>An error is thrown if the matrices are not symmetric.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>obj.check_symmetry(x, v)</code></p>
+</section>
+</section>
+<section id="abstract-methods" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="abstract-methods"><span class="header-section-number">5.2</span> Abstract Methods</h2>
+<section id="k" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="k">K</h3>
+<p>Evaluate the system stiffness matrix <span class="math inline">\(\mathbf{K}\)</span>.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system stiffness matrix <span class="math inline">\(\mathbf{K}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.K(x, v)</code></p>
+</section>
+<section id="k_ff" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="k_ff">K_ff</h3>
+<p>Evaluate the system stiffness matrix of free-free dofs <span class="math inline">\(\mathbf{K}_{ff}\)</span>.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system stiffness matrix <span class="math inline">\(\mathbf{K}_{ff}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.K_ff(x, v)</code></p>
+</section>
+<section id="k_fs" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="k_fs">K_fs</h3>
+<p>Evaluate the system stiffness matrix of free-specified dofs <span class="math inline">\(\mathbf{K}_{fs}\)</span>.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system stiffness matrix <span class="math inline">\(\mathbf{K}_{fs}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.K_fs(x, v)</code></p>
+</section>
+<section id="k_sf" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="k_sf">K_sf</h3>
+<p>Evaluate the system stiffness matrix of specified-free dofs <span class="math inline">\(\mathbf{K}_{sf}\)</span>.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system stiffness matrix <span class="math inline">\(\mathbf{K}_{sf}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.K_sf(x, v)</code></p>
+</section>
+<section id="k_ss" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="k_ss">K_ss</h3>
+<p>Evaluate the system stiffness matrix of specified-specified dofs <span class="math inline">\(\mathbf{K}_{ss}\)</span>.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system stiffness matrix <span class="math inline">\(\mathbf{K}_{ss}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.K_ss(x, v)</code></p>
+</section>
+<section id="d" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="d">d</h3>
+<p>Evaluate the system deformation vector <span class="math inline">\(\mathbf{d}\)</span>.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system deformation vector <span class="math inline">\(\mathbf{d}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.d(x, v)</code></p>
+</section>
+<section id="d_f" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="d_f">d_f</h3>
+<p>Evaluate the system deformation vector of free dofs <span class="math inline">\(\mathbf{d}_{f}\)</span>.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system deformation vector <span class="math inline">\(\mathbf{d}_{f}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.d_f(x, v)</code></p>
+</section>
+<section id="d_s" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="d_s">d_s</h3>
+<p>Evaluate the system deformation vector of specified dofs <span class="math inline">\(\mathbf{d}_{s}\)</span>.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system deformation vector <span class="math inline">\(\mathbf{d}_{s}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.d_s(x, v)</code></p>
+</section>
+<section id="f" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="f">f</h3>
+<p>Evaluate the system force vector <span class="math inline">\(\mathbf{f}\)</span>.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system force vector <span class="math inline">\(\mathbf{f}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.f(x, v)</code></p>
+</section>
+<section id="f_f" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="f_f">f_f</h3>
+<p>Evaluate the system force vector of free dofs <span class="math inline">\(\mathbf{f}_{f}\)</span>.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system force vector <span class="math inline">\(\mathbf{f}_{f}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.f_f(x, v)</code></p>
+</section>
+<section id="f_s" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="f_s">f_s</h3>
+<p>Evaluate the system force vector of specified dofs <span class="math inline">\(\mathbf{f}_{s}\)</span>.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system force vector <span class="math inline">\(\mathbf{f}_{s}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.f_s(x, v)</code></p>
+</section>
+<section id="f_r" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="f_r">f_r</h3>
+<p>Evaluate the system remainder force vector <span class="math inline">\(\mathbf{f}_{r}\)</span>.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+<li><code>v</code>: Veils <span class="math inline">\(\mathbf{v}\)</span>.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The system remainder force vector <span class="math inline">\(\mathbf{f}_{r}\)</span>.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.f_r(x, v)</code></p>
+</section>
+<section id="perm" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="perm">perm</h3>
+<p>Get the system permutation vector.</p>
+<ul>
+<li><strong>Parameters</strong>: None</li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The permutation vector.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.perm()</code></p>
+</section>
+<section id="unperm" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="unperm">unperm</h3>
+<p>Get the unpermutation vector.</p>
+<ul>
+<li><strong>Parameters</strong>: None</li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The unpermutation vector.</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.unperm()</code></p>
+</section>
+<section id="v" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="v">v</h3>
+<p>Evaluate the veils <span class="math inline">\(\mathbf{v}\)</span>.</p>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>x</code>: States <span class="math inline">\(\mathbf{x}\)</span>.</li>
+</ul></li>
+<li><strong>Returns</strong>:
+<ul>
+<li>The Veils <span class="math inline">\(\mathbf{v}\)</span>..</li>
+</ul></li>
+</ul>
+<p>Proto: <code>out = obj.v(x)</code></p>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

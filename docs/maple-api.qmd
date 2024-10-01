@@ -1,0 +1,1236 @@
+
+# Maple API
+
+## Module Utilities
+
+### Info {.unnumbered}
+Print module information.
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `NULL`
+
+Proto: `Info()`
+
+### ModuleLoad {.unnumbered}
+Module load procedure.
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `NULL`
+
+Proto: `ModuleLoad()`
+
+### ModuleUnload {.unnumbered}
+Module unload procedure.
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `NULL`
+
+Proto: `ModuleLoad()`
+
+### SetModuleOptions {.unnumbered}
+Set the module options: verbose mode `VerboseMode`, warning mode `WarningMode`, time limit `TimeLimit`, id code length `IdLength`, node color `NodeColor`, support color `SupportColor`, element color `ElementColor`, shell (2+ nodes elements) color `ShellColor`, force color `ForceColor`, moment color `MomentColor`, node token `NodeToken`, support token `SupportToken`.
+
+- **Inputs**: None
+- **Optional inputs**:
+  - `ElementColor::{nothing, string} := NULL`: element color
+  - `ForceColor::{nothing, string} := NULL`: force color
+  - `IdLength::{nothing, positive} := NULL`: ID length
+  - `MomentColor::{nothing, string} := NULL`: moment color
+  - `NodeColor::{nothing, string} := NULL`: node color
+  - `NodeToken::{nothing, string} := NULL`: node token
+  - `ShellColor::{nothing, string} := NULL`: shell color (2+ nodes elements)
+  - `SupportColor::{nothing, string} := NULL`: support color
+  - `SupportToken::{nothing, string} := NULL`: support token
+  - `TimeLimit::{nothing, nonnegative} := NULL`: time limit
+  - `VerboseMode::{boolean, nothing} := NULL`: verbose mode
+  - `WarningMode::{boolean, nothing} := NULL`: warning mode
+- **Returns**: `NULL`
+
+Proto: `SetModuleOptions(ElementColor = NULL, ForceColor = NULL, IdLength = NULL, MomentColor = NULL, NodeColor = NULL, NodeToken = NULL, ShellColor = NULL, SupportColor = NULL, SupportToken = NULL, TimeLimit = NULL, VerboseMode = NULL, WarningMode = NULL)`
+
+### GetObjByName {.unnumbered}
+
+Get object which field name is `name` from a list or set of objects
+`objs`.
+
+- **Inputs**: `objs::list(anything)`, `name::string`
+- **Returns**: `anything`
+
+Proto: `GetObjByName(objs, name)`
+
+### GetObjById {.unnumbered}
+
+Get object which field `id` is equal to `id_fld`, between the objects `objs`.
+
+- **Inputs**: `objs::list(anything)`, `id_fld::string`
+- **Optional inputs**: `position::boolean := false`
+- **Returns**: `anything`
+
+Proto: `GetObjById(objs, id_fld, position = false)`
+
+### GetObjsByType {.unnumbered}
+
+Get objects which field `type` is equal to `type_fld`, between the objects `objs`.
+
+- **Inputs**: `objs::list(anything)`, `type_fld::{symbol, list(symbol), set(symbol)}`
+- **Optional inputs**: `position::boolean := false`
+- **Returns**: `list(anything)`
+
+Proto: `GetObjsByType(objs, type_fld, position = false)`
+
+### Simplify {.unnumbered}
+
+Try to simplify an algebraic expression `var` with optional simplification options `opt`. The simplification is performed within the internal or indexed time limit.
+
+- **Inputs**: `var::anything`, `opt::anything := NULL`
+- **Optional inputs**: None
+- **Returns**: `anything`
+
+Proto: `Simplify(var, opt = NULL)`
+
+### Norm2 {.unnumbered}
+
+Compute the Euclidean norm of list or vector `x`.
+
+- **Inputs**: `x::{Vector, list}`
+- **Optional inputs**: None
+- **Returns**: `algebraic`
+
+Proto: `Norm2(x)`
+
+### GenerateId {.unnumbered}
+
+Generate a random string id of length `size` with options `opts`.
+
+- **Inputs**: None
+- **Optional inputs**: `opts::symbol := 'alnum'`, `size::positive := m_IdLength`
+- **Returns**: `string`
+
+Proto: `GenerateId(opts = 'alnum', size = m_IdLength)`
+
+### Spy {.unnumbered}
+
+Plot of non-zero values of matrix `A`.
+
+- **Inputs**: `A::Matrix`
+- **Optional inputs**: None
+- **Returns**: `anything`
+
+Proto: `Spy(A)`
+
+## Reference Frames, Points and Vector
+
+### IsFRAME {.unnumbered}
+
+Check if the variable `var` is of `FRAME` type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsFRAME(var)`
+
+### GenerateFrameXY {.unnumbered}
+
+Generate a reference frame matrix from three points or vectors `p_1`, `p_2` and vector `vec` orthogonal to XY-plane `vec`.
+
+- **Inputs**: `p_1::{POINT, VECTOR, Vector, list}`, `p_2::{POINT, VECTOR, Vector, list}`, `vec::{VECTOR, Vector, list}`
+- **Optional inputs**: None
+- **Returns**: `FRAME`
+
+Proto: `GenerateFrameXY(p_1, p_2, vec)`
+
+### GenerateFrameXZ {.unnumbered}
+
+Generate a reference frame matrix from three points or vectors `p_1`, `p_2` and vector `vec` orthogonal to XZ-plane `vec`.
+
+- **Inputs**: `p_1::{POINT, VECTOR, Vector, list}`, `p_2::{POINT, VECTOR, Vector, list}`, `vec::{VECTOR, Vector, list}`
+- **Optional inputs**: None
+- **Returns**: `FRAME`
+
+Proto: `GenerateFrameXZ(p_1, p_2, vec)`
+
+### GenerateGenericFrame {.unnumbered}
+
+Generate a generic reference frame matrix from a string label `label`. Optional arguments `e`, `p`, `x`, `y`, `z` and `s` are used to customize the output, e.g., 'exx := e||s||x||x'.
+
+- **Inputs**: `label::string := ""`
+- **Optional inputs**: `e::string := "e"`, `p::string := "p"`, `s::string := "__"`, `x::string := "x"`, `y::string := "y"`, `z::string := "z"`
+- **Returns**: `FRAME`
+
+Proto: `GenerateGenericFrame(label, e = "e", p = "p", s = "__", x = "x", y = "y", z = "z")`
+
+### InverseFrame {.unnumbered}
+
+Inverse affine transformation matrix `RF`.
+
+- **Inputs**: `RF::FRAME`
+- **Optional inputs**: None
+- **Returns**: `FRAME`
+
+Proto: `InverseFrame(RF)`
+
+### Translate {.unnumbered}
+
+Affine transformation matrix corresponding to a translation `x`, `y`, `z`.
+
+- **Inputs**: `x::algebraic`, `y::algebraic`, `z::algebraic`
+- **Optional inputs**: None
+- **Returns**: `FRAME`
+
+Proto: `Translate(x, y, z)`
+
+### Translation {.unnumbered}
+
+Extract the translation vector of the reference frame `RF`.
+
+- **Inputs**: `RF::FRAME`
+- **Optional inputs**: None
+- **Returns**: `Vector`
+
+Proto: `Translation(RF)`
+
+### Rotate {.unnumbered}
+
+Affine transformation matrix corresponding to the rotation `angle` around the given `axis`.
+
+- **Inputs**: `axis::{string, symbol}`, `angle::algebraic`
+- **Optional inputs**: None
+- **Returns**: `FRAME`
+
+Proto: `Rotate(axis, angle)`
+
+### Rotation {.unnumbered}
+
+Extract the rotation matrix of the reference frame `RF`.
+
+- **Inputs**: `RF::FRAME`
+- **Optional inputs**: None
+- **Returns**: `Matrix`
+
+Proto: `Rotation(RF)`
+
+### IsVECTOR {.unnumbered}
+
+Check if the variable `var` is of `VECTOR` type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsVECTOR(var)`
+
+### IsPOINT {.unnumbered}
+
+Check if the variable `var` is of `POINT` type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsPOINT(var)`
+
+### Origin {.unnumbered}
+
+Extract the origin point of the reference frame `RF`.
+
+- **Inputs**: `RF::FRAME`
+- **Optional inputs**: None
+- **Returns**: `POINT`
+
+Proto: `Origin(RF)`
+
+### CompX {.unnumbered}
+
+Extract the x-axis component of the vector or point `x`.
+
+- **Inputs**: `x::{POINT, VECTOR}`
+- **Optional inputs**: None
+- **Returns**: `algebraic`
+
+Proto: `CompX(x)`
+
+### CompY {.unnumbered}
+
+Extract the y-axis component of the vector or point `x`.
+
+- **Inputs**: `x::{POINT, VECTOR}`
+- **Optional inputs**: None
+- **Returns**: `algebraic`
+
+Proto: `CompY(x)`
+
+### CompZ {.unnumbered}
+
+Extract the z-axis component of the vector or point `x`.
+
+- **Inputs**: `x::{POINT, VECTOR}`
+- **Optional inputs**: None
+- **Returns**: `algebraic`
+
+Proto: `CompZ(x)`
+
+### CompXYZ {.unnumbered}
+
+Extract the x, y and z-axis components of the vector or point `x`.
+
+- **Inputs**: `x::{POINT, VECTOR}`
+- **Optional inputs**: None
+- **Returns**: `algebraic`
+
+Proto: `CompXYZ(x)`
+
+### UvecX {.unnumbered}
+
+Extract the x-axis unit vector of the reference frame `RF`.
+
+- **Inputs**: `RF::FRAME := Matrix(4,shape = identity)`
+- **Optional inputs**: None
+- **Returns**: `VECTOR`
+
+Proto: `UvecX(RF)`
+
+### UvecY {.unnumbered}
+
+Extract the y-axis unit vector of the reference frame `RF`.
+
+- **Inputs**: `RF::FRAME`
+- **Optional inputs**: None
+- **Returns**: `VECTOR`
+
+Proto: `UvecY(RF)`
+
+### UvecZ {.unnumbered}
+
+Extract the z-axis unit vector of the reference frame `RF`.
+
+- **Inputs**: `RF::FRAME := Matrix(4,shape = identity)`
+- **Optional inputs**: None
+- **Returns**: `VECTOR`
+
+Proto: `UvecZ(RF)`
+
+### UvecXYZ {.unnumbered}
+
+Extract the x, y and z-axis unit vectors of the reference frame `RF`.
+
+- **Inputs**: `RF::FRAME := Matrix(4,shape = identity)`
+- **Optional inputs**: None
+- **Returns**: `VECTOR`
+
+Proto: `UvecXYZ(RF)`
+
+### Project {.unnumbered}
+
+Project the vector or point `x` from reference frame `RF_ini` to reference frame `RF_end`.
+
+- **Inputs**: `x::{POINT, VECTOR}`, `RF_ini::FRAME`, `RF_end::FRAME`
+- **Optional inputs**: None
+- **Returns**: `{POINT, VECTOR}`
+
+Proto: `Project(x, RF_ini, RF_end)`
+
+## Differentiation Utilities
+
+### DoDiff {.unnumbered}
+
+Differentiate an expression with respect to a function.
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `anything`
+
+Proto: `DoDiff()`
+
+### DoGradient {.unnumbered}
+
+Differentiate a scalar expression `fnc` with respect to a list of functions `lst`.
+
+- **Inputs**: `fnc::algebraic`, `lst::{Vector, list}`
+- **Optional inputs**: None
+- **Returns**: `Vector`
+
+Proto: `DoGradient(fnc, lst)`
+
+### DoHessian {.unnumbered}
+
+Differentiate a vector of expressions (gradient) `fnc` with respect to a list `lst` of functions.
+
+- **Inputs**: `fnc::algebraic`, `lst::{Vector, list}`
+- **Optional inputs**: None
+- **Returns**: `Matrix`
+
+Proto: `DoHessian(fnc, lst)`
+
+### DoJacobian {.unnumbered}
+
+Differentiate a vector of expressions `fnc` with respect to a list `lst` of functions.
+
+- **Inputs**: `fnc::Vector`, `lst::{Vector, list}`
+- **Optional inputs**: None
+- **Returns**: `Matrix`
+
+Proto: `DoJacobian(fnc, lst)`
+
+### DoTensor {.unnumbered}
+
+Differentiate a matrix `mat` with respect to a list of functions `lst`.
+
+- **Inputs**: `mat::Matrix`, `lst::{Vector, list}`
+- **Optional inputs**: None
+- **Returns**: `Array`
+
+Proto: `DoTensor(mat, lst)`
+
+## External Loads
+
+### IsLOAD {.unnumbered}
+
+Check if the variable `var` is of `LOAD` type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsLOAD(var)`
+
+### IsCOMPONENTS {.unnumbered}
+
+Check if the variable `var` is of `COMPONENTS` type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsCOMPONENTS(var)`
+
+### MakeLoad {.unnumbered}
+
+Create a load with name `name` acting on the node (or its id) `node` on the frame `frame` with components `components`.
+
+- **Inputs**: `name::string`, `node::NODE`, `components::COMPONENTS`
+- **Optional inputs**: `frame::{FRAME, string} := node["id"]`
+- **Returns**: `LOAD`
+
+Proto: `MakeLoad(name, node, components, frame = node["id"])`
+
+### IsLOADS {.unnumbered}
+
+Check if the variable `var` is of `LOADS` type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsLOADS(var)`
+
+### GetNodalLoads {.unnumbered}
+
+Get the vector of nodal loads `loads` of nodes `nodes`.
+
+- **Inputs**: `nodes::NODES`, `loads::LOADS`
+- **Optional inputs**: None
+- **Returns**: `Vector`
+
+Proto: `GetNodalLoads(nodes, loads)`
+
+## Materials
+
+### IsMATERIAL {.unnumbered}
+
+Check if the variable `var` is of `MATERIAL` type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsMATERIAL(var)`
+
+### MakeMaterial {.unnumbered}
+
+Define material with inputs: name `name`, elastic modulus `elastic_modulus`, Poisson's ratio `poisson_ratio`, shear modulus `shear_modulus` (default = `E/(2*(1+nu))`), and density `density`.
+
+- **Inputs**: None
+- **Optional inputs**: `density::algebraic := 0`, `elastic_modulus::algebraic := 0`, `name::string := "Undefined"`, `poisson_ratio::algebraic := 0`, `shear_modulus::algebraic := elastic_modulus/(2+2*poisson_ratio)`
+- **Returns**: `MATERIAL`
+
+Proto: `MakeMaterial(density = 0, elastic_modulus = 0, name = "Undefined", poisson_ratio = 0, shear_modulus = elastic_modulus/(2+2*poisson_ratio))`
+
+### MakeCarbonSteel {.unnumbered}
+
+Get default steel material with `CarbonSteel` name, elastic modulus `E = 210.0e+09` (Pa), Poisson's ratio `nu = 0.3` (-), shear modulus `E/(2*(1+nu)`, density `rho = 7850.0` (kg/m^3).
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `MATERIAL`
+
+Proto: `MakeCarbonSteel()`
+
+### MakeInoxSteel {.unnumbered}
+
+Get default steel material with `InoxSteel` name, elastic modulus `E = 200.0e+09` (Pa), Poisson's ratio `nu = 0.3` (-), shear modulus `E/(2*(1+nu)`, density `rho = 8000.0` (kg/m^3).
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `MATERIAL`
+
+Proto: `MakeInoxSteel()`
+
+### MakeTitanium {.unnumbered}
+
+Get default titanium material with `Titanium` name, elastic modulus `E = 110.0e+09` (Pa), Poisson's ratio `nu = 0.33` (-), shear modulus `E/(2*(1+nu)`, density `rho = 4500.0` (kg/m^3).
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `MATERIAL`
+
+Proto: `MakeTitanium()`
+
+### MakeCopper {.unnumbered}
+
+Get default copper material with `Copper` name, elastic modulus `E = 110.0e+09` (Pa), Poisson's ratio `nu = 0.33` (-), shear modulus `E/(2*(1+nu)`, density `rho = 4500.0` (kg/m^3).
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `MATERIAL`
+
+Proto: `MakeCopper()`
+
+### MakeBrass {.unnumbered}
+
+Get default brass material with `Brass` name, elastic modulus `E = 110.0e+09` (Pa), Poisson's ratio `nu = 0.33` (-), shear modulus `E/(2*(1+nu)`, density `rho = 4500.0` (kg/m^3).
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `MATERIAL`
+
+Proto: `MakeBrass()`
+
+### MakeBronze {.unnumbered}
+
+Get default bronze material with `Bronze` name, elastic modulus `E = 110.0e+09` (Pa), Poisson's ratio `nu = 0.33` (-), shear modulus `E/(2*(1+nu)`, density `rho = 4500.0` (kg/m^3).
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `MATERIAL`
+
+Proto: `MakeBronze()`
+
+### MakeLead {.unnumbered}
+
+Get default lead material with `Lead` name, elastic modulus `E = 110.0e+09` (Pa), Poisson's ratio `nu = 0.33` (-), shear modulus `E/(2*(1+nu)`, density `rho = 4500.0` (kg/m^3).
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `MATERIAL`
+
+Proto: `MakeLead()`
+
+### MakeZinc {.unnumbered}
+
+Get default zinc material with `Zinc` name, elastic modulus `E = 110.0e+09` (Pa), Poisson's ratio `nu = 0.33` (-), shear modulus `E/(2*(1+nu)`, density `rho = 4500.0` (kg/m^3).
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `MATERIAL`
+
+Proto: `MakeZinc()`
+
+### MakeMagnesium {.unnumbered}
+
+Get default magnesium material with `Magnesium` name, elastic modulus `E = 45.0e+09` (Pa), Poisson's ratio `nu = 0.33` (-), shear modulus `E/(2*(1+nu)`, density `rho = 1800.0` (kg/m^3).
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `MATERIAL`
+
+Proto: `MakeMagnesium()`
+
+### MakeAlluminium {.unnumbered}
+
+Get default alluminium material with `Alluminium` name, elastic modulus `E = 69.0e+09` (Pa), Poisson's ratio `nu = 0.33` (-), shear modulus `E/(2*(1+nu)`, density `rho = 8000.0` (kg/m^3).
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `MATERIAL`
+
+Proto: `MakeAlluminium()`
+
+### MakeAvional {.unnumbered}
+
+Get default avional material with `Avional` name, elastic modulus `E = 70.0e+09` (Pa), Poisson's ratio `nu = 0.33` (-), shear modulus `E/(2*(1+nu)`, density `rho = 2690.0` (kg/m^3).
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `MATERIAL`
+
+Proto: `MakeAvional()`
+
+### MakePeraluman {.unnumbered}
+
+Get default peraluman material with `Peraluman` name, elastic modulus `E = 70.0e+09` (Pa), Poisson's ratio `nu = 0.33` (-), shear modulus `E/(2*(1+nu)`, density `rho = 2690.0` (kg/m^3).
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `MATERIAL`
+
+Proto: `MakePeraluman()`
+
+### MakeAnticorodal {.unnumbered}
+
+Get default anticorodal material with `Anticorodal` name, elastic modulus `E = 69.0e+09` (Pa), Poisson's ratio `nu = 0.33` (-), shear modulus `E/(2*(1+nu)`, density `rho = 2700.0` (kg/m^3).
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `MATERIAL`
+
+Proto: `MakeAnticorodal()`
+
+### MakeCarpental {.unnumbered}
+
+Get default carpental material with `Carpental` name, elastic modulus `E = 72.0e+09` (Pa), Poisson's ratio `nu = 0.33` (-), shear modulus `E/(2*(1+nu)`, density `rho = 2780.0` (kg/m^3).
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `MATERIAL`
+
+Proto: `MakeCarpental()`
+
+### MakeErgal {.unnumbered}
+
+Get default ergal material with `Ergal` name, elastic modulus `E = 72.0e+09` (Pa), Poisson's ratio `nu = 0.33` (-), shear modulus `E/(2*(1+nu)`, density `rho = 2780.0` (kg/m^3).
+
+- **Inputs**: None
+- **Optional inputs**: None
+- **Returns**: `MATERIAL`
+
+Proto: `MakeErgal()`
+
+## Plotting
+
+### ObjectColor {.unnumbered}
+
+Return the color of the object `obj`.
+
+- **Inputs**: `obj::{ELEMENT, LOAD, NODE, SUPPORT}`
+- **Optional inputs**: None
+- **Returns**: `string`
+
+Proto: `ObjectColor(obj)`
+
+### StructureGraph {.unnumbered}
+
+Return the graph of the structure given a list of nodes `nodes` and elements `elements`.
+
+- **Inputs**: `fem::FEM`
+- **Optional inputs**: `disp::boolean := true`, `id::boolean := false`
+- **Returns**: `function`
+
+Proto: `StructureGraph(fem, disp = true, id = false)`
+
+### DrawFrame {.unnumbered}
+
+Draw a reference frame `frame` given a list of substitution data `data`, an axes scaling factor `scaling`, and axes colors `colors`.
+
+- **Inputs**: `frame::FRAME`
+- **Optional inputs**: `colors::list(string) := ["Red", "Green", "Blue"]`, `data::{list('='), set('=')} := []`, `scaling::numeric := 1.0`
+- **Returns**: `function`
+
+Proto: `DrawFrame(frame, colors = ["Red", "Green", "Blue"], data = [], scaling = 1.0)`
+
+### PlotNode {.unnumbered}
+
+Plot the node (or support) at point `p` given a list or set of data for substitution `data`, a display token `token` and a display color `color`.
+
+- **Inputs**: `p::{Vector(algebraic), list(algebraic)}`
+- **Optional inputs**: `color::string := TrussMe_FEM:-m_NodeColor`, `data::{list('='), set('=')} := [], `token::symbol := TrussMe_FEM:-m_NodeToken`
+- **Returns**: `function`
+
+Proto: `PlotNode(p, color = TrussMe_FEM:-m_NodeColor, data = [], token = TrussMe_FEM:-m_NodeToken)`
+
+### PlotElement {.unnumbered}
+
+Plot the element from point `p_1` and `p_2` given a list or set of data for substitution `data` and a display color `color`.
+
+- **Inputs**: `p_1::{Vector(algebraic), list(algebraic)}`, `p_2::{Vector(algebraic), list(algebraic)}`
+- **Optional inputs**: `color::string := TrussMe_FEM:-m_ElementColor`, `data::{list('='), set('=')} := []`
+- **Returns**: `function`
+
+Proto: `PlotElement(p_1, p_2, color = TrussMe_FEM:-m_ElementColor, data = [])`
+
+### PlotDeformedElement {.unnumbered}
+
+Plot the element from diplacements `d_1` and `d_2` given a list or set of data for substitution `data` and a display color `color`.
+
+- **Inputs**: `p_1::{Vector(algebraic), list(algebraic)}`, `p_2::{Vector(algebraic), list(algebraic)}`, `d_1::{Vector(algebraic), list(algebraic)}`, `d_2::{Vector(algebraic), list(algebraic)}`
+- **Optional inputs**: `color::string := TrussMe_FEM:-m_ElementColor`, `data::{list('='), set('=')} := []`, `scaling::nonnegative := 1.0`
+- **Returns**: `function`
+
+Proto: `PlotDeformedElement(p_1, p_2, d_1, d_2, color = TrussMe_FEM:-m_ElementColor, data = [], scaling = 1.0)`
+
+### PlotLoad {.unnumbered}
+
+Plot the load arrow from point `p_1` and `p_2` given a list or set of data for substitution `data` and a display color `color`.
+
+- **Inputs**: `p_1::{Vector(algebraic), list(algebraic)}`, `p_2::{Vector(algebraic), list(algebraic)}`
+- **Optional inputs**: `color::string := TrussMe_FEM:-m_LoadColor`, `data::{list('='), set('=')} := []`, `scaling::nonnegative := 1.0`
+- **Returns**: `function`
+
+Proto: `PlotLoad(p_1, p_2, color = TrussMe_FEM:-m_LoadColor, data = [], scaling = 1.0)`
+
+### PlotStructure {.unnumbered}
+
+Plot the undeformed `fem` structure given a list or set of substitution data `data`, a frame scaling factor `frame_scaling` or `nodes_scaling, elements_scaling`, and a loads scaling factor `scaling`.
+
+- **Inputs**: `fem::FEM`
+- **Optional inputs**: `data::{list('='), set('=')} := []`, `frame_scaling::{numeric, list(numeric)} := 0.`, `load_scaling::numeric := 1.0`
+- **Returns**: `{function, list(function)}`
+
+Proto: `PlotStructure(fem, data = [], frame_scaling = 0., load_scaling = 1.0)`
+
+### PlotDeformedStructure {.unnumbered}
+
+Plot the deformed `fem` structure given a list or set of substitution data `data`, a frame scaling factor `frame_scaling` or `nodes_scaling, elements_scaling`, a loads scaling factor `load_scaling`, and a deformation magnification factor `deformation_scaling`.
+
+- **Inputs**: `fem::FEM`
+- **Optional inputs**: `data::{list('='), set('=')} := []`, `deformation_scaling::numeric := 1.0`, `frame_scaling::{numeric, list(numeric)} := 0.`, `interpolate::boolean := true`, `load_scaling::numeric := 1.0`
+- **Returns**: `{function, list(function)}`
+
+Proto: `PlotDeformedStructure(fem, data = [], deformation_scaling = 1.0, frame_scaling = 0.0, interpolate = true, load_scaling = 1.0)`
+
+## Nodes and Supports
+
+### IsNODE {.unnumbered}
+
+Check if the variable `var` is of `NODE` type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsNODE(var)`
+
+### IsNODES {.unnumbered}
+
+Check if the variable `var` is of `NODES` type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsNODES(var)`
+
+### IsSUPPORT {.unnumbered}
+
+Check if the variable `var` is of `SUPPORT` type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsSUPPORT(var)`
+
+### IsSUPPORTS {.unnumbered}
+
+Check if the variable `var` is of `SUPPORTS` type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsSUPPORTS(var)`
+
+### IsDOFS {.unnumbered}
+
+Check if the variable `var` is of `DOFS` type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsDOFS(var)`
+
+### MakeNode {.unnumbered}
+
+Create a node with name `name` at coordinates `coordinates` in the reference frame `frame`. The constraints on dofs are specified by `dofs`, where 1 means free and 0 means that the dof is constrained in the direction given from (global to local) `frame`.
+
+- **Inputs**: `name::string`, `coordinates::{POINT, VECTOR, Vector}`
+- **Optional inputs**: `displacements::Vector(algebraic) := <0, 0, 0, 0, 0, 0>`, `dofs::DOFS := <1, 1, 1, 1, 1, 1>`, `frame::FRAME := Matrix(4,shape = identity)`
+- **Returns**: `NODE`
+
+Proto: `MakeNode(name, coordinates, displacements = <0, 0, 0, 0, 0, 0>, dofs = <1, 1, 1, 1, 1, 1>, frame = Matrix(4,shape = identity))`
+
+### MakeCompliantNode {.unnumbered}
+
+Create a node with name `name` at coordinates `coordinates` in the reference frame `frame`. The constraints on dofs are specified by `dofs`, where 1 means free and 0 means that the dof is constrained in the direction given from (global to local) `frame`. The node is also connected to a compliant spring element with traslational stiffness `K` and torsional stiffness `T`.
+
+- **Inputs**: `name::string`, `coordinates::{POINT, VECTOR, Vector}`
+- **Optional inputs**: `K::{algebraic, list(algebraic)} := 0`, `T::{algebraic, list(algebraic)} := 0`, `displacements::Vector(algebraic) := <0, 0, 0, 0, 0, 0>`, `dofs::DOFS := <1, 1, 1, 1, 1, 1>`, `frame::FRAME := Matrix(4,shape = identity)`
+- **Returns**: `NODE`
+
+Proto: `MakeCompliantNode(name, coordinates, K = 0, T = 0, displacements = <0, 0, 0, 0, 0, 0>, dofs = <1, 1, 1, 1, 1, 1>, frame = Matrix(4,shape = identity))`
+
+## Stiffness Matrices
+
+### IsSTIFFNESS {.unnumbered}
+
+Check if the variable `var` is of `STIFFNESS` type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsSTIFFNESS(var)`
+
+### GetSpringStiffness {.unnumbered}
+
+Get the stiffness matrix of a spring given the translational stiffnesses `K` or `K_x, K_y, K_z`, and the torsional stiffnesses `T` or `T_x, T_y, T_z`.
+
+- **Inputs**: `K::{algebraic, list(algebraic)}`, `T::{algebraic, list(algebraic)}`
+- **Optional inputs**: None
+- **Returns**: `STIFFNESS`
+
+Proto: `GetSpringStiffness(K, T)`
+
+### GetRodStiffness {.unnumbered}
+
+Get the stiffness matrix of a rod (only axial-stiffness) given the cross-section area `A`, the Young's modulus `E`, the shear modulus `G`, the length `L`, and the cross-section inertia `I_x`, `I_y` and `I_z`.
+
+- **Inputs**: `A::algebraic`, `E::algebraic`, `G::algebraic`, `L::algebraic`, `I_x::algebraic`, `I_y::algebraic`, `I_z::algebraic`
+- **Optional inputs**: None
+- **Returns**: `STIFFNESS`
+
+Proto: `GetRodStiffness(A, E, G, L, I_x, I_y, I_z)`
+
+### GetBeamStiffness {.unnumbered}
+
+Get the stiffness matrix of a lean beam given the cross-section area `A`, the Young's modulus `E`, the shear modulus `G`, the length `L`, and the inertia of the cross-section `I_x`, `I_y` and `I_z`.
+
+- **Inputs**: `A::algebraic`, `E::algebraic`, `G::algebraic`, `L::algebraic`, `I_x::algebraic`, `I_y::algebraic`, `I_z::algebraic`
+- **Optional inputs**: None
+- **Returns**: `STIFFNESS`
+
+Proto: `GetBeamStiffness(A, E, G, L, I_x, I_y, I_z)`
+
+### GetTimoshenkoBeamStiffness {.unnumbered}
+
+Get the stiffness matrix of a Timoshenko's (thick) beam given the cross-section area `A`, the Young's modulus `E`, the shear modulus `G`, the length `L`, and the inertia of the cross-section `I_x`, `I_y` and `I_z`.
+
+- **Inputs**: `A::algebraic`, `E::algebraic`, `G::algebraic`, `L::algebraic`, `I_x::algebraic`, `I_y::algebraic`, `I_z::algebraic`
+- **Optional inputs**: None
+- **Returns**: `STIFFNESS`
+
+Proto: `GetTimoshenkoBeamStiffness(A, E, G, L, I_x, I_y, I_z)`
+
+## Elements
+
+### IsELEMENT {.unnumbered}
+
+Check if the variable `var` is of `ELEMENT` type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsELEMENT(var)`
+
+### IsELEMENTS {.unnumbered}
+
+Check if the variable `var` is of `ELEMENTS` type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsELEMENTS(var)`
+
+### MakeElement {.unnumbered}
+
+Make an element with name `name` on reference frame `frame`, connecting the dofs `Ni_dofs` on i-th node i `[Ni, Ni_dofs]`, connecting with stiffness `K`.
+
+- **Inputs**: `name::string`, `frame::FRAME := Matrix(4,shape = identity)`
+- **Optional inputs**: None
+- **Returns**: `ELEMENT`
+
+Proto: `MakeElement(name, frame = Matrix(4,shape = identity))`
+
+### MakeSpring {.unnumbered}
+
+Make a spring element with name `name` on reference frame `frame`, connecting the dofs `N1_dofs` on node 1 `[N1, N1_dofs]`, connecting the dofs `N2_dofs` on node 2 `[N2, N2_dofs]` with translational stiffnesses `K` or `K_x, K_y, K_z`, and torsional stiffnesses `T` or `T_x, T_y, T_z`. Optional nodes distance `distance` can be specified.
+
+- **Inputs**: `name::string`, `N1::{NODE, list({DOFS, NODE})}`, `N2::{NODE, list({DOFS, NODE})}`
+- **Optional inputs**: `K::{algebraic, list(algebraic)} := 0`, `T::{algebraic, list(algebraic)} := 0`, `distance::algebraic := 0`, `frame::FRAME := Matrix(4,shape = identity)`
+- **Returns**: `ELEMENT`
+
+Proto: `MakeSpring(name, N1, N2, K = 0, T = 0, distance = 0, frame = Matrix(4,shape = identity))`
+
+### MakeRod {.unnumbered}
+
+Make a rod element with name `name` on reference frame `frame`, connecting the dofs `N1_dofs` on node 1 `[N1, N1_dofs]` and the dofs `N2_dofs` on node 2 `[N2, N2_dofs]`, with material `material`, cross-section area `area` and inertia `inertia`. Optional nodes distance `distance` can be specified.
+
+- **Inputs**: `name::string`, `N1::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})}`, `N2::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})}`
+- **Optional inputs**: `area::algebraic := 0`, `distance::algebraic := -1`, `frame::FRAME := Matrix(4,shape = identity)`, `inertia::list(algebraic) := [0, 0, 0]`, `material::MATERIAL := TrussMe_FEM:-MakeCarbonSteel()`
+- **Returns**: `ELEMENT`
+
+Proto: `MakeRod(name, N1, N2, area = 0, distance = -1, frame = Matrix(4,shape = identity), inertia = [0, 0, 0], material = TrussMe_FEM:-MakeCarbonSteel())`
+
+
+### MakeBeam {.unnumbered}
+
+Make a beam element with name `name` on reference frame `frame`, connecting the dofs `N1_dofs` on node 1 `[N1, N1_dofs]`, connecting the dofs `N2_dofs` on node 2 `[N2, N2_dofs]` with material `material` and cross-section area `area` and inertia `inertia`. Optional nodes distance `distance` and Timoshenko's beam boolean `timoshenko` can be specified.
+
+- **Inputs**: `name::string`, `N1::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})}`, `N2::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})}`
+- **Optional inputs**: `area::algebraic := 0`, `distance::algebraic := -1`, `frame::FRAME := Matrix(4,shape = identity)`, `inertia::list(algebraic) := [0, 0, 0]`, `material::MATERIAL := TrussMe_FEM:-MakeCarbonSteel()`, `timoshenko::boolean := false`
+- **Returns**: `ELEMENT`
+
+Proto: `MakeBeam(name, N1, N2, area = 0, distance = -1, frame = Matrix(4,shape = identity), inertia = [0, 0, 0], material = TrussMe_FEM:-MakeCarbonSteel(), timoshenko = false)`
+
+## FEM Structure
+
+### IsSTRUCTURE {.unnumbered}
+
+Check if the variable `var` is of `STRUCTURE` type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsSTRUCTURE(var)`
+
+### GetNodalDofs {.unnumbered}
+
+Get nodal dofs of nodes `nodes`.
+
+- **Inputs**: `nodes::NODES`
+- **Optional inputs**: None
+- **Returns**: `Vector`
+
+Proto: `GetNodalDofs(nodes)`
+
+### GetNodalDisplacements {.unnumbered}
+
+Get the vector of nodal displacements of nodes `nodes`.
+
+- **Inputs**: `nodes::NODES`
+- **Optional inputs**: None
+- **Returns**: `Vector`
+
+Proto: `GetNodalDisplacements(nodes)`
+
+### StiffnessTransformation {.unnumbered}
+
+Compute the transformation matrix of the nodes `nodes`.
+
+- **Inputs**: `nodes::NODES`
+- **Optional inputs**: None
+- **Returns**: `Matrix`
+
+Proto: `StiffnessTransformation(nodes)`
+
+### GlobalStiffness {.unnumbered}
+
+Compute the global stiffness matrix of the nodes `nodes` and elements `elements`.
+
+- **Inputs**: `nodes::NODES`, `elements::ELEMENTS`
+- **Optional inputs**: None
+- **Returns**: `Matrix`
+
+Proto: `GlobalStiffness(nodes, elements)`
+
+### RecastStiffness {.unnumbered}
+
+Recast the stiffness matrix `K` according to the constrained negated dofs `d` of the element name `e`.
+
+- **Inputs**: `K::STIFFNESS`, `d::Vector`, `e::string`
+- **Optional inputs**: None
+- **Returns**: `Matrix`
+
+Proto: `RecastStiffness(K, d, e)`
+
+### GlobalStiffnessPrime {.unnumbered}
+
+Compute the global stiffness matrix of the nodes `nodes` and elements `elements`.
+
+- **Inputs**: `nodes::NODES`, `elements::ELEMENTS`
+- **Optional inputs**: None
+- **Returns**: `Matrix`
+
+Proto: `GlobalStiffnessPrime(nodes, elements)`
+
+### IsFEM {.unnumbered}
+
+Check if the variable `var` is of FEM type.
+
+- **Inputs**: `var::anything`
+- **Optional inputs**: None
+- **Returns**: `boolean`
+
+Proto: `IsFEM(var)`
+
+### SplitFEM {.unnumbered}
+
+Split the FEM structure `fem` in free and constrained dofs.
+
+- **Inputs**: `fem::FEM`
+- **Optional inputs**: None
+- **Returns**: `NULL`
+
+Proto: `SplitFEM(fem)`
+
+### RecastFEM {.unnumbered}
+
+Recast the system `fem` to avoid singularities.
+
+- **Inputs**: `fem::FEM`
+- **Optional inputs**: None
+- **Returns**: `NULL`
+
+Proto: `RecastFEM(fem)`
+
+### GenerateFEM {.unnumbered}
+
+Generate a FEM structure from the nodes `nodes`, elements `elements`, and loads `loads`. If `tryhard` is enabled, the stiffness matrix will be recasted to avoid singularities.
+
+- **Inputs**: `nodes::NODES`, `elements::ELEMENTS`, `loads::LOADS`
+- **Optional inputs**: `tryhard::boolean := false`
+- **Returns**: `FEM`
+
+Proto: `GenerateFEM(nodes, elements, loads, tryhard = false)`
+
+### NumericalSolveFEM {.unnumbered}
+
+Solve numerically the FEM structure `fem` provided with optional data `data`.
+
+- **Inputs**: `fem::FEM`
+- **Optional inputs**: `data::list := []`
+- **Returns**: `NULL`
+
+Proto: `NumericalSolveFEM(fem, data = [])`
+
+### SolveFEM {.unnumbered}
+
+Solve the FEM structure `fem` and optionally use LAST LU decompostion `use_LAST` and veil the expressions `use_LEM` with signature mode `use_SIG` and label `label`. Factorization method `factorization` can be choosen between `LU`, fraction-free `FFLU`, `QR`, and Gauss-Jordan `GJ`. Time limit `time_limit` and maximum veiling cost `maxcost` can be specified.
+
+- **Inputs**: `fem::FEM`
+- **Optional inputs**: `factorization::string := "LU"`, `label::string := "V"`, `maxcost::nonnegint := 15`, `time_limit::positive := 1.0`, `use_LAST::boolean := false`, `use_LEM::boolean := true`, `use_SIG::boolean := true`
+- **Returns**: `NULL`
+
+Proto: `SolveFEM(fem, factorization = "LU", label = "V", maxcost = 15, time_limit = 1.0, use_LAST = false, use_LEM = true, use_SIG = true)`
+
+### StoreFEM {.unnumbered}
+
+Store the FEM structure `fem` in the nodes `nodes`.
+
+- **Inputs**: `fem::FEM`
+- **Optional inputs**: None
+- **Returns**: `NULL`
+
+Proto: `StoreFEM(fem)`
+
+## Output Data
+
+### GetOutputDisplacements {.unnumbered}
+
+Get the output displacements of a solved and stored `fem` structure.
+
+- **Inputs**: `fem::FEM`
+- **Optional inputs**: None
+- **Returns**: `Matrix`
+
+Proto: `GetOutputDisplacements(fem)`
+
+### GetOutputReactions {.unnumbered}
+
+Get the output reactions of a solved and stored `fem` structure.
+
+- **Inputs**: `fem::FEM`
+- **Optional inputs**: None
+- **Returns**: `Matrix`
+
+Proto: `GetOutputReactions(fem)`
+
+## Code Generation and Export
+
+### GenerateFile {.unnumbered}
+
+Generate a file named `fname` with the content `str`.
+
+- **Inputs**: `fname::string`, `str::string`
+- **Optional inputs**: None
+- **Returns**: `NULL`
+
+Proto: `GenerateFile(fname, str)`
+
+### ClearFile {.unnumbered}
+
+Procedure that creates an empty file `fname`.
+
+- **Inputs**: `fname::string`
+- **Optional inputs**: None
+- **Returns**: `NULL`
+
+Proto: `ClearFile(fname)`
+
+### SetCodegenOptions {.unnumbered}
+
+Set options for code generation optimization.
+
+- **Inputs**: None
+- **Optional inputs**: `coercetypes::boolean := m_CodegenOptions[parse("coercetypes")]`, `deducereturn::boolean := m_CodegenOptions[parse("deducereturn")]`, `deducetypes::boolean := m_CodegenOptions[parse("deducetypes")]`, `defaulttype::symbol := m_CodegenOptions[parse("defaulttype")]`, `digits::posint := m_CodegenOptions[parse("digits")]`, `functionprecision::symbol := m_CodegenOptions[parse("functionprecision")]`, `optimize::boolean := m_CodegenOptions[parse("optimize")]`, `reduceanalysis::boolean := m_CodegenOptions[parse("reduceanalysis")]`
+- **Returns**: `NULL`
+
+Proto: `SetCodegenOptions(coercetypes = m_CodegenOptions[parse("coercetypes")], deducereturn = m_CodegenOptions[parse("deducereturn")], deducetypes = m_CodegenOptions[parse("deducetypes")], defaulttype = m_CodegenOptions[parse("defaulttype")], digits = m_CodegenOptions[parse("digits")], functionprecision = m_CodegenOptions[parse("functionprecision")], optimize = m_CodegenOptions[parse("optimize")], reduceanalysis = m_CodegenOptions[parse("reduceanalysis")])`
+
+### GetCodegenOptions {.unnumbered}
+
+Get options for code generation.
+
+- **Inputs**: None
+- **Optional inputs**: `field::string := "all"`
+- **Returns**: `anything`
+
+Proto: `GetCodegenOptions(field = "all")`
+
+### TranslateToMatlab {.unnumbered}
+
+Convert a list of expressions `expr_list` into Matlab code.
+
+- **Inputs**: `expr_list::list`
+- **Optional inputs**: None
+- **Returns**: `NULL`
+
+Proto: `TranslateToMatlab(expr_list)`
+
+### ApplyIndent {.unnumbered}
+
+Apply indentation `ind` to string `str`.
+
+- **Inputs**: `ind::string`, `str::string`
+- **Optional inputs**: None
+- **Returns**: `string`
+
+Proto: `ApplyIndent(ind, str)`
+
+### GenerateProperties {.unnumbered}
+
+Generate properties code from a list of data `data` and optional indentation `indent`.
+
+- **Inputs**: `data::list(symbol)`
+- **Optional inputs**: `indent::string := "  "`
+- **Returns**: `string`
+
+Proto: `GenerateProperties(data, indent = "  ")`
+
+### GenerateInputs {.unnumbered}
+
+Generate inputs code from a list of variables `vars` and optional indentation `indent` and skip null inputs `skipnull` flag.
+
+- **Inputs**: `vars::list(list({string, symbol}))`
+- **Optional inputs**: `indent::string := "  "`, `skipnull::boolean := true`
+- **Returns**: `string`
+
+Proto: `GenerateInputs(vars, indent = "  ", skipnull = true)`
+
+### ExtractElements {.unnumbered}
+
+Extract elements for a n-dimensional function `func` with name `name`, dimensions `dims`, and optional veiling label `label`, indentation `indent` and skip null inputs `skipnull` flag.
+
+- **Inputs**: `name::string`, `func::{Array, Matrix, Vector, list}`, `dims::list(nonnegint)`
+- **Optional inputs**: `indent::string := "  "`, `label::string := "out"`, `skipnull::boolean := true`
+- **Returns**: `list`
+
+Proto: `ExtractElements(name, func, dims, indent = "  ", label = "out", skipnull = true)`
+
+### GenerateHeader {.unnumbered}
+
+Generate a function header for a function `name` with variables `vars`, optional description `info` and indentation `indent` and skip class object input `skipthis`.
+
+- **Inputs**: `name::string`, `vars::list(list(symbol))`
+- **Optional inputs**: `indent::string := "  "`, `info::string := "No description provided."`, `skipthis::boolean := false`
+- **Returns**: `string`
+
+Proto: `GenerateHeader(name, vars, indent = "  ", info = "No description provided.", skipthis = false)`
+
+### GenerateElements {.unnumbered}
+
+Generate code for elements `func` with optional indentation `indent`.
+
+- **Inputs**: `func::{Array, Matrix, Vector, list}`
+- **Optional inputs**: `indent::string := "  "`
+- **Returns**: `string`
+
+Proto: `GenerateElements(func, indent = "  ")`
+
+### GenerateBody {.unnumbered}
+
+Generate code for function body for a function `name` with dimensions `dims`, optional header `header`, properties `properties`, inputs `inputs`, veils `veils`, elements `elements`, indentation `indent`, outputs `outputs` and vector type `typestr`.
+
+- **Inputs**: `name::string`, `dims::list(nonnegint)`
+- **Optional inputs**: `elements::string := "No elements"`, `header::string := "No header"`, `indent::string := "  "`, `inputs::string := "No inputs"`, `outputs::string := "No outputs"`, `properties::string := "No properties"`, `typestr::string := "zeros"`, `veils::string := "No veils"`
+- **Returns**: `string`
+
+Proto: `GenerateBody(name, dims, elements = "No elements", header = "No header", indent = "  ", inputs = "No inputs", outputs = "No outputs", properties = "No properties", typestr = "zeros", veils = "No veils")`
+
+### VectorToMatlab {.unnumbered}
+
+Translate the vector `vec` with variables `vars` into a Matlab function named `name` and return it as a string. The optional arguments and class properties `data`, function description `info`, veiling label `label`, and indentation string `indent`.
+
+- **Inputs**: `name::string`, `vars::list(list(symbol))`, `vec::Vector`
+- **Optional inputs**: `data::list(symbol) := []`, `indent::string := "  "`, `info::string := "No info"`, `label::string := "out"`, `skipnull::boolean := true`
+- **Returns**: `string`
+
+Proto: `VectorToMatlab(name, vars, vec, data = [], indent = "  ", info = "No info", label = "out", skipnull = true)`
+
+### MatrixToMatlab {.unnumbered}
+
+Translate the vector `vec` with variables `vars` into a Matlab function named `name` and return it as a string. The optional arguments and class properties `data`, function description `info`, veiling label `label`, and indentation string `indent`.
+
+- **Inputs**: `name::string`, `vars::list(list(symbol))`, `mat::Matrix`
+- **Optional inputs**: `data::list(symbol) := []`, `indent::string := "  "`, `info::string := "No info"`, `label::string := "out"`, `skipnull::boolean := true`
+- **Returns**: `string`
+
+Proto: `MatrixToMatlab(name, vars, mat, data = [], indent = "  ", info = "No info", label = "out", skipnull = true)`
+
+### GetVeilSubs {.unnumbered}
+
+Get the substitutions to transform veils `veil` from `(v[j])(f)` to `v_j`.
+
+- **Inputs**: `veil::{Vector(algebraic), list(algebraic)}`
+- **Optional inputs**: None
+- **Returns**: `NULL`
+
+Proto: `GetVeilSubs(veil)`
+
+### GenerateConstructor {.unnumbered}
+
+Generate a constructor for a system named `name` system data `data`, description `info` and indentation `indent`.
+
+- **Inputs**: `name::string`
+- **Optional inputs**: `data::list(symbol := algebraic) := []`, `indent::string := "  "`, `info::string := "Class constructor."`
+- **Returns**: `string`
+
+Proto: `GenerateConstructor(name, data = [], indent = "  ", info = "Class constructor.")`
+
+### SystemToMatlab {.unnumbered}
+
+Generate a FEM system `fem` with name `name`, with optional data `data`, description `info`, output label `label` and indentation `indent`.
+
+- **Inputs**: `name::string`, `fem::FEM`
+- **Optional inputs**: `data::list(symbol := algebraic) := []`, `indent::string := "  "`, `info::string := "No class description provided."`, `label::string := "out"`, `vars::list(symbol) := []`
+- **Returns**: `string`
+
+Proto: `SystemToMatlab(name, fem, data = [], indent = "  ", info = "No class description provided.", label = "out", vars = [])`
+
+### GenerateMatlabCode {.unnumbered}
+
+Generate Matlab code for the FEM system `fem` with name `name`, with optional data `data`, description `info`, output label `label` and indentation `indent`, variables `vars` and output path `path`.
+
+- **Inputs**: `name::string`, `fem::FEM`
+- **Optional inputs**: `data::list(symbol := algebraic) := []`, `indent::string := "  "`, `info::string := "No class description provided."`, `label::string := "out"`, `path::string := "./"`, `vars::list(symbol) := []`
+- **Returns**: `NULL`
+
+Proto: `GenerateMatlabCode(name, fem, data = [], indent = "  ", info = "No class description provided.", label = "out", path = "./", vars = [])`
+

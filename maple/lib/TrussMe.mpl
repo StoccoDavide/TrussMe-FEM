@@ -339,6 +339,9 @@ TrussMe_FEM := module()
       opts::symbol   := 'alnum'
     }, $)::string;
 
+    description "Generate a random string id of length <size> with options "
+      "<opts>.";
+
     return StringTools:-Random(size, opts);
   end proc: # GenerateId
 

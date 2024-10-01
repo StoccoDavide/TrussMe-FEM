@@ -1,0 +1,60 @@
+---
+title: TrussME-FEM Documentation
+theme: cosmo
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    number-depth: 3
+    toc-location: left
+---
+
+This is the documentation for the TrussME-FEM package. This package is a mixed symbolic-numerical Finite Element Method (FEM) structural analysis tool. The solution of the FEM system is based on the Direct Stiffness Method (DSM). The package is designed to be used in the **Maple** environment for the symbolic manipulation of the FEM system, and Matlab for the numerical solution of the system. Code generation is available for translating the symbolic FEM system into Matlab code.
+
+# Requirements
+
+- [Maple](https://www.maplesoft.com/products/maple/) 2020 or later.
+- [Matlab](https://www.mathworks.com/products/matlab.html) R2020a or later.
+
+# Installation
+
+Download the package from the [GitHub repository](https://github.com/StoccoDavide/TrussMe-FEM).
+
+## Maple
+
+To install the module you must have first installed Maple. Then open the `PackAndGo.mw` file and use the `!!!` button to execute the *entire* worksheet.
+
+Then test the module in a Maple worksheet or document by executing
+
+```
+> TrussMe_FEM:-Info();
+```
+or
+
+```
+> Describe(TrussMe_FEM);
+```
+
+Alternatively, you can use one of the test files provided in the `tests` folder. If the module is loaded without errors, it is done!
+
+## Matlab
+
+To install the Matlab toolbox, you must have first installed Matlab. Then open the `TrussMe-FEM.mtlbx` file and follow the instructions.
+
+# Module description
+
+If you want a full description of the `TrussMe_FEM` module:
+
+```
+> Describe(TrussMe_FEM);
+```
+
+This command will generate a brief description of the module and all the procedures and other objects present in `TrussMe_FEM.mpl` file.
+
+## Usage
+
+In case you have no time to read the description and realize how it should or should not work, refer to the files in the `tests` folder.
+
+{{< include maple-api.qmd >}}
+{{< include matlab-api.qmd >}}

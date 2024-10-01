@@ -47,7 +47,7 @@ classdef System < handle
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    %> Get the system data.
+    %> Get the system data field.
     %>
     %> \param field The system data field.
     %>
@@ -59,12 +59,10 @@ classdef System < handle
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    %> Set the system data.
+    %> Set the system data field.
     %>
     %> \param field The system data field.
     %> \param value The system data field value.
-    %>
-    %> \param t_data The system data.
     %
     function set_data_field( this, field, value )
       this.m_data.(field) = value;

@@ -178,7 +178,7 @@ export GenerateInputs := proc(
   }, $)::string;
 
   description "Generate inputs code from a list of variables <vars> and "
-    "optional indentation <indent> and skip null inputs <skipnull>.";
+    "optional indentation <indent> and skip null inputs <skipnull> flag.";
 
   local i, j, out;
 
@@ -213,7 +213,7 @@ export ExtractElements := proc(
 
   description "Extract elements for a n-dimensional function <func> with "
     "name <name>, dimensions <dims>, and optional veiling label <label>, "
-    "indentation <indent> and skip null inputs <skipnull>.";
+    "indentation <indent> and skip null inputs <skipnull> flag.";
 
   local i, j, idx, lst, out, cur, tmp, str1, str2;
 
@@ -390,7 +390,7 @@ export VectorToMatlab := proc(
   lst, outputs := TrussMe_FEM:-ExtractElements(
     name, vec, dims, parse("skipnull") = skipnull, parse("indent") = indent,
     parse("label") = label
-    );
+  );
 
   # Extract the function inputs
   vec_inds    := indets(vec, symbol);
