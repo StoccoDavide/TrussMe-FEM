@@ -1107,19 +1107,20 @@ export SolveFEM := proc(
   {
   use_LAST::boolean     := false,
   use_LEM::boolean      := true,
-  use_SIG::boolean      := true,
   factorization::string := "LU",
   label::string         := "V",
+  data::{list, set}     := [],
   time_limit::positive  := 1.0,
   maxcost::nonnegint    := 15
   }, $)
 
   description "Solve the FEM structure <fem> and optionally use LAST LU "
-    "decompostion <use_LAST> and veil the expressions <use_LEM> with "
-    "signature mode <use_SIG> and label <label>. Factorization method "
-    "<factorization> can be choosen between 'LU', fraction-free 'FFLU', 'QR', "
-    "and Gauss-Jordan 'GJ'. Time limit <time_limit> and maximum veiling cost "
-    "<maxcost> can be specified.";
+    "decompostion <use_LAST> and veil the expressions <use_LEM> with label "
+    "<label>. The optional data <data> can be specified to perform a mixed "
+    "numerically informed pivoting. Factorization method <factorization> can "
+    "be choosen between 'LU', fraction-free 'FFLU', 'QR', and Gauss-Jordan "
+    "'GJ'. Time limit <time_limit> and maximum veiling cost <maxcost> can be "
+    "specified.";
 
   local LAST_obj, LEM_obj, i;
 
@@ -1132,8 +1133,9 @@ export SolveFEM := proc(
       LAST_obj := Object(LAST);
       LAST_obj:-InitLEM(LAST_obj, label);
       LEM_obj := LAST_obj:-GetLEM(LAST_obj);
+      LAST_obj:-SetStoredData(LAST_obj, data);
       LAST_obj:-SetTimeLimit(LAST_obj, time_limit);
-      LEM_obj:-SetVeilingStrategyPars(LEM_obj, parse("maxcost") = maxcost);
+      LEM_obj:-SetExprMaxCost(LEM_obj, maxcost);
       if TrussMe_FEM:-m_VerboseMode then
         printf("DONE\n");
       end if;
@@ -1141,7 +1143,7 @@ export SolveFEM := proc(
       if TrussMe_FEM:-m_VerboseMode then
         printf(" FAILED\n");
       end if;
-      error("LAST or LEM package not installed, please refere to the "
+      error("LAST or LEM package not installed, please refer to the "
         "documentation for more information.");
     end try;
 
@@ -1149,8 +1151,7 @@ export SolveFEM := proc(
     LAST_obj:-SetVerboseMode(LAST_obj, TrussMe_FEM:-m_VerboseMode);
     LAST_obj:-SetWarningMode(LAST_obj, TrussMe_FEM:-m_WarningMode);
 
-    # Set signature checking and time limit
-    LEM_obj:-SetSignatureMode(LEM_obj, use_SIG);
+    # Set time limit
     LAST_obj:-SetTimeLimit(LAST_obj, TrussMe_FEM:-m_TimeLimit);
 
     if TrussMe_FEM:-m_VerboseMode then

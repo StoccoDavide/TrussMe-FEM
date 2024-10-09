@@ -1,6 +1,12 @@
 ---
 title: TrussME-FEM Documentation
-theme: cosmo
+subtitle: A Toolbox for Symbolic-Numerical Analysis and Solution of Structures
+authors:
+  - name: Davide Stocco
+    affiliation: University of Trento (Italy)
+  - name: Matteo Larcher
+    affiliation: University of Trento (Italy)
+theme: [cosmo, custom.scss]
 format:
   html:
     toc: true
@@ -8,53 +14,61 @@ format:
     number-sections: true
     number-depth: 3
     toc-location: left
+    toc-title: |
+      <img src="logo.png" alt="TrussME-FEM Logo" style="width:80%; display:block; margin:auto;">
 ---
 
-This is the documentation for the TrussME-FEM package. This package is a mixed symbolic-numerical Finite Element Method (FEM) structural analysis tool. The solution of the FEM system is based on the Direct Stiffness Method (DSM). The package is designed to be used in the **Maple** environment for the symbolic manipulation of the FEM system, and Matlab for the numerical solution of the system. Code generation is available for translating the symbolic FEM system into Matlab code.
-
-# Requirements
-
-- [Maple](https://www.maplesoft.com/products/maple/) 2020 or later.
-- [Matlab](https://www.mathworks.com/products/matlab.html) R2020a or later.
+This is the documentation for the TrussME-FEM package. This package is a mixed *symbolic-numerical* Finite Element Method (FEM) structural analysis tool. The solution of the FEM system is based on the Direct Stiffness Method (DSM). The package is designed to be used in the **Maple** environment for the symbolic manipulation of the FEM system, and **Matlab** for the numerical solution of the system. Code generation is available for translating the symbolic FEM system into Matlab code.
 
 # Installation
 
-Download the package from the [GitHub repository](https://github.com/StoccoDavide/TrussMe-FEM).
+Download the package from the [GitHub repository](https://github.com/StoccoDavide/TrussMe-FEM), release the zip file, and follow the instructions below. Optionally, you can clone the repository using the following command:
+
+```bash
+git clone https://github.com/StoccoDavide/TrussMe-FEM.git
+```
 
 ## Maple
 
-To install the module you must have first installed Maple. Then open the `PackAndGo.mw` file and use the `!!!` button to execute the *entire* worksheet.
+To install the module you must have first installed [Maple](https://www.maplesoft.com/products/maple/) (2020 or later). Then open the `PackAndGo.mw` file and use the `!!!` button to execute the *entire* worksheet.
 
-Then test the module in a Maple worksheet or document by executing
+Then test the module in a Maple worksheet or document by executing `TrussMe_FEM:-Info()` or `Describe(TrussMe_FEM)`. Alternatively, you can use one of the test files provided in the `maple/tests` folder. If the module is loaded without errors, it is done!
 
-```
-> TrussMe_FEM:-Info();
-```
-or
+### LEM and LAST Packages {.unnumbered}
 
-```
-> Describe(TrussMe_FEM);
+LEM and LAST packages are not mandatory for the TrussME-FEM module to work. However, they are highly recommended to facilitate the symbolic manipulation of the FEM system.. These packages are not included in the `maple` folder and must be downloaded separately from the [LEM GitHub repository](https://github.com/StoccoDavide/LEM) and [LAST GitHub repository](https://github.com/StoccoDavide/LAST).
+Similarly as before, you can clone the repositories using the following command:
+
+```bash
+git clone https://github.com/StoccoDavide/LEM.git
+git clone https://github.com/StoccoDavide/LAST.git
 ```
 
-Alternatively, you can use one of the test files provided in the `tests` folder. If the module is loaded without errors, it is done!
+The installation of these optinal packages is similar to the one described above and requires the execution of the `PackAndGo.mw` file in the respective library folders.
+
+#### 🚧 Attention! 🚧 {.unnumbered}
+
+Both LEM and LAST packages are written to work in an object-oriented programming style. Please note that Maple object-oriented programming features have slightly changed in 2021, which online documentation states:
+
+> As of Maple 2021, if the method has a formal parameter named `_self`, references to its object's local or exported variables may be written without prefixing them. That is, `_self:-variable` may be written as just `variable`. Maple will add the `self:-` prefix internally when the method is simplified.
+
+> As of Maple 2021, a message-passing form of method call can be used, which will automatically pass the object as an argument if the method has a formal parameter named `_self`.
+
+> Another way to invoke a method, similar to that used in other object-oriented languages, was introduced in Maple 2021. In this form, the object name is qualified by the method name, `object_name:-method_name(argument)` just as it can be in the function mechanism described above. However, the *object can be omitted from the argument sequence*.
+
+For further information please refer to the following [link](https://fr.maplesoft.com/support/help/Maple/view.aspx?path=object/methods).
 
 ## Matlab
 
-To install the Matlab toolbox, you must have first installed Matlab. Then open the `TrussMe-FEM.mtlbx` file and follow the instructions.
+To install the Matlab toolbox, you must have first installed [Matlab](https://www.mathworks.com/products/matlab.html) (R2020a or later). Then open the `TrussMe-FEM.mtlbx` file and follow the instructions. Alternatively, you can include the `TrussMe_FEM` folder in your Matlab path. Again, you can use one of the test files provided in the `matlab/tests` folder to check if the module is working correctly.
 
-# Module description
+# License
 
-If you want a full description of the `TrussMe_FEM` module:
+{{< include ./../LICENSE >}}
 
-```
-> Describe(TrussMe_FEM);
-```
+# Usage
 
-This command will generate a brief description of the module and all the procedures and other objects present in `TrussMe_FEM.mpl` file.
+In case you have no time to read through all the APIs and realize how the toolbox should or should not work, refer to the files prensent in `maple/tests` and `matlab/tests` folders. These contain usage examples in both Maple and Matlab environments with increasing complexity and detail.
 
-## Usage
-
-In case you have no time to read the description and realize how it should or should not work, refer to the files in the `tests` folder.
-
-{{< include maple-api.qmd >}}
-{{< include matlab-api.qmd >}}
+{{< include ./maple-api.qmd >}}
+{{< include ./matlab-api.qmd >}}

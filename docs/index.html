@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -71,19 +105,19 @@ window.Quarto = {
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
 <div id="quarto-sidebar-toc-left" class="sidebar toc-left">
   <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
+    <h2 id="toc-title"><p><img src="logo.png" alt="TrussME-FEM Logo" style="width:80%; display:block; margin:auto;"></p></h2>
    
   <ul>
-  <li><a href="#requirements" id="toc-requirements" class="nav-link active" data-scroll-target="#requirements"><span class="header-section-number">1</span> Requirements</a></li>
-  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation"><span class="header-section-number">2</span> Installation</a>
+  <li><a href="#installation" id="toc-installation" class="nav-link active" data-scroll-target="#installation"><span class="header-section-number">1</span> Installation</a>
   <ul class="collapse">
-  <li><a href="#maple" id="toc-maple" class="nav-link" data-scroll-target="#maple"><span class="header-section-number">2.1</span> Maple</a></li>
-  <li><a href="#matlab" id="toc-matlab" class="nav-link" data-scroll-target="#matlab"><span class="header-section-number">2.2</span> Matlab</a></li>
-  </ul></li>
-  <li><a href="#module-description" id="toc-module-description" class="nav-link" data-scroll-target="#module-description"><span class="header-section-number">3</span> Module description</a>
+  <li><a href="#maple" id="toc-maple" class="nav-link" data-scroll-target="#maple"><span class="header-section-number">1.1</span> Maple</a>
   <ul class="collapse">
-  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage"><span class="header-section-number">3.1</span> Usage</a></li>
+  <li><a href="#lem-and-last-packages" id="toc-lem-and-last-packages" class="nav-link" data-scroll-target="#lem-and-last-packages">LEM and LAST Packages</a></li>
   </ul></li>
+  <li><a href="#matlab" id="toc-matlab" class="nav-link" data-scroll-target="#matlab"><span class="header-section-number">1.2</span> Matlab</a></li>
+  </ul></li>
+  <li><a href="#license" id="toc-license" class="nav-link" data-scroll-target="#license"><span class="header-section-number">2</span> License</a></li>
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage"><span class="header-section-number">3</span> Usage</a></li>
   <li><a href="#maple-api" id="toc-maple-api" class="nav-link" data-scroll-target="#maple-api"><span class="header-section-number">4</span> Maple API</a>
   <ul class="collapse">
   <li><a href="#module-utilities" id="toc-module-utilities" class="nav-link" data-scroll-target="#module-utilities"><span class="header-section-number">4.1</span> Module Utilities</a>
@@ -100,7 +134,7 @@ window.Quarto = {
   <li><a href="#generateid" id="toc-generateid" class="nav-link" data-scroll-target="#generateid">GenerateId</a></li>
   <li><a href="#spy" id="toc-spy" class="nav-link" data-scroll-target="#spy">Spy</a></li>
   </ul></li>
-  <li><a href="#reference-frames-points-and-vector" id="toc-reference-frames-points-and-vector" class="nav-link" data-scroll-target="#reference-frames-points-and-vector"><span class="header-section-number">4.2</span> Reference Frames, Points and Vector</a>
+  <li><a href="#reference-frames-points-and-vectors" id="toc-reference-frames-points-and-vectors" class="nav-link" data-scroll-target="#reference-frames-points-and-vectors"><span class="header-section-number">4.2</span> Reference Frames, Points and Vectors</a>
   <ul class="collapse">
   <li><a href="#isframe" id="toc-isframe" class="nav-link" data-scroll-target="#isframe">IsFRAME</a></li>
   <li><a href="#generateframexy" id="toc-generateframexy" class="nav-link" data-scroll-target="#generateframexy">GenerateFrameXY</a></li>
@@ -289,13 +323,35 @@ window.Quarto = {
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">TrussME-FEM Documentation</h1>
+<p class="subtitle lead">A Toolbox for Symbolic-Numerical Analysis and Solution of Structures</p>
 </div>
 
 
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Authors</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Davide Stocco </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            University of Trento (Italy)
+          </p>
+      </div>
+    <div class="quarto-title-meta-contents">
+    <p class="author">Matteo Larcher </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            University of Trento (Italy)
+          </p>
+      </div>
+  </div>
 
 <div class="quarto-title-meta">
 
-    
+      
   
     
   </div>
@@ -305,40 +361,57 @@ window.Quarto = {
 </header>
 
 
-<p>This is the documentation for the TrussME-FEM package. This package is a mixed symbolic-numerical Finite Element Method (FEM) structural analysis tool. The solution of the FEM system is based on the Direct Stiffness Method (DSM). The package is designed to be used in the <strong>Maple</strong> environment for the symbolic manipulation of the FEM system, and Matlab for the numerical solution of the system. Code generation is available for translating the symbolic FEM system into Matlab code.</p>
-<section id="requirements" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Requirements</h1>
-<ul>
-<li><a href="https://www.maplesoft.com/products/maple/">Maple</a> 2020 or later.</li>
-<li><a href="https://www.mathworks.com/products/matlab.html">Matlab</a> R2020a or later.</li>
-</ul>
+<p>This is the documentation for the TrussME-FEM package. This package is a mixed <em>symbolic-numerical</em> Finite Element Method (FEM) structural analysis tool. The solution of the FEM system is based on the Direct Stiffness Method (DSM). The package is designed to be used in the <strong>Maple</strong> environment for the symbolic manipulation of the FEM system, and <strong>Matlab</strong> for the numerical solution of the system. Code generation is available for translating the symbolic FEM system into Matlab code.</p>
+<section id="installation" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Installation</h1>
+<p>Download the package from the <a href="https://github.com/StoccoDavide/TrussMe-FEM">GitHub repository</a>, release the zip file, and follow the instructions below. Optionally, you can clone the repository using the following command:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/StoccoDavide/TrussMe-FEM.git</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="maple" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="maple"><span class="header-section-number">1.1</span> Maple</h2>
+<p>To install the module you must have first installed <a href="https://www.maplesoft.com/products/maple/">Maple</a> (2020 or later). Then open the <code>PackAndGo.mw</code> file and use the <code>!!!</code> button to execute the <em>entire</em> worksheet.</p>
+<p>Then test the module in a Maple worksheet or document by executing <code>TrussMe_FEM:-Info()</code> or <code>Describe(TrussMe_FEM)</code>. Alternatively, you can use one of the test files provided in the <code>maple/tests</code> folder. If the module is loaded without errors, it is done!</p>
+<section id="lem-and-last-packages" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lem-and-last-packages">LEM and LAST Packages</h3>
+<p>LEM and LAST packages are not mandatory for the TrussME-FEM module to work. However, they are highly recommended to facilitate the symbolic manipulation of the FEM system.. These packages are not included in the <code>maple</code> folder and must be downloaded separately from the <a href="https://github.com/StoccoDavide/LEM">LEM GitHub repository</a> and <a href="https://github.com/StoccoDavide/LAST">LAST GitHub repository</a>. Similarly as before, you can clone the repositories using the following command:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/StoccoDavide/LEM.git</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/StoccoDavide/LAST.git</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The installation of these optinal packages is similar to the one described above and requires the execution of the <code>PackAndGo.mw</code> file in the respective library folders.</p>
+<section id="attention" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="attention">🚧 Attention! 🚧</h4>
+<p>Both LEM and LAST packages are written to work in an object-oriented programming style. Please note that Maple object-oriented programming features have slightly changed in 2021, which online documentation states:</p>
+<blockquote class="blockquote">
+<p>As of Maple 2021, if the method has a formal parameter named <code>_self</code>, references to its object’s local or exported variables may be written without prefixing them. That is, <code>_self:-variable</code> may be written as just <code>variable</code>. Maple will add the <code>self:-</code> prefix internally when the method is simplified.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>As of Maple 2021, a message-passing form of method call can be used, which will automatically pass the object as an argument if the method has a formal parameter named <code>_self</code>.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Another way to invoke a method, similar to that used in other object-oriented languages, was introduced in Maple 2021. In this form, the object name is qualified by the method name, <code>object_name:-method_name(argument)</code> just as it can be in the function mechanism described above. However, the <em>object can be omitted from the argument sequence</em>.</p>
+</blockquote>
+<p>For further information please refer to the following <a href="https://fr.maplesoft.com/support/help/Maple/view.aspx?path=object/methods">link</a>.</p>
 </section>
-<section id="installation" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Installation</h1>
-<p>Download the package from the <a href="https://github.com/StoccoDavide/TrussMe-FEM">GitHub repository</a>.</p>
-<section id="maple" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="maple"><span class="header-section-number">2.1</span> Maple</h2>
-<p>To install the module you must have first installed Maple. Then open the <code>PackAndGo.mw</code> file and use the <code>!!!</code> button to execute the <em>entire</em> worksheet.</p>
-<p>Then test the module in a Maple worksheet or document by executing</p>
-<pre><code>&gt; TrussMe_FEM:-Info();</code></pre>
-<p>or</p>
-<pre><code>&gt; Describe(TrussMe_FEM);</code></pre>
-<p>Alternatively, you can use one of the test files provided in the <code>tests</code> folder. If the module is loaded without errors, it is done!</p>
-</section>
-<section id="matlab" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="matlab"><span class="header-section-number">2.2</span> Matlab</h2>
-<p>To install the Matlab toolbox, you must have first installed Matlab. Then open the <code>TrussMe-FEM.mtlbx</code> file and follow the instructions.</p>
 </section>
 </section>
-<section id="module-description" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Module description</h1>
-<p>If you want a full description of the <code>TrussMe_FEM</code> module:</p>
-<pre><code>&gt; Describe(TrussMe_FEM);</code></pre>
-<p>This command will generate a brief description of the module and all the procedures and other objects present in <code>TrussMe_FEM.mpl</code> file.</p>
-<section id="usage" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="usage"><span class="header-section-number">3.1</span> Usage</h2>
-<p>In case you have no time to read the description and realize how it should or should not work, refer to the files in the <code>tests</code> folder.</p>
+<section id="matlab" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="matlab"><span class="header-section-number">1.2</span> Matlab</h2>
+<p>To install the Matlab toolbox, you must have first installed <a href="https://www.mathworks.com/products/matlab.html">Matlab</a> (R2020a or later). Then open the <code>TrussMe-FEM.mtlbx</code> file and follow the instructions. Alternatively, you can include the <code>TrussMe_FEM</code> folder in your Matlab path. Again, you can use one of the test files provided in the <code>matlab/tests</code> folder to check if the module is working correctly.</p>
 </section>
+</section>
+<section id="license" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> License</h1>
+<p>BSD 3-Clause License</p>
+<p>Copyright (c) 2023, Davide Stocco and Matteo Larcher.</p>
+<p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
+<ol type="1">
+<li><p>Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.</p></li>
+<li><p>Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.</p></li>
+<li><p>Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.</p></li>
+</ol>
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+</section>
+<section id="usage" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Usage</h1>
+<p>In case you have no time to read through all the APIs and realize how the toolbox should or should not work, refer to the files prensent in <code>maple/tests</code> and <code>matlab/tests</code> folders. These contain usage examples in both Maple and Matlab environments with increasing complexity and detail.</p>
 </section>
 <section id="maple-api" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Maple API</h1>
@@ -348,9 +421,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="info">Info</h3>
 <p>Print module information.</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>NULL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>NULL</code>.</li>
 </ul>
 <p>Proto: <code>Info()</code></p>
 </section>
@@ -358,9 +431,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="moduleload">ModuleLoad</h3>
 <p>Module load procedure.</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>NULL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>NULL</code>.</li>
 </ul>
 <p>Proto: <code>ModuleLoad()</code></p>
 </section>
@@ -368,33 +441,19 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="moduleunload">ModuleUnload</h3>
 <p>Module unload procedure.</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>NULL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>NULL</code>.</li>
 </ul>
 <p>Proto: <code>ModuleLoad()</code></p>
 </section>
 <section id="setmoduleoptions" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="setmoduleoptions">SetModuleOptions</h3>
-<p>Set the module options.</p>
+<p>Set the module options: verbose mode <code>VerboseMode</code>, warning mode <code>WarningMode</code>, time limit <code>TimeLimit</code>, id code length <code>IdLength</code>, node color <code>NodeColor</code>, support color <code>SupportColor</code>, element color <code>ElementColor</code>, shell (2+ nodes) color <code>ShellColor</code>, force color <code>ForceColor</code>, moment color <code>MomentColor</code>, node token <code>NodeToken</code>, support token <code>SupportToken</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>:
-<ul>
-<li><code>ElementColor::{nothing, string} := NULL</code>: element color (2+ nodes)</li>
-<li><code>ForceColor::{nothing, string} := NULL</code>: force color</li>
-<li><code>IdLength::{nothing, positive} := NULL</code>: ID length</li>
-<li><code>MomentColor::{nothing, string} := NULL</code>: moment color</li>
-<li><code>NodeColor::{nothing, string} := NULL</code>: node color</li>
-<li><code>NodeToken::{nothing, string} := NULL</code>: node token</li>
-<li><code>ShellColor::{nothing, string} := NULL</code>: shell color</li>
-<li><code>SupportColor::{nothing, string} := NULL</code>: support color</li>
-<li><code>SupportToken::{nothing, string} := NULL</code>: support token</li>
-<li><code>TimeLimit::{nothing, nonnegative} := NULL</code>: time limit</li>
-<li><code>VerboseMode::{boolean, nothing} := NULL</code>: verbose mode</li>
-<li><code>WarningMode::{boolean, nothing} := NULL</code>: warning mode</li>
-</ul></li>
-<li><strong>Returns</strong>: <code>NULL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: <code>ElementColor::{nothing, string} := NULL</code>, <code>ForceColor::{nothing, string} := NULL</code>, <code>IdLength::{nothing, positive} := NULL</code>, <code>MomentColor::{nothing, string} := NULL</code>, <code>NodeColor::{nothing, string} := NULL</code>, <code>NodeToken::{nothing, string} := NULL</code>, <code>ShellColor::{nothing, string} := NULL</code>, <code>SupportColor::{nothing, string} := NULL</code>, <code>SupportToken::{nothing, string} := NULL</code>, <code>TimeLimit::{nothing, nonnegative} := NULL</code>, <code>VerboseMode::{boolean, nothing} := NULL</code>, <code>WarningMode::{boolean, nothing} := NULL</code>.</li>
+<li><strong>Returns</strong>: <code>NULL</code>.</li>
 </ul>
 <p>Proto: <code>SetModuleOptions(ElementColor = NULL, ForceColor = NULL, IdLength = NULL, MomentColor = NULL, NodeColor = NULL, NodeToken = NULL, ShellColor = NULL, SupportColor = NULL, SupportToken = NULL, TimeLimit = NULL, VerboseMode = NULL, WarningMode = NULL)</code></p>
 </section>
@@ -402,8 +461,8 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="getobjbyname">GetObjByName</h3>
 <p>Get object which field name is <code>name</code> from a list or set of objects <code>objs</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>objs::list(anything)</code>, <code>name::string</code></li>
-<li><strong>Returns</strong>: <code>anything</code></li>
+<li><strong>Inputs</strong>: <code>objs::list(anything)</code>, <code>name::string</code>.</li>
+<li><strong>Returns</strong>: <code>anything</code>.</li>
 </ul>
 <p>Proto: <code>GetObjByName(objs, name)</code></p>
 </section>
@@ -411,9 +470,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="getobjbyid">GetObjById</h3>
 <p>Get object which field <code>id</code> is equal to <code>id_fld</code>, between the objects <code>objs</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>objs::list(anything)</code>, <code>id_fld::string</code></li>
-<li><strong>Optional inputs</strong>: <code>position::boolean := false</code></li>
-<li><strong>Returns</strong>: <code>anything</code></li>
+<li><strong>Inputs</strong>: <code>objs::list(anything)</code>, <code>id_fld::string</code>.</li>
+<li><strong>Optional inputs</strong>: <code>position::boolean := false</code>.</li>
+<li><strong>Returns</strong>: <code>anything</code>.</li>
 </ul>
 <p>Proto: <code>GetObjById(objs, id_fld, position = false)</code></p>
 </section>
@@ -421,9 +480,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="getobjsbytype">GetObjsByType</h3>
 <p>Get objects which field <code>type</code> is equal to <code>type_fld</code>, between the objects <code>objs</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>objs::list(anything)</code>, <code>type_fld::{symbol, list(symbol), set(symbol)}</code></li>
-<li><strong>Optional inputs</strong>: <code>position::boolean := false</code></li>
-<li><strong>Returns</strong>: <code>list(anything)</code></li>
+<li><strong>Inputs</strong>: <code>objs::list(anything)</code>, <code>type_fld::{symbol, list(symbol), set(symbol)}</code>.</li>
+<li><strong>Optional inputs</strong>: <code>position::boolean := false</code>.</li>
+<li><strong>Returns</strong>: <code>list(anything)</code>.</li>
 </ul>
 <p>Proto: <code>GetObjsByType(objs, type_fld, position = false)</code></p>
 </section>
@@ -431,9 +490,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="simplify">Simplify</h3>
 <p>Try to simplify an algebraic expression <code>var</code> with optional simplification options <code>opt</code>. The simplification is performed within the internal or indexed time limit.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code>, <code>opt::anything := NULL</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>anything</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>, <code>opt::anything := NULL</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>anything</code>.</li>
 </ul>
 <p>Proto: <code>Simplify(var, opt = NULL)</code></p>
 </section>
@@ -441,9 +500,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="norm2">Norm2</h3>
 <p>Compute the Euclidean norm of list or vector <code>x</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>x::{Vector, list}</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>algebraic</code></li>
+<li><strong>Inputs</strong>: <code>x::{Vector, list}</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>algebraic</code>.</li>
 </ul>
 <p>Proto: <code>Norm2(x)</code></p>
 </section>
@@ -451,9 +510,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="generateid">GenerateId</h3>
 <p>Generate a random string id of length <code>size</code> with options <code>opts</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: <code>opts::symbol := 'alnum'</code>, <code>size::positive := m_IdLength</code></li>
-<li><strong>Returns</strong>: <code>string</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: <code>opts::symbol := 'alnum'</code>, <code>size::positive := m_IdLength</code>.</li>
+<li><strong>Returns</strong>: <code>string</code>.</li>
 </ul>
 <p>Proto: <code>GenerateId(opts = 'alnum', size = m_IdLength)</code></p>
 </section>
@@ -461,42 +520,42 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="spy">Spy</h3>
 <p>Plot of non-zero values of matrix <code>A</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>A::Matrix</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>anything</code></li>
+<li><strong>Inputs</strong>: <code>A::Matrix</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>anything</code>.</li>
 </ul>
 <p>Proto: <code>Spy(A)</code></p>
 </section>
 </section>
-<section id="reference-frames-points-and-vector" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="reference-frames-points-and-vector"><span class="header-section-number">4.2</span> Reference Frames, Points and Vector</h2>
+<section id="reference-frames-points-and-vectors" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="reference-frames-points-and-vectors"><span class="header-section-number">4.2</span> Reference Frames, Points and Vectors</h2>
 <section id="isframe" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="isframe">IsFRAME</h3>
 <p>Check if the variable <code>var</code> is of <code>FRAME</code> type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsFRAME(var)</code></p>
 </section>
 <section id="generateframexy" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="generateframexy">GenerateFrameXY</h3>
-<p>Generate a reference frame matrix from three points or vectors <code>p_1</code>, <code>p_2</code> and vector <code>vec</code> orthogonal to XY-plane <code>vec</code>.</p>
+<p>Generate a reference frame matrix from three points or vectors <code>p_1</code>, <code>p_2</code> and vector <code>vec</code> orthogonal to XY-plane <code>vec</code>. Optional nodes distance <code>distance</code> can be specified.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>p_1::{POINT, VECTOR, Vector, list}</code>, <code>p_2::{POINT, VECTOR, Vector, list}</code>, <code>vec::{VECTOR, Vector, list}</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>FRAME</code></li>
+<li><strong>Inputs</strong>: <code>p_1::{POINT, VECTOR, Vector, list}</code>, <code>p_2::{POINT, VECTOR, Vector, list}</code>, <code>vec::{VECTOR, Vector, list}</code>.</li>
+<li><strong>Optional inputs</strong>: <code>distance::algebraic := -1</code>.</li>
+<li><strong>Returns</strong>: <code>FRAME</code>.</li>
 </ul>
 <p>Proto: <code>GenerateFrameXY(p_1, p_2, vec)</code></p>
 </section>
 <section id="generateframexz" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="generateframexz">GenerateFrameXZ</h3>
-<p>Generate a reference frame matrix from three points or vectors <code>p_1</code>, <code>p_2</code> and vector <code>vec</code> orthogonal to XZ-plane <code>vec</code>.</p>
+<p>Generate a reference frame matrix from three points or vectors <code>p_1</code>, <code>p_2</code> and vector <code>vec</code> orthogonal to XZ-plane <code>vec</code>. Optional nodes distance <code>distance</code> can be specified.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>p_1::{POINT, VECTOR, Vector, list}</code>, <code>p_2::{POINT, VECTOR, Vector, list}</code>, <code>vec::{VECTOR, Vector, list}</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>FRAME</code></li>
+<li><strong>Inputs</strong>: <code>p_1::{POINT, VECTOR, Vector, list}</code>, <code>p_2::{POINT, VECTOR, Vector, list}</code>, <code>vec::{VECTOR, Vector, list}</code>.</li>
+<li><strong>Optional inputs</strong>: <code>distance::algebraic := -1</code>.</li>
+<li><strong>Returns</strong>: <code>FRAME</code>.</li>
 </ul>
 <p>Proto: <code>GenerateFrameXZ(p_1, p_2, vec)</code></p>
 </section>
@@ -504,9 +563,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="generategenericframe">GenerateGenericFrame</h3>
 <p>Generate a generic reference frame matrix from a string label <code>label</code>. Optional arguments <code>e</code>, <code>p</code>, <code>x</code>, <code>y</code>, <code>z</code> and <code>s</code> are used to customize the output, e.g., ‘exx := e||s||x||x’.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>label::string := ""</code></li>
-<li><strong>Optional inputs</strong>: <code>e::string := "e"</code>, <code>p::string := "p"</code>, <code>s::string := "__"</code>, <code>x::string := "x"</code>, <code>y::string := "y"</code>, <code>z::string := "z"</code></li>
-<li><strong>Returns</strong>: <code>FRAME</code></li>
+<li><strong>Inputs</strong>: <code>label::string := ""</code>.</li>
+<li><strong>Optional inputs</strong>: <code>e::string := "e"</code>, <code>p::string := "p"</code>, <code>s::string := "__"</code>, <code>x::string := "x"</code>, <code>y::string := "y"</code>, <code>z::string := "z"</code>.</li>
+<li><strong>Returns</strong>: <code>FRAME</code>.</li>
 </ul>
 <p>Proto: <code>GenerateGenericFrame(label, e = "e", p = "p", s = "__", x = "x", y = "y", z = "z")</code></p>
 </section>
@@ -514,9 +573,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="inverseframe">InverseFrame</h3>
 <p>Inverse affine transformation matrix <code>RF</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>RF::FRAME</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>FRAME</code></li>
+<li><strong>Inputs</strong>: <code>RF::FRAME</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>FRAME</code>.</li>
 </ul>
 <p>Proto: <code>InverseFrame(RF)</code></p>
 </section>
@@ -524,9 +583,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="translate">Translate</h3>
 <p>Affine transformation matrix corresponding to a translation <code>x</code>, <code>y</code>, <code>z</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>x::algebraic</code>, <code>y::algebraic</code>, <code>z::algebraic</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>FRAME</code></li>
+<li><strong>Inputs</strong>: <code>x::algebraic</code>, <code>y::algebraic</code>, <code>z::algebraic</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>FRAME</code>.</li>
 </ul>
 <p>Proto: <code>Translate(x, y, z)</code></p>
 </section>
@@ -534,9 +593,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="translation">Translation</h3>
 <p>Extract the translation vector of the reference frame <code>RF</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>RF::FRAME</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>Vector</code></li>
+<li><strong>Inputs</strong>: <code>RF::FRAME</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>Vector</code>.</li>
 </ul>
 <p>Proto: <code>Translation(RF)</code></p>
 </section>
@@ -544,9 +603,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="rotate">Rotate</h3>
 <p>Affine transformation matrix corresponding to the rotation <code>angle</code> around the given <code>axis</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>axis::{string, symbol}</code>, <code>angle::algebraic</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>FRAME</code></li>
+<li><strong>Inputs</strong>: <code>axis::{string, symbol}</code>, <code>angle::algebraic</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>FRAME</code>.</li>
 </ul>
 <p>Proto: <code>Rotate(axis, angle)</code></p>
 </section>
@@ -554,9 +613,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="rotation">Rotation</h3>
 <p>Extract the rotation matrix of the reference frame <code>RF</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>RF::FRAME</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>Matrix</code></li>
+<li><strong>Inputs</strong>: <code>RF::FRAME</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>Matrix</code>.</li>
 </ul>
 <p>Proto: <code>Rotation(RF)</code></p>
 </section>
@@ -564,9 +623,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="isvector">IsVECTOR</h3>
 <p>Check if the variable <code>var</code> is of <code>VECTOR</code> type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsVECTOR(var)</code></p>
 </section>
@@ -574,9 +633,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="ispoint">IsPOINT</h3>
 <p>Check if the variable <code>var</code> is of <code>POINT</code> type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsPOINT(var)</code></p>
 </section>
@@ -584,9 +643,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="origin">Origin</h3>
 <p>Extract the origin point of the reference frame <code>RF</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>RF::FRAME</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>POINT</code></li>
+<li><strong>Inputs</strong>: <code>RF::FRAME</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>POINT</code>.</li>
 </ul>
 <p>Proto: <code>Origin(RF)</code></p>
 </section>
@@ -594,9 +653,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="compx">CompX</h3>
 <p>Extract the x-axis component of the vector or point <code>x</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>x::{POINT, VECTOR}</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>algebraic</code></li>
+<li><strong>Inputs</strong>: <code>x::{POINT, VECTOR}</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>algebraic</code>.</li>
 </ul>
 <p>Proto: <code>CompX(x)</code></p>
 </section>
@@ -604,9 +663,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="compy">CompY</h3>
 <p>Extract the y-axis component of the vector or point <code>x</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>x::{POINT, VECTOR}</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>algebraic</code></li>
+<li><strong>Inputs</strong>: <code>x::{POINT, VECTOR}</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>algebraic</code>.</li>
 </ul>
 <p>Proto: <code>CompY(x)</code></p>
 </section>
@@ -614,9 +673,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="compz">CompZ</h3>
 <p>Extract the z-axis component of the vector or point <code>x</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>x::{POINT, VECTOR}</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>algebraic</code></li>
+<li><strong>Inputs</strong>: <code>x::{POINT, VECTOR}</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>algebraic</code>.</li>
 </ul>
 <p>Proto: <code>CompZ(x)</code></p>
 </section>
@@ -624,9 +683,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="compxyz">CompXYZ</h3>
 <p>Extract the x, y and z-axis components of the vector or point <code>x</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>x::{POINT, VECTOR}</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>algebraic</code></li>
+<li><strong>Inputs</strong>: <code>x::{POINT, VECTOR}</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>algebraic</code>.</li>
 </ul>
 <p>Proto: <code>CompXYZ(x)</code></p>
 </section>
@@ -634,9 +693,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="uvecx">UvecX</h3>
 <p>Extract the x-axis unit vector of the reference frame <code>RF</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>RF::FRAME := Matrix(4,shape = identity)</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>VECTOR</code></li>
+<li><strong>Inputs</strong>: <code>RF::FRAME := Matrix(4,shape = identity)</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>VECTOR</code>.</li>
 </ul>
 <p>Proto: <code>UvecX(RF)</code></p>
 </section>
@@ -644,9 +703,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="uvecy">UvecY</h3>
 <p>Extract the y-axis unit vector of the reference frame <code>RF</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>RF::FRAME</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>VECTOR</code></li>
+<li><strong>Inputs</strong>: <code>RF::FRAME</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>VECTOR</code>.</li>
 </ul>
 <p>Proto: <code>UvecY(RF)</code></p>
 </section>
@@ -654,9 +713,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="uvecz">UvecZ</h3>
 <p>Extract the z-axis unit vector of the reference frame <code>RF</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>RF::FRAME := Matrix(4,shape = identity)</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>VECTOR</code></li>
+<li><strong>Inputs</strong>: <code>RF::FRAME := Matrix(4,shape = identity)</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>VECTOR</code>.</li>
 </ul>
 <p>Proto: <code>UvecZ(RF)</code></p>
 </section>
@@ -664,9 +723,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="uvecxyz">UvecXYZ</h3>
 <p>Extract the x, y and z-axis unit vectors of the reference frame <code>RF</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>RF::FRAME := Matrix(4,shape = identity)</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>VECTOR</code></li>
+<li><strong>Inputs</strong>: <code>RF::FRAME := Matrix(4,shape = identity)</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>VECTOR</code>.</li>
 </ul>
 <p>Proto: <code>UvecXYZ(RF)</code></p>
 </section>
@@ -674,9 +733,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="project">Project</h3>
 <p>Project the vector or point <code>x</code> from reference frame <code>RF_ini</code> to reference frame <code>RF_end</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>x::{POINT, VECTOR}</code>, <code>RF_ini::FRAME</code>, <code>RF_end::FRAME</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>{POINT, VECTOR}</code></li>
+<li><strong>Inputs</strong>: <code>x::{POINT, VECTOR}</code>, <code>RF_ini::FRAME</code>, <code>RF_end::FRAME</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>{POINT, VECTOR}</code>.</li>
 </ul>
 <p>Proto: <code>Project(x, RF_ini, RF_end)</code></p>
 </section>
@@ -687,9 +746,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="dodiff">DoDiff</h3>
 <p>Differentiate an expression with respect to a function.</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>anything</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>anything</code>.</li>
 </ul>
 <p>Proto: <code>DoDiff()</code></p>
 </section>
@@ -697,9 +756,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="dogradient">DoGradient</h3>
 <p>Differentiate a scalar expression <code>fnc</code> with respect to a list of functions <code>lst</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>fnc::algebraic</code>, <code>lst::{Vector, list}</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>Vector</code></li>
+<li><strong>Inputs</strong>: <code>fnc::algebraic</code>, <code>lst::{Vector, list}</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>Vector</code>.</li>
 </ul>
 <p>Proto: <code>DoGradient(fnc, lst)</code></p>
 </section>
@@ -707,9 +766,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="dohessian">DoHessian</h3>
 <p>Differentiate a vector of expressions (gradient) <code>fnc</code> with respect to a list <code>lst</code> of functions.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>fnc::algebraic</code>, <code>lst::{Vector, list}</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>Matrix</code></li>
+<li><strong>Inputs</strong>: <code>fnc::algebraic</code>, <code>lst::{Vector, list}</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>Matrix</code>.</li>
 </ul>
 <p>Proto: <code>DoHessian(fnc, lst)</code></p>
 </section>
@@ -717,9 +776,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="dojacobian">DoJacobian</h3>
 <p>Differentiate a vector of expressions <code>fnc</code> with respect to a list <code>lst</code> of functions.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>fnc::Vector</code>, <code>lst::{Vector, list}</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>Matrix</code></li>
+<li><strong>Inputs</strong>: <code>fnc::Vector</code>, <code>lst::{Vector, list}</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>Matrix</code>.</li>
 </ul>
 <p>Proto: <code>DoJacobian(fnc, lst)</code></p>
 </section>
@@ -727,9 +786,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="dotensor">DoTensor</h3>
 <p>Differentiate a matrix <code>mat</code> with respect to a list of functions <code>lst</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>mat::Matrix</code>, <code>lst::{Vector, list}</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>Array</code></li>
+<li><strong>Inputs</strong>: <code>mat::Matrix</code>, <code>lst::{Vector, list}</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>Array</code>.</li>
 </ul>
 <p>Proto: <code>DoTensor(mat, lst)</code></p>
 </section>
@@ -740,9 +799,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="isload">IsLOAD</h3>
 <p>Check if the variable <code>var</code> is of <code>LOAD</code> type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsLOAD(var)</code></p>
 </section>
@@ -750,9 +809,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="iscomponents">IsCOMPONENTS</h3>
 <p>Check if the variable <code>var</code> is of <code>COMPONENTS</code> type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsCOMPONENTS(var)</code></p>
 </section>
@@ -760,9 +819,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makeload">MakeLoad</h3>
 <p>Create a load with name <code>name</code> acting on the node (or its id) <code>node</code> on the frame <code>frame</code> with components <code>components</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>name::string</code>, <code>node::NODE</code>, <code>components::COMPONENTS</code></li>
-<li><strong>Optional inputs</strong>: <code>frame::{FRAME, string} := node["id"]</code></li>
-<li><strong>Returns</strong>: <code>LOAD</code></li>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>node::NODE</code>, <code>components::COMPONENTS</code>.</li>
+<li><strong>Optional inputs</strong>: <code>frame::{FRAME, string} := node["id"]</code>.</li>
+<li><strong>Returns</strong>: <code>LOAD</code>.</li>
 </ul>
 <p>Proto: <code>MakeLoad(name, node, components, frame = node["id"])</code></p>
 </section>
@@ -770,9 +829,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="isloads">IsLOADS</h3>
 <p>Check if the variable <code>var</code> is of <code>LOADS</code> type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsLOADS(var)</code></p>
 </section>
@@ -780,9 +839,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="getnodalloads">GetNodalLoads</h3>
 <p>Get the vector of nodal loads <code>loads</code> of nodes <code>nodes</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>nodes::NODES</code>, <code>loads::LOADS</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>Vector</code></li>
+<li><strong>Inputs</strong>: <code>nodes::NODES</code>, <code>loads::LOADS</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>Vector</code>.</li>
 </ul>
 <p>Proto: <code>GetNodalLoads(nodes, loads)</code></p>
 </section>
@@ -793,9 +852,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="ismaterial">IsMATERIAL</h3>
 <p>Check if the variable <code>var</code> is of <code>MATERIAL</code> type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsMATERIAL(var)</code></p>
 </section>
@@ -803,9 +862,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makematerial">MakeMaterial</h3>
 <p>Define material with inputs: name <code>name</code>, elastic modulus <code>elastic_modulus</code>, Poisson’s ratio <code>poisson_ratio</code>, shear modulus <code>shear_modulus</code> (default = <code>E/(2*(1+nu))</code>), and density <code>density</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: <code>density::algebraic := 0</code>, <code>elastic_modulus::algebraic := 0</code>, <code>name::string := "Undefined"</code>, <code>poisson_ratio::algebraic := 0</code>, <code>shear_modulus::algebraic := elastic_modulus/(2+2*poisson_ratio)</code></li>
-<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: <code>density::algebraic := 0</code>, <code>elastic_modulus::algebraic := 0</code>, <code>name::string := "Undefined"</code>, <code>poisson_ratio::algebraic := 0</code>, <code>shear_modulus::algebraic := elastic_modulus/(2+2*poisson_ratio)</code>.</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code>.</li>
 </ul>
 <p>Proto: <code>MakeMaterial(density = 0, elastic_modulus = 0, name = "Undefined", poisson_ratio = 0, shear_modulus = elastic_modulus/(2+2*poisson_ratio))</code></p>
 </section>
@@ -813,9 +872,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makecarbonsteel">MakeCarbonSteel</h3>
 <p>Get default steel material with <code>CarbonSteel</code> name, elastic modulus <code>E = 210.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.3</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 7850.0</code> (kg/m^3).</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code>.</li>
 </ul>
 <p>Proto: <code>MakeCarbonSteel()</code></p>
 </section>
@@ -823,9 +882,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makeinoxsteel">MakeInoxSteel</h3>
 <p>Get default steel material with <code>InoxSteel</code> name, elastic modulus <code>E = 200.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.3</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 8000.0</code> (kg/m^3).</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code>.</li>
 </ul>
 <p>Proto: <code>MakeInoxSteel()</code></p>
 </section>
@@ -833,9 +892,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="maketitanium">MakeTitanium</h3>
 <p>Get default titanium material with <code>Titanium</code> name, elastic modulus <code>E = 110.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 4500.0</code> (kg/m^3).</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code>.</li>
 </ul>
 <p>Proto: <code>MakeTitanium()</code></p>
 </section>
@@ -843,9 +902,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makecopper">MakeCopper</h3>
 <p>Get default copper material with <code>Copper</code> name, elastic modulus <code>E = 110.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 4500.0</code> (kg/m^3).</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code>.</li>
 </ul>
 <p>Proto: <code>MakeCopper()</code></p>
 </section>
@@ -853,9 +912,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makebrass">MakeBrass</h3>
 <p>Get default brass material with <code>Brass</code> name, elastic modulus <code>E = 110.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 4500.0</code> (kg/m^3).</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code>.</li>
 </ul>
 <p>Proto: <code>MakeBrass()</code></p>
 </section>
@@ -863,9 +922,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makebronze">MakeBronze</h3>
 <p>Get default bronze material with <code>Bronze</code> name, elastic modulus <code>E = 110.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 4500.0</code> (kg/m^3).</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code>.</li>
 </ul>
 <p>Proto: <code>MakeBronze()</code></p>
 </section>
@@ -873,9 +932,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makelead">MakeLead</h3>
 <p>Get default lead material with <code>Lead</code> name, elastic modulus <code>E = 110.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 4500.0</code> (kg/m^3).</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code>.</li>
 </ul>
 <p>Proto: <code>MakeLead()</code></p>
 </section>
@@ -883,9 +942,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makezinc">MakeZinc</h3>
 <p>Get default zinc material with <code>Zinc</code> name, elastic modulus <code>E = 110.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 4500.0</code> (kg/m^3).</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code>.</li>
 </ul>
 <p>Proto: <code>MakeZinc()</code></p>
 </section>
@@ -893,9 +952,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makemagnesium">MakeMagnesium</h3>
 <p>Get default magnesium material with <code>Magnesium</code> name, elastic modulus <code>E = 45.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 1800.0</code> (kg/m^3).</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code>.</li>
 </ul>
 <p>Proto: <code>MakeMagnesium()</code></p>
 </section>
@@ -903,9 +962,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makealluminium">MakeAlluminium</h3>
 <p>Get default alluminium material with <code>Alluminium</code> name, elastic modulus <code>E = 69.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 8000.0</code> (kg/m^3).</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code>.</li>
 </ul>
 <p>Proto: <code>MakeAlluminium()</code></p>
 </section>
@@ -913,9 +972,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makeavional">MakeAvional</h3>
 <p>Get default avional material with <code>Avional</code> name, elastic modulus <code>E = 70.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 2690.0</code> (kg/m^3).</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code>.</li>
 </ul>
 <p>Proto: <code>MakeAvional()</code></p>
 </section>
@@ -923,9 +982,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makeperaluman">MakePeraluman</h3>
 <p>Get default peraluman material with <code>Peraluman</code> name, elastic modulus <code>E = 70.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 2690.0</code> (kg/m^3).</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code>.</li>
 </ul>
 <p>Proto: <code>MakePeraluman()</code></p>
 </section>
@@ -933,9 +992,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makeanticorodal">MakeAnticorodal</h3>
 <p>Get default anticorodal material with <code>Anticorodal</code> name, elastic modulus <code>E = 69.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 2700.0</code> (kg/m^3).</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code>.</li>
 </ul>
 <p>Proto: <code>MakeAnticorodal()</code></p>
 </section>
@@ -943,9 +1002,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makecarpental">MakeCarpental</h3>
 <p>Get default carpental material with <code>Carpental</code> name, elastic modulus <code>E = 72.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 2780.0</code> (kg/m^3).</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code>.</li>
 </ul>
 <p>Proto: <code>MakeCarpental()</code></p>
 </section>
@@ -953,9 +1012,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makeergal">MakeErgal</h3>
 <p>Get default ergal material with <code>Ergal</code> name, elastic modulus <code>E = 72.0e+09</code> (Pa), Poisson’s ratio <code>nu = 0.33</code> (-), shear modulus <code>E/(2*(1+nu)</code>, density <code>rho = 2780.0</code> (kg/m^3).</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>MATERIAL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>MATERIAL</code>.</li>
 </ul>
 <p>Proto: <code>MakeErgal()</code></p>
 </section>
@@ -966,9 +1025,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="objectcolor">ObjectColor</h3>
 <p>Return the color of the object <code>obj</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>obj::{ELEMENT, LOAD, NODE, SUPPORT}</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>string</code></li>
+<li><strong>Inputs</strong>: <code>obj::{ELEMENT, LOAD, NODE, SUPPORT}</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>string</code>.</li>
 </ul>
 <p>Proto: <code>ObjectColor(obj)</code></p>
 </section>
@@ -976,9 +1035,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="structuregraph">StructureGraph</h3>
 <p>Return the graph of the structure given a list of nodes <code>nodes</code> and elements <code>elements</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
-<li><strong>Optional inputs</strong>: <code>disp::boolean := true</code>, <code>id::boolean := false</code></li>
-<li><strong>Returns</strong>: <code>function</code></li>
+<li><strong>Inputs</strong>: <code>fem::FEM</code>.</li>
+<li><strong>Optional inputs</strong>: <code>disp::boolean := true</code>, <code>id::boolean := false</code>.</li>
+<li><strong>Returns</strong>: <code>function</code>.</li>
 </ul>
 <p>Proto: <code>StructureGraph(fem, disp = true, id = false)</code></p>
 </section>
@@ -986,9 +1045,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="drawframe">DrawFrame</h3>
 <p>Draw a reference frame <code>frame</code> given a list of substitution data <code>data</code>, an axes scaling factor <code>scaling</code>, and axes colors <code>colors</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>frame::FRAME</code></li>
-<li><strong>Optional inputs</strong>: <code>colors::list(string) := ["Red", "Green", "Blue"]</code>, <code>data::{list('='), set('=')} := []</code>, <code>scaling::numeric := 1.0</code></li>
-<li><strong>Returns</strong>: <code>function</code></li>
+<li><strong>Inputs</strong>: <code>frame::FRAME</code>.</li>
+<li><strong>Optional inputs</strong>: <code>colors::list(string) := ["Red", "Green", "Blue"]</code>, <code>data::{list('='), set('=')} := []</code>, <code>scaling::numeric := 1.0</code>.</li>
+<li><strong>Returns</strong>: <code>function</code>.</li>
 </ul>
 <p>Proto: <code>DrawFrame(frame, colors = ["Red", "Green", "Blue"], data = [], scaling = 1.0)</code></p>
 </section>
@@ -996,9 +1055,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="plotnode">PlotNode</h3>
 <p>Plot the node (or support) at point <code>p</code> given a list or set of data for substitution <code>data</code>, a display token <code>token</code> and a display color <code>color</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>p::{Vector(algebraic), list(algebraic)}</code></li>
-<li><strong>Optional inputs</strong>: <code>color::string := TrussMe_FEM:-m_NodeColor</code>, <code>data::{list('='), set('=')} := [],</code>token::symbol := TrussMe_FEM:-m_NodeToken`</li>
-<li><strong>Returns</strong>: <code>function</code></li>
+<li><strong>Inputs</strong>: <code>p::{Vector(algebraic), list(algebraic)}</code>.</li>
+<li><strong>Optional inputs</strong>: <code>color::string := TrussMe_FEM:-m_NodeColor</code>, <code>data::{list('='), set('=')} := [],</code>token::symbol := TrussMe_FEM:-m_NodeToken`.</li>
+<li><strong>Returns</strong>: <code>function</code>.</li>
 </ul>
 <p>Proto: <code>PlotNode(p, color = TrussMe_FEM:-m_NodeColor, data = [], token = TrussMe_FEM:-m_NodeToken)</code></p>
 </section>
@@ -1006,9 +1065,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="plotelement">PlotElement</h3>
 <p>Plot the element from point <code>p_1</code> and <code>p_2</code> given a list or set of data for substitution <code>data</code> and a display color <code>color</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>p_1::{Vector(algebraic), list(algebraic)}</code>, <code>p_2::{Vector(algebraic), list(algebraic)}</code></li>
-<li><strong>Optional inputs</strong>: <code>color::string := TrussMe_FEM:-m_ElementColor</code>, <code>data::{list('='), set('=')} := []</code></li>
-<li><strong>Returns</strong>: <code>function</code></li>
+<li><strong>Inputs</strong>: <code>p_1::{Vector(algebraic), list(algebraic)}</code>, <code>p_2::{Vector(algebraic), list(algebraic)}</code>.</li>
+<li><strong>Optional inputs</strong>: <code>color::string := TrussMe_FEM:-m_ElementColor</code>, <code>data::{list('='), set('=')} := []</code>.</li>
+<li><strong>Returns</strong>: <code>function</code>.</li>
 </ul>
 <p>Proto: <code>PlotElement(p_1, p_2, color = TrussMe_FEM:-m_ElementColor, data = [])</code></p>
 </section>
@@ -1016,9 +1075,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="plotdeformedelement">PlotDeformedElement</h3>
 <p>Plot the element from diplacements <code>d_1</code> and <code>d_2</code> given a list or set of data for substitution <code>data</code> and a display color <code>color</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>p_1::{Vector(algebraic), list(algebraic)}</code>, <code>p_2::{Vector(algebraic), list(algebraic)}</code>, <code>d_1::{Vector(algebraic), list(algebraic)}</code>, <code>d_2::{Vector(algebraic), list(algebraic)}</code></li>
-<li><strong>Optional inputs</strong>: <code>color::string := TrussMe_FEM:-m_ElementColor</code>, <code>data::{list('='), set('=')} := []</code>, <code>scaling::nonnegative := 1.0</code></li>
-<li><strong>Returns</strong>: <code>function</code></li>
+<li><strong>Inputs</strong>: <code>p_1::{Vector(algebraic), list(algebraic)}</code>, <code>p_2::{Vector(algebraic), list(algebraic)}</code>, <code>d_1::{Vector(algebraic), list(algebraic)}</code>, <code>d_2::{Vector(algebraic), list(algebraic)}</code>.</li>
+<li><strong>Optional inputs</strong>: <code>color::string := TrussMe_FEM:-m_ElementColor</code>, <code>data::{list('='), set('=')} := []</code>, <code>scaling::nonnegative := 1.0</code>.</li>
+<li><strong>Returns</strong>: <code>function</code>.</li>
 </ul>
 <p>Proto: <code>PlotDeformedElement(p_1, p_2, d_1, d_2, color = TrussMe_FEM:-m_ElementColor, data = [], scaling = 1.0)</code></p>
 </section>
@@ -1026,9 +1085,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="plotload">PlotLoad</h3>
 <p>Plot the load arrow from point <code>p_1</code> and <code>p_2</code> given a list or set of data for substitution <code>data</code> and a display color <code>color</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>p_1::{Vector(algebraic), list(algebraic)}</code>, <code>p_2::{Vector(algebraic), list(algebraic)}</code></li>
-<li><strong>Optional inputs</strong>: <code>color::string := TrussMe_FEM:-m_LoadColor</code>, <code>data::{list('='), set('=')} := []</code>, <code>scaling::nonnegative := 1.0</code></li>
-<li><strong>Returns</strong>: <code>function</code></li>
+<li><strong>Inputs</strong>: <code>p_1::{Vector(algebraic), list(algebraic)}</code>, <code>p_2::{Vector(algebraic), list(algebraic)}</code>.</li>
+<li><strong>Optional inputs</strong>: <code>color::string := TrussMe_FEM:-m_LoadColor</code>, <code>data::{list('='), set('=')} := []</code>, <code>scaling::nonnegative := 1.0</code>.</li>
+<li><strong>Returns</strong>: <code>function</code>.</li>
 </ul>
 <p>Proto: <code>PlotLoad(p_1, p_2, color = TrussMe_FEM:-m_LoadColor, data = [], scaling = 1.0)</code></p>
 </section>
@@ -1036,9 +1095,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="plotstructure">PlotStructure</h3>
 <p>Plot the undeformed <code>fem</code> structure given a list or set of substitution data <code>data</code>, a frame scaling factor <code>frame_scaling</code> or <code>nodes_scaling, elements_scaling</code>, and a loads scaling factor <code>scaling</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
-<li><strong>Optional inputs</strong>: <code>data::{list('='), set('=')} := []</code>, <code>frame_scaling::{numeric, list(numeric)} := 0.</code>, <code>load_scaling::numeric := 1.0</code></li>
-<li><strong>Returns</strong>: <code>{function, list(function)}</code></li>
+<li><strong>Inputs</strong>: <code>fem::FEM</code>.</li>
+<li><strong>Optional inputs</strong>: <code>data::{list('='), set('=')} := []</code>, <code>frame_scaling::{numeric, list(numeric)} := 0.</code>, <code>load_scaling::numeric := 1.0</code>.</li>
+<li><strong>Returns</strong>: <code>{function, list(function)}</code>.</li>
 </ul>
 <p>Proto: <code>PlotStructure(fem, data = [], frame_scaling = 0., load_scaling = 1.0)</code></p>
 </section>
@@ -1046,9 +1105,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="plotdeformedstructure">PlotDeformedStructure</h3>
 <p>Plot the deformed <code>fem</code> structure given a list or set of substitution data <code>data</code>, a frame scaling factor <code>frame_scaling</code> or <code>nodes_scaling, elements_scaling</code>, a loads scaling factor <code>load_scaling</code>, and a deformation magnification factor <code>deformation_scaling</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
-<li><strong>Optional inputs</strong>: <code>data::{list('='), set('=')} := []</code>, <code>deformation_scaling::numeric := 1.0</code>, <code>frame_scaling::{numeric, list(numeric)} := 0.</code>, <code>interpolate::boolean := true</code>, <code>load_scaling::numeric := 1.0</code></li>
-<li><strong>Returns</strong>: <code>{function, list(function)}</code></li>
+<li><strong>Inputs</strong>: <code>fem::FEM</code>.</li>
+<li><strong>Optional inputs</strong>: <code>data::{list('='), set('=')} := []</code>, <code>deformation_scaling::numeric := 1.0</code>, <code>frame_scaling::{numeric, list(numeric)} := 0.</code>, <code>interpolate::boolean := true</code>, <code>load_scaling::numeric := 1.0</code>.</li>
+<li><strong>Returns</strong>: <code>{function, list(function)}</code>.</li>
 </ul>
 <p>Proto: <code>PlotDeformedStructure(fem, data = [], deformation_scaling = 1.0, frame_scaling = 0.0, interpolate = true, load_scaling = 1.0)</code></p>
 </section>
@@ -1059,9 +1118,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="isnode">IsNODE</h3>
 <p>Check if the variable <code>var</code> is of <code>NODE</code> type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsNODE(var)</code></p>
 </section>
@@ -1069,9 +1128,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="isnodes">IsNODES</h3>
 <p>Check if the variable <code>var</code> is of <code>NODES</code> type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsNODES(var)</code></p>
 </section>
@@ -1079,9 +1138,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="issupport">IsSUPPORT</h3>
 <p>Check if the variable <code>var</code> is of <code>SUPPORT</code> type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsSUPPORT(var)</code></p>
 </section>
@@ -1089,9 +1148,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="issupports">IsSUPPORTS</h3>
 <p>Check if the variable <code>var</code> is of <code>SUPPORTS</code> type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsSUPPORTS(var)</code></p>
 </section>
@@ -1099,9 +1158,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="isdofs">IsDOFS</h3>
 <p>Check if the variable <code>var</code> is of <code>DOFS</code> type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsDOFS(var)</code></p>
 </section>
@@ -1109,9 +1168,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makenode">MakeNode</h3>
 <p>Create a node with name <code>name</code> at coordinates <code>coordinates</code> in the reference frame <code>frame</code>. The constraints on dofs are specified by <code>dofs</code>, where 1 means free and 0 means that the dof is constrained in the direction given from (global to local) <code>frame</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>name::string</code>, <code>coordinates::{POINT, VECTOR, Vector}</code></li>
-<li><strong>Optional inputs</strong>: <code>displacements::Vector(algebraic) := &lt;0, 0, 0, 0, 0, 0&gt;</code>, <code>dofs::DOFS := &lt;1, 1, 1, 1, 1, 1&gt;</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code></li>
-<li><strong>Returns</strong>: <code>NODE</code></li>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>coordinates::{POINT, VECTOR, Vector}</code>.</li>
+<li><strong>Optional inputs</strong>: <code>displacements::Vector(algebraic) := &lt;0, 0, 0, 0, 0, 0&gt;</code>, <code>dofs::DOFS := &lt;1, 1, 1, 1, 1, 1&gt;</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code>.</li>
+<li><strong>Returns</strong>: <code>NODE</code>.</li>
 </ul>
 <p>Proto: <code>MakeNode(name, coordinates, displacements = &lt;0, 0, 0, 0, 0, 0&gt;, dofs = &lt;1, 1, 1, 1, 1, 1&gt;, frame = Matrix(4,shape = identity))</code></p>
 </section>
@@ -1119,9 +1178,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makecompliantnode">MakeCompliantNode</h3>
 <p>Create a node with name <code>name</code> at coordinates <code>coordinates</code> in the reference frame <code>frame</code>. The constraints on dofs are specified by <code>dofs</code>, where 1 means free and 0 means that the dof is constrained in the direction given from (global to local) <code>frame</code>. The node is also connected to a compliant spring element with traslational stiffness <code>K</code> and torsional stiffness <code>T</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>name::string</code>, <code>coordinates::{POINT, VECTOR, Vector}</code></li>
-<li><strong>Optional inputs</strong>: <code>K::{algebraic, list(algebraic)} := 0</code>, <code>T::{algebraic, list(algebraic)} := 0</code>, <code>displacements::Vector(algebraic) := &lt;0, 0, 0, 0, 0, 0&gt;</code>, <code>dofs::DOFS := &lt;1, 1, 1, 1, 1, 1&gt;</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code></li>
-<li><strong>Returns</strong>: <code>NODE</code></li>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>coordinates::{POINT, VECTOR, Vector}</code>.</li>
+<li><strong>Optional inputs</strong>: <code>K::{algebraic, list(algebraic)} := 0</code>, <code>T::{algebraic, list(algebraic)} := 0</code>, <code>displacements::Vector(algebraic) := &lt;0, 0, 0, 0, 0, 0&gt;</code>, <code>dofs::DOFS := &lt;1, 1, 1, 1, 1, 1&gt;</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code>.</li>
+<li><strong>Returns</strong>: <code>NODE</code>.</li>
 </ul>
 <p>Proto: <code>MakeCompliantNode(name, coordinates, K = 0, T = 0, displacements = &lt;0, 0, 0, 0, 0, 0&gt;, dofs = &lt;1, 1, 1, 1, 1, 1&gt;, frame = Matrix(4,shape = identity))</code></p>
 </section>
@@ -1132,9 +1191,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="isstiffness">IsSTIFFNESS</h3>
 <p>Check if the variable <code>var</code> is of <code>STIFFNESS</code> type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsSTIFFNESS(var)</code></p>
 </section>
@@ -1142,9 +1201,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="getspringstiffness">GetSpringStiffness</h3>
 <p>Get the stiffness matrix of a spring given the translational stiffnesses <code>K</code> or <code>K_x, K_y, K_z</code>, and the torsional stiffnesses <code>T</code> or <code>T_x, T_y, T_z</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>K::{algebraic, list(algebraic)}</code>, <code>T::{algebraic, list(algebraic)}</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>STIFFNESS</code></li>
+<li><strong>Inputs</strong>: <code>K::{algebraic, list(algebraic)}</code>, <code>T::{algebraic, list(algebraic)}</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>STIFFNESS</code>.</li>
 </ul>
 <p>Proto: <code>GetSpringStiffness(K, T)</code></p>
 </section>
@@ -1152,9 +1211,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="getrodstiffness">GetRodStiffness</h3>
 <p>Get the stiffness matrix of a rod (only axial-stiffness) given the cross-section area <code>A</code>, the Young’s modulus <code>E</code>, the shear modulus <code>G</code>, the length <code>L</code>, and the cross-section inertia <code>I_x</code>, <code>I_y</code> and <code>I_z</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>A::algebraic</code>, <code>E::algebraic</code>, <code>G::algebraic</code>, <code>L::algebraic</code>, <code>I_x::algebraic</code>, <code>I_y::algebraic</code>, <code>I_z::algebraic</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>STIFFNESS</code></li>
+<li><strong>Inputs</strong>: <code>A::algebraic</code>, <code>E::algebraic</code>, <code>G::algebraic</code>, <code>L::algebraic</code>, <code>I_x::algebraic</code>, <code>I_y::algebraic</code>, <code>I_z::algebraic</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>STIFFNESS</code>.</li>
 </ul>
 <p>Proto: <code>GetRodStiffness(A, E, G, L, I_x, I_y, I_z)</code></p>
 </section>
@@ -1162,9 +1221,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="getbeamstiffness">GetBeamStiffness</h3>
 <p>Get the stiffness matrix of a lean beam given the cross-section area <code>A</code>, the Young’s modulus <code>E</code>, the shear modulus <code>G</code>, the length <code>L</code>, and the inertia of the cross-section <code>I_x</code>, <code>I_y</code> and <code>I_z</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>A::algebraic</code>, <code>E::algebraic</code>, <code>G::algebraic</code>, <code>L::algebraic</code>, <code>I_x::algebraic</code>, <code>I_y::algebraic</code>, <code>I_z::algebraic</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>STIFFNESS</code></li>
+<li><strong>Inputs</strong>: <code>A::algebraic</code>, <code>E::algebraic</code>, <code>G::algebraic</code>, <code>L::algebraic</code>, <code>I_x::algebraic</code>, <code>I_y::algebraic</code>, <code>I_z::algebraic</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>STIFFNESS</code>.</li>
 </ul>
 <p>Proto: <code>GetBeamStiffness(A, E, G, L, I_x, I_y, I_z)</code></p>
 </section>
@@ -1172,9 +1231,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="gettimoshenkobeamstiffness">GetTimoshenkoBeamStiffness</h3>
 <p>Get the stiffness matrix of a Timoshenko’s (thick) beam given the cross-section area <code>A</code>, the Young’s modulus <code>E</code>, the shear modulus <code>G</code>, the length <code>L</code>, and the inertia of the cross-section <code>I_x</code>, <code>I_y</code> and <code>I_z</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>A::algebraic</code>, <code>E::algebraic</code>, <code>G::algebraic</code>, <code>L::algebraic</code>, <code>I_x::algebraic</code>, <code>I_y::algebraic</code>, <code>I_z::algebraic</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>STIFFNESS</code></li>
+<li><strong>Inputs</strong>: <code>A::algebraic</code>, <code>E::algebraic</code>, <code>G::algebraic</code>, <code>L::algebraic</code>, <code>I_x::algebraic</code>, <code>I_y::algebraic</code>, <code>I_z::algebraic</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>STIFFNESS</code>.</li>
 </ul>
 <p>Proto: <code>GetTimoshenkoBeamStiffness(A, E, G, L, I_x, I_y, I_z)</code></p>
 </section>
@@ -1185,9 +1244,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="iselement">IsELEMENT</h3>
 <p>Check if the variable <code>var</code> is of <code>ELEMENT</code> type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsELEMENT(var)</code></p>
 </section>
@@ -1195,9 +1254,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="iselements">IsELEMENTS</h3>
 <p>Check if the variable <code>var</code> is of <code>ELEMENTS</code> type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsELEMENTS(var)</code></p>
 </section>
@@ -1205,9 +1264,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makeelement">MakeElement</h3>
 <p>Make an element with name <code>name</code> on reference frame <code>frame</code>, connecting the dofs <code>Ni_dofs</code> on i-th node i <code>[Ni, Ni_dofs]</code>, connecting with stiffness <code>K</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>name::string</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>ELEMENT</code></li>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>ELEMENT</code>.</li>
 </ul>
 <p>Proto: <code>MakeElement(name, frame = Matrix(4,shape = identity))</code></p>
 </section>
@@ -1215,9 +1274,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makespring">MakeSpring</h3>
 <p>Make a spring element with name <code>name</code> on reference frame <code>frame</code>, connecting the dofs <code>N1_dofs</code> on node 1 <code>[N1, N1_dofs]</code>, connecting the dofs <code>N2_dofs</code> on node 2 <code>[N2, N2_dofs]</code> with translational stiffnesses <code>K</code> or <code>K_x, K_y, K_z</code>, and torsional stiffnesses <code>T</code> or <code>T_x, T_y, T_z</code>. Optional nodes distance <code>distance</code> can be specified.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>name::string</code>, <code>N1::{NODE, list({DOFS, NODE})}</code>, <code>N2::{NODE, list({DOFS, NODE})}</code></li>
-<li><strong>Optional inputs</strong>: <code>K::{algebraic, list(algebraic)} := 0</code>, <code>T::{algebraic, list(algebraic)} := 0</code>, <code>distance::algebraic := 0</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code></li>
-<li><strong>Returns</strong>: <code>ELEMENT</code></li>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>N1::{NODE, list({DOFS, NODE})}</code>, <code>N2::{NODE, list({DOFS, NODE})}</code>.</li>
+<li><strong>Optional inputs</strong>: <code>K::{algebraic, list(algebraic)} := 0</code>, <code>T::{algebraic, list(algebraic)} := 0</code>, <code>distance::algebraic := 0</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code>.</li>
+<li><strong>Returns</strong>: <code>ELEMENT</code>.</li>
 </ul>
 <p>Proto: <code>MakeSpring(name, N1, N2, K = 0, T = 0, distance = 0, frame = Matrix(4,shape = identity))</code></p>
 </section>
@@ -1225,9 +1284,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makerod">MakeRod</h3>
 <p>Make a rod element with name <code>name</code> on reference frame <code>frame</code>, connecting the dofs <code>N1_dofs</code> on node 1 <code>[N1, N1_dofs]</code> and the dofs <code>N2_dofs</code> on node 2 <code>[N2, N2_dofs]</code>, with material <code>material</code>, cross-section area <code>area</code> and inertia <code>inertia</code>. Optional nodes distance <code>distance</code> can be specified.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>name::string</code>, <code>N1::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})}</code>, <code>N2::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})}</code></li>
-<li><strong>Optional inputs</strong>: <code>area::algebraic := 0</code>, <code>distance::algebraic := -1</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code>, <code>inertia::list(algebraic) := [0, 0, 0]</code>, <code>material::MATERIAL := TrussMe_FEM:-MakeCarbonSteel()</code></li>
-<li><strong>Returns</strong>: <code>ELEMENT</code></li>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>N1::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})}</code>, <code>N2::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})}</code>.</li>
+<li><strong>Optional inputs</strong>: <code>area::algebraic := 0</code>, <code>distance::algebraic := -1</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code>, <code>inertia::list(algebraic) := [0, 0, 0]</code>, <code>material::MATERIAL := TrussMe_FEM:-MakeCarbonSteel()</code>.</li>
+<li><strong>Returns</strong>: <code>ELEMENT</code>.</li>
 </ul>
 <p>Proto: <code>MakeRod(name, N1, N2, area = 0, distance = -1, frame = Matrix(4,shape = identity), inertia = [0, 0, 0], material = TrussMe_FEM:-MakeCarbonSteel())</code></p>
 </section>
@@ -1235,9 +1294,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="makebeam">MakeBeam</h3>
 <p>Make a beam element with name <code>name</code> on reference frame <code>frame</code>, connecting the dofs <code>N1_dofs</code> on node 1 <code>[N1, N1_dofs]</code>, connecting the dofs <code>N2_dofs</code> on node 2 <code>[N2, N2_dofs]</code> with material <code>material</code> and cross-section area <code>area</code> and inertia <code>inertia</code>. Optional nodes distance <code>distance</code> and Timoshenko’s beam boolean <code>timoshenko</code> can be specified.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>name::string</code>, <code>N1::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})}</code>, <code>N2::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})}</code></li>
-<li><strong>Optional inputs</strong>: <code>area::algebraic := 0</code>, <code>distance::algebraic := -1</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code>, <code>inertia::list(algebraic) := [0, 0, 0]</code>, <code>material::MATERIAL := TrussMe_FEM:-MakeCarbonSteel()</code>, <code>timoshenko::boolean := false</code></li>
-<li><strong>Returns</strong>: <code>ELEMENT</code></li>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>N1::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})}</code>, <code>N2::{NODE, Vector({DOFS, NODE}), list({DOFS, NODE})}</code>.</li>
+<li><strong>Optional inputs</strong>: <code>area::algebraic := 0</code>, <code>distance::algebraic := -1</code>, <code>frame::FRAME := Matrix(4,shape = identity)</code>, <code>inertia::list(algebraic) := [0, 0, 0]</code>, <code>material::MATERIAL := TrussMe_FEM:-MakeCarbonSteel()</code>, <code>timoshenko::boolean := false</code>.</li>
+<li><strong>Returns</strong>: <code>ELEMENT</code>.</li>
 </ul>
 <p>Proto: <code>MakeBeam(name, N1, N2, area = 0, distance = -1, frame = Matrix(4,shape = identity), inertia = [0, 0, 0], material = TrussMe_FEM:-MakeCarbonSteel(), timoshenko = false)</code></p>
 </section>
@@ -1248,9 +1307,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="isstructure">IsSTRUCTURE</h3>
 <p>Check if the variable <code>var</code> is of <code>STRUCTURE</code> type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsSTRUCTURE(var)</code></p>
 </section>
@@ -1258,9 +1317,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="getnodaldofs">GetNodalDofs</h3>
 <p>Get nodal dofs of nodes <code>nodes</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>nodes::NODES</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>Vector</code></li>
+<li><strong>Inputs</strong>: <code>nodes::NODES</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>Vector</code>.</li>
 </ul>
 <p>Proto: <code>GetNodalDofs(nodes)</code></p>
 </section>
@@ -1268,9 +1327,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="getnodaldisplacements">GetNodalDisplacements</h3>
 <p>Get the vector of nodal displacements of nodes <code>nodes</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>nodes::NODES</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>Vector</code></li>
+<li><strong>Inputs</strong>: <code>nodes::NODES</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>Vector</code>.</li>
 </ul>
 <p>Proto: <code>GetNodalDisplacements(nodes)</code></p>
 </section>
@@ -1278,9 +1337,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="stiffnesstransformation">StiffnessTransformation</h3>
 <p>Compute the transformation matrix of the nodes <code>nodes</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>nodes::NODES</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>Matrix</code></li>
+<li><strong>Inputs</strong>: <code>nodes::NODES</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>Matrix</code>.</li>
 </ul>
 <p>Proto: <code>StiffnessTransformation(nodes)</code></p>
 </section>
@@ -1288,9 +1347,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="globalstiffness">GlobalStiffness</h3>
 <p>Compute the global stiffness matrix of the nodes <code>nodes</code> and elements <code>elements</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>nodes::NODES</code>, <code>elements::ELEMENTS</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>Matrix</code></li>
+<li><strong>Inputs</strong>: <code>nodes::NODES</code>, <code>elements::ELEMENTS</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>Matrix</code>.</li>
 </ul>
 <p>Proto: <code>GlobalStiffness(nodes, elements)</code></p>
 </section>
@@ -1298,9 +1357,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="recaststiffness">RecastStiffness</h3>
 <p>Recast the stiffness matrix <code>K</code> according to the constrained negated dofs <code>d</code> of the element name <code>e</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>K::STIFFNESS</code>, <code>d::Vector</code>, <code>e::string</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>Matrix</code></li>
+<li><strong>Inputs</strong>: <code>K::STIFFNESS</code>, <code>d::Vector</code>, <code>e::string</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>Matrix</code>.</li>
 </ul>
 <p>Proto: <code>RecastStiffness(K, d, e)</code></p>
 </section>
@@ -1308,9 +1367,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="globalstiffnessprime">GlobalStiffnessPrime</h3>
 <p>Compute the global stiffness matrix of the nodes <code>nodes</code> and elements <code>elements</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>nodes::NODES</code>, <code>elements::ELEMENTS</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>Matrix</code></li>
+<li><strong>Inputs</strong>: <code>nodes::NODES</code>, <code>elements::ELEMENTS</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>Matrix</code>.</li>
 </ul>
 <p>Proto: <code>GlobalStiffnessPrime(nodes, elements)</code></p>
 </section>
@@ -1318,9 +1377,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="isfem">IsFEM</h3>
 <p>Check if the variable <code>var</code> is of FEM type.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>var::anything</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>boolean</code></li>
+<li><strong>Inputs</strong>: <code>var::anything</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>boolean</code>.</li>
 </ul>
 <p>Proto: <code>IsFEM(var)</code></p>
 </section>
@@ -1328,9 +1387,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="splitfem">SplitFEM</h3>
 <p>Split the FEM structure <code>fem</code> in free and constrained dofs.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>NULL</code></li>
+<li><strong>Inputs</strong>: <code>fem::FEM</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>NULL</code>.</li>
 </ul>
 <p>Proto: <code>SplitFEM(fem)</code></p>
 </section>
@@ -1338,9 +1397,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="recastfem">RecastFEM</h3>
 <p>Recast the system <code>fem</code> to avoid singularities.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>NULL</code></li>
+<li><strong>Inputs</strong>: <code>fem::FEM</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>NULL</code>.</li>
 </ul>
 <p>Proto: <code>RecastFEM(fem)</code></p>
 </section>
@@ -1348,9 +1407,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="generatefem">GenerateFEM</h3>
 <p>Generate a FEM structure from the nodes <code>nodes</code>, elements <code>elements</code>, and loads <code>loads</code>. If <code>tryhard</code> is enabled, the stiffness matrix will be recasted to avoid singularities.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>nodes::NODES</code>, <code>elements::ELEMENTS</code>, <code>loads::LOADS</code></li>
-<li><strong>Optional inputs</strong>: <code>tryhard::boolean := false</code></li>
-<li><strong>Returns</strong>: <code>FEM</code></li>
+<li><strong>Inputs</strong>: <code>nodes::NODES</code>, <code>elements::ELEMENTS</code>, <code>loads::LOADS</code>.</li>
+<li><strong>Optional inputs</strong>: <code>tryhard::boolean := false</code>.</li>
+<li><strong>Returns</strong>: <code>FEM</code>.</li>
 </ul>
 <p>Proto: <code>GenerateFEM(nodes, elements, loads, tryhard = false)</code></p>
 </section>
@@ -1358,29 +1417,29 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="numericalsolvefem">NumericalSolveFEM</h3>
 <p>Solve numerically the FEM structure <code>fem</code> provided with optional data <code>data</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
-<li><strong>Optional inputs</strong>: <code>data::list := []</code></li>
-<li><strong>Returns</strong>: <code>NULL</code></li>
+<li><strong>Inputs</strong>: <code>fem::FEM</code>.</li>
+<li><strong>Optional inputs</strong>: <code>data::list := []</code>.</li>
+<li><strong>Returns</strong>: <code>NULL</code>.</li>
 </ul>
 <p>Proto: <code>NumericalSolveFEM(fem, data = [])</code></p>
 </section>
 <section id="solvefem" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="solvefem">SolveFEM</h3>
-<p>Solve the FEM structure <code>fem</code> and optionally use LAST LU decompostion <code>use_LAST</code> and veil the expressions <code>use_LEM</code> with signature mode <code>use_SIG</code> and label <code>label</code>. Factorization method <code>factorization</code> can be choosen between <code>LU</code>, fraction-free <code>FFLU</code>, <code>QR</code>, and Gauss-Jordan <code>GJ</code>. Time limit <code>time_limit</code> and maximum veiling cost <code>maxcost</code> can be specified.</p>
+<p>Solve the FEM structure <code>fem</code> and optionally use LAST LU decompostion <code>use_LAST</code> and veil the expressions <code>use_LEM</code> with label <code>label</code>. The optional data <code>data</code> can be specified to perform a mixed numerically informed pivoting. Factorization method <code>factorization</code> can be choosen between ‘LU’, fraction-free ‘FFLU’, ‘QR’, and Gauss-Jordan ‘GJ’. Time limit <code>time_limit</code> and maximum veiling cost <code>maxcost</code> can be specified.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
-<li><strong>Optional inputs</strong>: <code>factorization::string := "LU"</code>, <code>label::string := "V"</code>, <code>maxcost::nonnegint := 15</code>, <code>time_limit::positive := 1.0</code>, <code>use_LAST::boolean := false</code>, <code>use_LEM::boolean := true</code>, <code>use_SIG::boolean := true</code></li>
-<li><strong>Returns</strong>: <code>NULL</code></li>
+<li><strong>Inputs</strong>: <code>fem::FEM</code>.</li>
+<li><strong>Optional inputs</strong>: <code>factorization::string := "LU"</code>, <code>label::string := "V"</code>, <code>data::{list, set} := []</code>, <code>maxcost::nonnegint := 15</code>, <code>time_limit::positive := 1.0</code>, <code>use_LAST::boolean := false</code>, <code>use_LEM::boolean := true</code>.</li>
+<li><strong>Returns</strong>: <code>NULL</code>.</li>
 </ul>
-<p>Proto: <code>SolveFEM(fem, factorization = "LU", label = "V", maxcost = 15, time_limit = 1.0, use_LAST = false, use_LEM = true, use_SIG = true)</code></p>
+<p>Proto: <code>SolveFEM(fem, factorization = "LU", label = "V", data = [], maxcost = 15, time_limit = 1.0, use_LAST = false, use_LEM = true)</code></p>
 </section>
 <section id="storefem" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="storefem">StoreFEM</h3>
 <p>Store the FEM structure <code>fem</code> in the nodes <code>nodes</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>NULL</code></li>
+<li><strong>Inputs</strong>: <code>fem::FEM</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>NULL</code>.</li>
 </ul>
 <p>Proto: <code>StoreFEM(fem)</code></p>
 </section>
@@ -1391,9 +1450,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="getoutputdisplacements">GetOutputDisplacements</h3>
 <p>Get the output displacements of a solved and stored <code>fem</code> structure.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>Matrix</code></li>
+<li><strong>Inputs</strong>: <code>fem::FEM</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>Matrix</code>.</li>
 </ul>
 <p>Proto: <code>GetOutputDisplacements(fem)</code></p>
 </section>
@@ -1401,9 +1460,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="getoutputreactions">GetOutputReactions</h3>
 <p>Get the output reactions of a solved and stored <code>fem</code> structure.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>fem::FEM</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>Matrix</code></li>
+<li><strong>Inputs</strong>: <code>fem::FEM</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>Matrix</code>.</li>
 </ul>
 <p>Proto: <code>GetOutputReactions(fem)</code></p>
 </section>
@@ -1414,9 +1473,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="generatefile">GenerateFile</h3>
 <p>Generate a file named <code>fname</code> with the content <code>str</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>fname::string</code>, <code>str::string</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>NULL</code></li>
+<li><strong>Inputs</strong>: <code>fname::string</code>, <code>str::string</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>NULL</code>.</li>
 </ul>
 <p>Proto: <code>GenerateFile(fname, str)</code></p>
 </section>
@@ -1424,9 +1483,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="clearfile">ClearFile</h3>
 <p>Procedure that creates an empty file <code>fname</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>fname::string</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>NULL</code></li>
+<li><strong>Inputs</strong>: <code>fname::string</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>NULL</code>.</li>
 </ul>
 <p>Proto: <code>ClearFile(fname)</code></p>
 </section>
@@ -1434,9 +1493,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="setcodegenoptions">SetCodegenOptions</h3>
 <p>Set options for code generation optimization.</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: <code>coercetypes::boolean := m_CodegenOptions[parse("coercetypes")]</code>, <code>deducereturn::boolean := m_CodegenOptions[parse("deducereturn")]</code>, <code>deducetypes::boolean := m_CodegenOptions[parse("deducetypes")]</code>, <code>defaulttype::symbol := m_CodegenOptions[parse("defaulttype")]</code>, <code>digits::posint := m_CodegenOptions[parse("digits")]</code>, <code>functionprecision::symbol := m_CodegenOptions[parse("functionprecision")]</code>, <code>optimize::boolean := m_CodegenOptions[parse("optimize")]</code>, <code>reduceanalysis::boolean := m_CodegenOptions[parse("reduceanalysis")]</code></li>
-<li><strong>Returns</strong>: <code>NULL</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: <code>coercetypes::boolean := m_CodegenOptions[parse("coercetypes")]</code>, <code>deducereturn::boolean := m_CodegenOptions[parse("deducereturn")]</code>, <code>deducetypes::boolean := m_CodegenOptions[parse("deducetypes")]</code>, <code>defaulttype::symbol := m_CodegenOptions[parse("defaulttype")]</code>, <code>digits::posint := m_CodegenOptions[parse("digits")]</code>, <code>functionprecision::symbol := m_CodegenOptions[parse("functionprecision")]</code>, <code>optimize::boolean := m_CodegenOptions[parse("optimize")]</code>, <code>reduceanalysis::boolean := m_CodegenOptions[parse("reduceanalysis")]</code>.</li>
+<li><strong>Returns</strong>: <code>NULL</code>.</li>
 </ul>
 <p>Proto: <code>SetCodegenOptions(coercetypes = m_CodegenOptions[parse("coercetypes")], deducereturn = m_CodegenOptions[parse("deducereturn")], deducetypes = m_CodegenOptions[parse("deducetypes")], defaulttype = m_CodegenOptions[parse("defaulttype")], digits = m_CodegenOptions[parse("digits")], functionprecision = m_CodegenOptions[parse("functionprecision")], optimize = m_CodegenOptions[parse("optimize")], reduceanalysis = m_CodegenOptions[parse("reduceanalysis")])</code></p>
 </section>
@@ -1444,9 +1503,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="getcodegenoptions">GetCodegenOptions</h3>
 <p>Get options for code generation.</p>
 <ul>
-<li><strong>Inputs</strong>: None</li>
-<li><strong>Optional inputs</strong>: <code>field::string := "all"</code></li>
-<li><strong>Returns</strong>: <code>anything</code></li>
+<li><strong>Inputs</strong>: None.</li>
+<li><strong>Optional inputs</strong>: <code>field::string := "all"</code>.</li>
+<li><strong>Returns</strong>: <code>anything</code>.</li>
 </ul>
 <p>Proto: <code>GetCodegenOptions(field = "all")</code></p>
 </section>
@@ -1454,9 +1513,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="translatetomatlab">TranslateToMatlab</h3>
 <p>Convert a list of expressions <code>expr_list</code> into Matlab code.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>expr_list::list</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>NULL</code></li>
+<li><strong>Inputs</strong>: <code>expr_list::list</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>NULL</code>.</li>
 </ul>
 <p>Proto: <code>TranslateToMatlab(expr_list)</code></p>
 </section>
@@ -1464,9 +1523,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="applyindent">ApplyIndent</h3>
 <p>Apply indentation <code>ind</code> to string <code>str</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>ind::string</code>, <code>str::string</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>string</code></li>
+<li><strong>Inputs</strong>: <code>ind::string</code>, <code>str::string</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>string</code>.</li>
 </ul>
 <p>Proto: <code>ApplyIndent(ind, str)</code></p>
 </section>
@@ -1474,9 +1533,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="generateproperties">GenerateProperties</h3>
 <p>Generate properties code from a list of data <code>data</code> and optional indentation <code>indent</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>data::list(symbol)</code></li>
-<li><strong>Optional inputs</strong>: <code>indent::string := "  "</code></li>
-<li><strong>Returns</strong>: <code>string</code></li>
+<li><strong>Inputs</strong>: <code>data::list(symbol)</code>.</li>
+<li><strong>Optional inputs</strong>: <code>indent::string := "  "</code>.</li>
+<li><strong>Returns</strong>: <code>string</code>.</li>
 </ul>
 <p>Proto: <code>GenerateProperties(data, indent = "  ")</code></p>
 </section>
@@ -1484,9 +1543,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="generateinputs">GenerateInputs</h3>
 <p>Generate inputs code from a list of variables <code>vars</code> and optional indentation <code>indent</code> and skip null inputs <code>skipnull</code> flag.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>vars::list(list({string, symbol}))</code></li>
-<li><strong>Optional inputs</strong>: <code>indent::string := "  "</code>, <code>skipnull::boolean := true</code></li>
-<li><strong>Returns</strong>: <code>string</code></li>
+<li><strong>Inputs</strong>: <code>vars::list(list({string, symbol}))</code>.</li>
+<li><strong>Optional inputs</strong>: <code>indent::string := "  "</code>, <code>skipnull::boolean := true</code>.</li>
+<li><strong>Returns</strong>: <code>string</code>.</li>
 </ul>
 <p>Proto: <code>GenerateInputs(vars, indent = "  ", skipnull = true)</code></p>
 </section>
@@ -1494,9 +1553,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="extractelements">ExtractElements</h3>
 <p>Extract elements for a n-dimensional function <code>func</code> with name <code>name</code>, dimensions <code>dims</code>, and optional veiling label <code>label</code>, indentation <code>indent</code> and skip null inputs <code>skipnull</code> flag.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>name::string</code>, <code>func::{Array, Matrix, Vector, list}</code>, <code>dims::list(nonnegint)</code></li>
-<li><strong>Optional inputs</strong>: <code>indent::string := "  "</code>, <code>label::string := "out"</code>, <code>skipnull::boolean := true</code></li>
-<li><strong>Returns</strong>: <code>list</code></li>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>func::{Array, Matrix, Vector, list}</code>, <code>dims::list(nonnegint)</code>.</li>
+<li><strong>Optional inputs</strong>: <code>indent::string := "  "</code>, <code>label::string := "out"</code>, <code>skipnull::boolean := true</code>.</li>
+<li><strong>Returns</strong>: <code>list</code>.</li>
 </ul>
 <p>Proto: <code>ExtractElements(name, func, dims, indent = "  ", label = "out", skipnull = true)</code></p>
 </section>
@@ -1504,9 +1563,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="generateheader">GenerateHeader</h3>
 <p>Generate a function header for a function <code>name</code> with variables <code>vars</code>, optional description <code>info</code> and indentation <code>indent</code> and skip class object input <code>skipthis</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>name::string</code>, <code>vars::list(list(symbol))</code></li>
-<li><strong>Optional inputs</strong>: <code>indent::string := "  "</code>, <code>info::string := "No description provided."</code>, <code>skipthis::boolean := false</code></li>
-<li><strong>Returns</strong>: <code>string</code></li>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>vars::list(list(symbol))</code>.</li>
+<li><strong>Optional inputs</strong>: <code>indent::string := "  "</code>, <code>info::string := "No description provided."</code>, <code>skipthis::boolean := false</code>.</li>
+<li><strong>Returns</strong>: <code>string</code>.</li>
 </ul>
 <p>Proto: <code>GenerateHeader(name, vars, indent = "  ", info = "No description provided.", skipthis = false)</code></p>
 </section>
@@ -1514,9 +1573,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="generateelements">GenerateElements</h3>
 <p>Generate code for elements <code>func</code> with optional indentation <code>indent</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>func::{Array, Matrix, Vector, list}</code></li>
-<li><strong>Optional inputs</strong>: <code>indent::string := "  "</code></li>
-<li><strong>Returns</strong>: <code>string</code></li>
+<li><strong>Inputs</strong>: <code>func::{Array, Matrix, Vector, list}</code>.</li>
+<li><strong>Optional inputs</strong>: <code>indent::string := "  "</code>.</li>
+<li><strong>Returns</strong>: <code>string</code>.</li>
 </ul>
 <p>Proto: <code>GenerateElements(func, indent = "  ")</code></p>
 </section>
@@ -1524,9 +1583,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="generatebody">GenerateBody</h3>
 <p>Generate code for function body for a function <code>name</code> with dimensions <code>dims</code>, optional header <code>header</code>, properties <code>properties</code>, inputs <code>inputs</code>, veils <code>veils</code>, elements <code>elements</code>, indentation <code>indent</code>, outputs <code>outputs</code> and vector type <code>typestr</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>name::string</code>, <code>dims::list(nonnegint)</code></li>
-<li><strong>Optional inputs</strong>: <code>elements::string := "No elements"</code>, <code>header::string := "No header"</code>, <code>indent::string := "  "</code>, <code>inputs::string := "No inputs"</code>, <code>outputs::string := "No outputs"</code>, <code>properties::string := "No properties"</code>, <code>typestr::string := "zeros"</code>, <code>veils::string := "No veils"</code></li>
-<li><strong>Returns</strong>: <code>string</code></li>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>dims::list(nonnegint)</code>.</li>
+<li><strong>Optional inputs</strong>: <code>elements::string := "No elements"</code>, <code>header::string := "No header"</code>, <code>indent::string := "  "</code>, <code>inputs::string := "No inputs"</code>, <code>outputs::string := "No outputs"</code>, <code>properties::string := "No properties"</code>, <code>typestr::string := "zeros"</code>, <code>veils::string := "No veils"</code>.</li>
+<li><strong>Returns</strong>: <code>string</code>.</li>
 </ul>
 <p>Proto: <code>GenerateBody(name, dims, elements = "No elements", header = "No header", indent = "  ", inputs = "No inputs", outputs = "No outputs", properties = "No properties", typestr = "zeros", veils = "No veils")</code></p>
 </section>
@@ -1534,9 +1593,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="vectortomatlab">VectorToMatlab</h3>
 <p>Translate the vector <code>vec</code> with variables <code>vars</code> into a Matlab function named <code>name</code> and return it as a string. The optional arguments and class properties <code>data</code>, function description <code>info</code>, veiling label <code>label</code>, and indentation string <code>indent</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>name::string</code>, <code>vars::list(list(symbol))</code>, <code>vec::Vector</code></li>
-<li><strong>Optional inputs</strong>: <code>data::list(symbol) := []</code>, <code>indent::string := "  "</code>, <code>info::string := "No info"</code>, <code>label::string := "out"</code>, <code>skipnull::boolean := true</code></li>
-<li><strong>Returns</strong>: <code>string</code></li>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>vars::list(list(symbol))</code>, <code>vec::Vector</code>.</li>
+<li><strong>Optional inputs</strong>: <code>data::list(symbol) := []</code>, <code>indent::string := "  "</code>, <code>info::string := "No info"</code>, <code>label::string := "out"</code>, <code>skipnull::boolean := true</code>.</li>
+<li><strong>Returns</strong>: <code>string</code>.</li>
 </ul>
 <p>Proto: <code>VectorToMatlab(name, vars, vec, data = [], indent = "  ", info = "No info", label = "out", skipnull = true)</code></p>
 </section>
@@ -1544,9 +1603,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="matrixtomatlab">MatrixToMatlab</h3>
 <p>Translate the vector <code>vec</code> with variables <code>vars</code> into a Matlab function named <code>name</code> and return it as a string. The optional arguments and class properties <code>data</code>, function description <code>info</code>, veiling label <code>label</code>, and indentation string <code>indent</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>name::string</code>, <code>vars::list(list(symbol))</code>, <code>mat::Matrix</code></li>
-<li><strong>Optional inputs</strong>: <code>data::list(symbol) := []</code>, <code>indent::string := "  "</code>, <code>info::string := "No info"</code>, <code>label::string := "out"</code>, <code>skipnull::boolean := true</code></li>
-<li><strong>Returns</strong>: <code>string</code></li>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>vars::list(list(symbol))</code>, <code>mat::Matrix</code>.</li>
+<li><strong>Optional inputs</strong>: <code>data::list(symbol) := []</code>, <code>indent::string := "  "</code>, <code>info::string := "No info"</code>, <code>label::string := "out"</code>, <code>skipnull::boolean := true</code>.</li>
+<li><strong>Returns</strong>: <code>string</code>.</li>
 </ul>
 <p>Proto: <code>MatrixToMatlab(name, vars, mat, data = [], indent = "  ", info = "No info", label = "out", skipnull = true)</code></p>
 </section>
@@ -1554,9 +1613,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="getveilsubs">GetVeilSubs</h3>
 <p>Get the substitutions to transform veils <code>veil</code> from <code>(v[j])(f)</code> to <code>v_j</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>veil::{Vector(algebraic), list(algebraic)}</code></li>
-<li><strong>Optional inputs</strong>: None</li>
-<li><strong>Returns</strong>: <code>NULL</code></li>
+<li><strong>Inputs</strong>: <code>veil::{Vector(algebraic), list(algebraic)}</code>.</li>
+<li><strong>Optional inputs</strong>: None.</li>
+<li><strong>Returns</strong>: <code>NULL</code>.</li>
 </ul>
 <p>Proto: <code>GetVeilSubs(veil)</code></p>
 </section>
@@ -1564,9 +1623,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="generateconstructor">GenerateConstructor</h3>
 <p>Generate a constructor for a system named <code>name</code> system data <code>data</code>, description <code>info</code> and indentation <code>indent</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>name::string</code></li>
-<li><strong>Optional inputs</strong>: <code>data::list(symbol := algebraic) := []</code>, <code>indent::string := "  "</code>, <code>info::string := "Class constructor."</code></li>
-<li><strong>Returns</strong>: <code>string</code></li>
+<li><strong>Inputs</strong>: <code>name::string</code>.</li>
+<li><strong>Optional inputs</strong>: <code>data::list(symbol := algebraic) := []</code>, <code>indent::string := "  "</code>, <code>info::string := "Class constructor."</code>.</li>
+<li><strong>Returns</strong>: <code>string</code>.</li>
 </ul>
 <p>Proto: <code>GenerateConstructor(name, data = [], indent = "  ", info = "Class constructor.")</code></p>
 </section>
@@ -1574,9 +1633,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="systemtomatlab">SystemToMatlab</h3>
 <p>Generate a FEM system <code>fem</code> with name <code>name</code>, with optional data <code>data</code>, description <code>info</code>, output label <code>label</code> and indentation <code>indent</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>name::string</code>, <code>fem::FEM</code></li>
-<li><strong>Optional inputs</strong>: <code>data::list(symbol := algebraic) := []</code>, <code>indent::string := "  "</code>, <code>info::string := "No class description provided."</code>, <code>label::string := "out"</code>, <code>vars::list(symbol) := []</code></li>
-<li><strong>Returns</strong>: <code>string</code></li>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>fem::FEM</code>.</li>
+<li><strong>Optional inputs</strong>: <code>data::list(symbol := algebraic) := []</code>, <code>indent::string := "  "</code>, <code>info::string := "No class description provided."</code>, <code>label::string := "out"</code>, <code>vars::list(symbol) := []</code>.</li>
+<li><strong>Returns</strong>: <code>string</code>.</li>
 </ul>
 <p>Proto: <code>SystemToMatlab(name, fem, data = [], indent = "  ", info = "No class description provided.", label = "out", vars = [])</code></p>
 </section>
@@ -1584,9 +1643,9 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="generatematlabcode">GenerateMatlabCode</h3>
 <p>Generate Matlab code for the FEM system <code>fem</code> with name <code>name</code>, with optional data <code>data</code>, description <code>info</code>, output label <code>label</code> and indentation <code>indent</code>, variables <code>vars</code> and output path <code>path</code>.</p>
 <ul>
-<li><strong>Inputs</strong>: <code>name::string</code>, <code>fem::FEM</code></li>
-<li><strong>Optional inputs</strong>: <code>data::list(symbol := algebraic) := []</code>, <code>indent::string := "  "</code>, <code>info::string := "No class description provided."</code>, <code>label::string := "out"</code>, <code>path::string := "./"</code>, <code>vars::list(symbol) := []</code></li>
-<li><strong>Returns</strong>: <code>NULL</code></li>
+<li><strong>Inputs</strong>: <code>name::string</code>, <code>fem::FEM</code>.</li>
+<li><strong>Optional inputs</strong>: <code>data::list(symbol := algebraic) := []</code>, <code>indent::string := "  "</code>, <code>info::string := "No class description provided."</code>, <code>label::string := "out"</code>, <code>path::string := "./"</code>, <code>vars::list(symbol) := []</code>.</li>
+<li><strong>Returns</strong>: <code>NULL</code>.</li>
 </ul>
 <p>Proto: <code>GenerateMatlabCode(name, fem, data = [], indent = "  ", info = "No class description provided.", label = "out", path = "./", vars = [])</code></p>
 </section>

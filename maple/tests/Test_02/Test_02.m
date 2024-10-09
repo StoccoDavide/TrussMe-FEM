@@ -21,9 +21,21 @@ classdef Test_02 < TrussMe.System
 
       % User data
       if (nargin == 0)
-        data = [];
+        data.E = 1.0;
+        data.A = 1.0;
+        data.I_x = 2.0;
+        data.I_y = 1.0;
+        data.I_z = 1.0;
+        data.P = 30000;
       elseif (nargin == 1 && isstruct(varargin{1}))
         data = varargin{1};
+      elseif (nargin == 6)
+        data.E = varargin{1};
+        data.A = varargin{2};
+        data.I_x = varargin{3};
+        data.I_y = varargin{4};
+        data.I_z = varargin{5};
+        data.P = varargin{6};
       else
         error('wrong number of input arguments.');
       end
@@ -34,412 +46,768 @@ classdef Test_02 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_K = K( ~, ~, ~ )
+    function out_K = K( this, ~, ~ )
       % Evaluate the stiffness matrix K.
 
       % Extract properties
-      % No properties
+      E = this.m_data.E;
+      A = this.m_data.A;
+      I_x = this.m_data.I_x;
+      I_y = this.m_data.I_y;
+      I_z = this.m_data.I_z;
 
       % Extract inputs
       % No inputs
 
       % Evaluate function
-      % No body
+      out_1_1 = 0.8e1 / 0.28125e5 * E * (421 * I_z + 450 * A);
+      out_2_1 = 0.12e2 / 0.3125e4 * E * (25 * A - 3 * I_z);
+      t9 = E * I_z;
+      out_6_1 = t9 / 3;
+      t10 = sqrt(2);
+      t11 = E * t10;
+      t12 = I_z * t11;
+      t13 = t12 / 18;
+      out_7_1 = -t13;
+      out_8_1 = t13;
+      out_13_1 = -E * (400 * A + 27 * I_z) / 3125;
+      out_14_1 = -out_2_1;
+      out_18_1 = 0.9e1 / 0.125e3 * t9;
+      out_1_2 = out_2_1;
+      out_2_2 = 0.8e1 / 0.9375e4 * E * (475 * A + 18 * I_z);
+      t23 = A * t11;
+      out_7_2 = -t23 / 6;
+      out_8_2 = out_7_2;
+      out_13_2 = out_14_1;
+      out_14_2 = -0.3e1 / 0.3125e4 * E * (75 * A + 16 * I_z);
+      t30 = 0.12e2 / 0.125e3 * t9;
+      out_18_2 = -t30;
+      t31 = E * I_y;
+      out_3_3 = 0.608e3 / 0.1125e4 * t31;
+      out_4_3 = -0.304e3 / 0.375e3 * t31;
+      out_5_3 = 0.24e2 / 0.125e3 * t31;
+      out_9_3 = -0.4e1 / 0.9e1 * t31;
+      t34 = I_y * t11;
+      t35 = t34 / 3;
+      out_10_3 = -t35;
+      out_11_3 = t35;
+      out_15_3 = -0.12e2 / 0.125e3 * t31;
+      t37 = 0.18e2 / 0.125e3 * t31;
+      out_16_3 = -t37;
+      out_17_3 = out_5_3;
+      out_3_4 = out_4_3;
+      out_4_4 = 0.8e1 / 0.375e3 * E * (76 * I_y + 3 * I_x);
+      t42 = 8 * I_y;
+      t44 = (I_x - t42) * E;
+      out_5_4 = 0.6e1 / 0.125e3 * t44;
+      out_9_4 = 0.2e1 / 0.3e1 * t31;
+      out_10_4 = out_11_3;
+      out_11_4 = out_10_3;
+      out_15_4 = t37;
+      out_16_4 = -0.2e1 / 0.125e3 * E * (4 * I_x - 9 * I_y);
+      out_17_4 = -0.6e1 / 0.125e3 * E * (I_x + 4 * I_y);
+      out_3_5 = out_17_3;
+      out_4_5 = out_5_4;
+      out_5_5 = 0.4e1 / 0.375e3 * E * (19 * I_x + 48 * I_y);
+      t58 = I_x * t11;
+      out_10_5 = -t58 / 12;
+      out_11_5 = out_10_5;
+      out_15_5 = -out_3_5;
+      out_16_5 = out_17_4;
+      out_17_5 = -E * (9 * I_x - 64 * I_y) / 250;
+      out_1_6 = out_6_1;
+      out_6_6 = t9;
+      t65 = t12 / 6;
+      out_7_6 = -t65;
+      out_8_6 = t65;
+      out_1_7 = out_7_1;
+      out_2_7 = out_8_2;
+      out_6_7 = out_7_6;
+      t67 = 48 * A;
+      out_7_7 = 0.7e1 / 0.1152e4 * (13 * I_z + t67) * E;
+      out_8_7 = (-37 * I_z + t67) * E / 1152;
+      out_12_7 = -0.3e1 / 0.32e2 * t12;
+      t74 = t23 / 8;
+      out_13_7 = -t74;
+      out_14_7 = -0.3e1 / 0.128e3 * t12;
+      out_1_8 = out_8_1;
+      out_2_8 = out_2_7;
+      out_6_8 = out_8_6;
+      out_7_8 = out_8_7;
+      out_8_8 = out_7_7;
+      out_12_8 = out_12_7;
+      out_13_8 = t74;
+      out_14_8 = out_14_7;
+      out_3_9 = out_9_3;
+      out_4_9 = out_9_4;
+      out_9_9 = 0.91e2 / 0.144e3 * t31;
+      out_10_9 = 0.25e2 / 0.48e2 * t34;
+      out_11_9 = -0.7e1 / 0.48e2 * t34;
+      out_15_9 = -0.3e1 / 0.16e2 * t31;
+      out_17_9 = 0.3e1 / 0.8e1 * t31;
+      out_3_10 = out_11_4;
+      out_4_10 = out_10_4;
+      out_5_10 = out_11_5;
+      out_9_10 = out_10_9;
+      out_10_10 = 0.7e1 / 0.48e2 * (t42 + I_x) * E;
+      out_11_10 = t44 / 48;
+      out_15_10 = -0.3e1 / 0.16e2 * t34;
+      t81 = t58 / 16;
+      out_16_10 = -t81;
+      out_17_10 = t34 / 4;
+      out_3_11 = out_4_10;
+      out_4_11 = out_3_10;
+      out_5_11 = out_5_10;
+      out_9_11 = out_11_9;
+      out_10_11 = out_11_10;
+      out_11_11 = out_10_10;
+      out_15_11 = out_15_10;
+      out_16_11 = t81;
+      out_17_11 = out_17_10;
+      out_7_12 = out_12_8;
+      out_8_12 = out_7_12;
+      out_12_12 = 0.3e1 / 0.4e1 * out_6_6;
+      out_14_12 = 0.3e1 / 0.16e2 * out_6_6;
+      out_1_13 = out_13_1;
+      out_2_13 = out_13_2;
+      out_7_13 = out_13_7;
+      out_8_13 = out_13_8;
+      out_13_13 = 0.27e2 / 0.12500e5 * E * (175 * A + 4 * I_z);
+      out_14_13 = out_1_2;
+      out_18_13 = -out_18_1;
+      out_1_14 = out_2_13;
+      out_2_14 = out_14_2;
+      out_7_14 = out_14_8;
+      out_8_14 = out_7_14;
+      out_12_14 = out_14_12;
+      out_13_14 = out_14_13;
+      out_14_14 = 0.9e1 / 0.200000e6 * E * (1383 * I_z + 1600 * A);
+      out_18_14 = t30;
+      out_3_15 = out_15_3;
+      out_4_15 = out_15_4;
+      out_5_15 = out_15_5;
+      out_9_15 = out_15_9;
+      out_10_15 = out_15_11;
+      out_11_15 = out_10_15;
+      out_15_15 = 0.567e3 / 0.2000e4 * t31;
+      out_16_15 = out_4_15;
+      out_17_15 = -0.567e3 / 0.1000e4 * t31;
+      out_3_16 = out_16_3;
+      out_4_16 = out_16_4;
+      out_5_16 = out_16_5;
+      out_10_16 = out_16_10;
+      out_11_16 = out_16_11;
+      out_15_16 = out_16_15;
+      out_16_16 = 0.9e1 / 0.1000e4 * E * (21 * I_x + 32 * I_y);
+      out_17_16 = out_4_5;
+      out_3_17 = out_3_5;
+      out_4_17 = out_5_16;
+      out_5_17 = out_17_5;
+      out_9_17 = out_17_9;
+      out_10_17 = out_17_11;
+      out_11_17 = out_10_17;
+      out_15_17 = out_17_15;
+      out_16_17 = out_17_16;
+      out_17_17 = 0.9e1 / 0.250e3 * E * (42 * I_y + I_x);
+      out_1_18 = out_18_1;
+      out_2_18 = out_18_2;
+      out_13_18 = out_18_13;
+      out_14_18 = out_18_14;
+      out_18_18 = 0.3e1 / 0.5e1 * out_6_6;
 
       % Store outputs
       out_K = sparse(18, 18);
-      out_K(1, 1) = .2477511111;
-      out_K(2, 1) = .8448000000e-1;
-      out_K(6, 1) = .3333333332;
-      out_K(7, 1) = -.7856742007e-1;
-      out_K(8, 1) = .7856742007e-1;
-      out_K(13, 1) = -.1366400000;
-      out_K(14, 1) = -.8448000000e-1;
-      out_K(18, 1) = .7200000000e-1;
-      out_K(1, 2) = .8448000000e-1;
-      out_K(2, 2) = .4206933333;
-      out_K(7, 2) = -.2357022603;
-      out_K(8, 2) = -.2357022603;
-      out_K(13, 2) = -.8448000000e-1;
-      out_K(14, 2) = -.8736000000e-1;
-      out_K(18, 2) = -.9600000000e-1;
-      out_K(3, 3) = .5404444444;
-      out_K(4, 3) = -.8106666666;
-      out_K(5, 3) = .1920000000;
-      out_K(9, 3) = -.4444444444;
-      out_K(10, 3) = -.4714045206;
-      out_K(11, 3) = .4714045206;
-      out_K(15, 3) = -.9600000000e-1;
-      out_K(16, 3) = -.1440000000;
-      out_K(17, 3) = .1920000000;
-      out_K(3, 4) = -.8106666666;
-      out_K(4, 4) = 1.749333333;
-      out_K(5, 4) = -.2880000000;
-      out_K(9, 4) = .6666666666;
-      out_K(10, 4) = .4714045206;
-      out_K(11, 4) = -.4714045206;
-      out_K(15, 4) = .1440000000;
-      out_K(16, 4) = .1600000000e-1;
-      out_K(17, 4) = -.2880000000;
-      out_K(3, 5) = .1920000000;
-      out_K(4, 5) = -.2880000000;
-      out_K(5, 5) = .9173333333;
-      out_K(10, 5) = -.2357022603;
-      out_K(11, 5) = -.2357022603;
-      out_K(15, 5) = -.1920000000;
-      out_K(16, 5) = -.2880000000;
-      out_K(17, 5) = .1840000000;
-      out_K(1, 6) = .3333333332;
-      out_K(6, 6) = .9999999996;
-      out_K(7, 6) = -.2357022603;
-      out_K(8, 6) = .2357022603;
-      out_K(1, 7) = -.7856742007e-1;
-      out_K(2, 7) = -.2357022603;
-      out_K(6, 7) = -.2357022603;
-      out_K(7, 7) = .3706597222;
-      out_K(8, 7) = .9548611125e-2;
-      out_K(12, 7) = -.1325825214;
-      out_K(13, 7) = -.1767766953;
-      out_K(14, 7) = -.3314563036e-1;
-      out_K(1, 8) = .7856742007e-1;
-      out_K(2, 8) = -.2357022603;
-      out_K(6, 8) = .2357022603;
-      out_K(7, 8) = .9548611125e-2;
-      out_K(8, 8) = .3706597222;
-      out_K(12, 8) = -.1325825214;
-      out_K(13, 8) = .1767766953;
-      out_K(14, 8) = -.3314563036e-1;
-      out_K(3, 9) = -.4444444444;
-      out_K(4, 9) = .6666666666;
-      out_K(9, 9) = .6319444444;
-      out_K(10, 9) = .7365695635;
-      out_K(11, 9) = -.2062394777;
-      out_K(15, 9) = -.1875000000;
-      out_K(17, 9) = .3750000000;
-      out_K(3, 10) = -.4714045206;
-      out_K(4, 10) = .4714045206;
-      out_K(5, 10) = -.2357022603;
-      out_K(9, 10) = .7365695635;
-      out_K(10, 10) = 1.458333333;
-      out_K(11, 10) = -.1249999998;
-      out_K(15, 10) = -.2651650429;
-      out_K(16, 10) = -.1767766953;
-      out_K(17, 10) = .3535533905;
-      out_K(3, 11) = .4714045206;
-      out_K(4, 11) = -.4714045206;
-      out_K(5, 11) = -.2357022603;
-      out_K(9, 11) = -.2062394777;
-      out_K(10, 11) = -.1249999998;
-      out_K(11, 11) = 1.458333333;
-      out_K(15, 11) = -.2651650429;
-      out_K(16, 11) = .1767766953;
-      out_K(17, 11) = .3535533905;
-      out_K(7, 12) = -.1325825214;
-      out_K(8, 12) = -.1325825214;
-      out_K(12, 12) = .7500000000;
-      out_K(14, 12) = .1875000000;
-      out_K(1, 13) = -.1366400000;
-      out_K(2, 13) = -.8448000000e-1;
-      out_K(7, 13) = -.1767766953;
-      out_K(8, 13) = .1767766953;
-      out_K(13, 13) = .3866400000;
-      out_K(14, 13) = .8448000000e-1;
-      out_K(18, 13) = -.7200000000e-1;
-      out_K(1, 14) = -.8448000000e-1;
-      out_K(2, 14) = -.8736000000e-1;
-      out_K(7, 14) = -.3314563036e-1;
-      out_K(8, 14) = -.3314563036e-1;
-      out_K(12, 14) = .1875000000;
-      out_K(13, 14) = .8448000000e-1;
-      out_K(14, 14) = .1342350000;
-      out_K(18, 14) = .9600000000e-1;
-      out_K(3, 15) = -.9600000000e-1;
-      out_K(4, 15) = .1440000000;
-      out_K(5, 15) = -.1920000000;
-      out_K(9, 15) = -.1875000000;
-      out_K(10, 15) = -.2651650429;
-      out_K(11, 15) = -.2651650429;
-      out_K(15, 15) = .2835000000;
-      out_K(16, 15) = .1440000000;
-      out_K(17, 15) = -.5670000000;
-      out_K(3, 16) = -.1440000000;
-      out_K(4, 16) = .1600000000e-1;
-      out_K(5, 16) = -.2880000000;
-      out_K(10, 16) = -.1767766953;
-      out_K(11, 16) = .1767766953;
-      out_K(15, 16) = .1440000000;
-      out_K(16, 16) = .6660000000;
-      out_K(17, 16) = -.2880000000;
-      out_K(3, 17) = .1920000000;
-      out_K(4, 17) = -.2880000000;
-      out_K(5, 17) = .1840000000;
-      out_K(9, 17) = .3750000000;
-      out_K(10, 17) = .3535533905;
-      out_K(11, 17) = .3535533905;
-      out_K(15, 17) = -.5670000000;
-      out_K(16, 17) = -.2880000000;
-      out_K(17, 17) = 1.584000000;
-      out_K(1, 18) = .7200000000e-1;
-      out_K(2, 18) = -.9600000000e-1;
-      out_K(13, 18) = -.7200000000e-1;
-      out_K(14, 18) = .9600000000e-1;
-      out_K(18, 18) = .6000000000;
+      out_K(1, 1) = out_1_1;
+      out_K(2, 1) = out_2_1;
+      out_K(6, 1) = out_6_1;
+      out_K(7, 1) = out_7_1;
+      out_K(8, 1) = out_8_1;
+      out_K(13, 1) = out_13_1;
+      out_K(14, 1) = out_14_1;
+      out_K(18, 1) = out_18_1;
+      out_K(1, 2) = out_1_2;
+      out_K(2, 2) = out_2_2;
+      out_K(7, 2) = out_7_2;
+      out_K(8, 2) = out_8_2;
+      out_K(13, 2) = out_13_2;
+      out_K(14, 2) = out_14_2;
+      out_K(18, 2) = out_18_2;
+      out_K(3, 3) = out_3_3;
+      out_K(4, 3) = out_4_3;
+      out_K(5, 3) = out_5_3;
+      out_K(9, 3) = out_9_3;
+      out_K(10, 3) = out_10_3;
+      out_K(11, 3) = out_11_3;
+      out_K(15, 3) = out_15_3;
+      out_K(16, 3) = out_16_3;
+      out_K(17, 3) = out_17_3;
+      out_K(3, 4) = out_3_4;
+      out_K(4, 4) = out_4_4;
+      out_K(5, 4) = out_5_4;
+      out_K(9, 4) = out_9_4;
+      out_K(10, 4) = out_10_4;
+      out_K(11, 4) = out_11_4;
+      out_K(15, 4) = out_15_4;
+      out_K(16, 4) = out_16_4;
+      out_K(17, 4) = out_17_4;
+      out_K(3, 5) = out_3_5;
+      out_K(4, 5) = out_4_5;
+      out_K(5, 5) = out_5_5;
+      out_K(10, 5) = out_10_5;
+      out_K(11, 5) = out_11_5;
+      out_K(15, 5) = out_15_5;
+      out_K(16, 5) = out_16_5;
+      out_K(17, 5) = out_17_5;
+      out_K(1, 6) = out_1_6;
+      out_K(6, 6) = out_6_6;
+      out_K(7, 6) = out_7_6;
+      out_K(8, 6) = out_8_6;
+      out_K(1, 7) = out_1_7;
+      out_K(2, 7) = out_2_7;
+      out_K(6, 7) = out_6_7;
+      out_K(7, 7) = out_7_7;
+      out_K(8, 7) = out_8_7;
+      out_K(12, 7) = out_12_7;
+      out_K(13, 7) = out_13_7;
+      out_K(14, 7) = out_14_7;
+      out_K(1, 8) = out_1_8;
+      out_K(2, 8) = out_2_8;
+      out_K(6, 8) = out_6_8;
+      out_K(7, 8) = out_7_8;
+      out_K(8, 8) = out_8_8;
+      out_K(12, 8) = out_12_8;
+      out_K(13, 8) = out_13_8;
+      out_K(14, 8) = out_14_8;
+      out_K(3, 9) = out_3_9;
+      out_K(4, 9) = out_4_9;
+      out_K(9, 9) = out_9_9;
+      out_K(10, 9) = out_10_9;
+      out_K(11, 9) = out_11_9;
+      out_K(15, 9) = out_15_9;
+      out_K(17, 9) = out_17_9;
+      out_K(3, 10) = out_3_10;
+      out_K(4, 10) = out_4_10;
+      out_K(5, 10) = out_5_10;
+      out_K(9, 10) = out_9_10;
+      out_K(10, 10) = out_10_10;
+      out_K(11, 10) = out_11_10;
+      out_K(15, 10) = out_15_10;
+      out_K(16, 10) = out_16_10;
+      out_K(17, 10) = out_17_10;
+      out_K(3, 11) = out_3_11;
+      out_K(4, 11) = out_4_11;
+      out_K(5, 11) = out_5_11;
+      out_K(9, 11) = out_9_11;
+      out_K(10, 11) = out_10_11;
+      out_K(11, 11) = out_11_11;
+      out_K(15, 11) = out_15_11;
+      out_K(16, 11) = out_16_11;
+      out_K(17, 11) = out_17_11;
+      out_K(7, 12) = out_7_12;
+      out_K(8, 12) = out_8_12;
+      out_K(12, 12) = out_12_12;
+      out_K(14, 12) = out_14_12;
+      out_K(1, 13) = out_1_13;
+      out_K(2, 13) = out_2_13;
+      out_K(7, 13) = out_7_13;
+      out_K(8, 13) = out_8_13;
+      out_K(13, 13) = out_13_13;
+      out_K(14, 13) = out_14_13;
+      out_K(18, 13) = out_18_13;
+      out_K(1, 14) = out_1_14;
+      out_K(2, 14) = out_2_14;
+      out_K(7, 14) = out_7_14;
+      out_K(8, 14) = out_8_14;
+      out_K(12, 14) = out_12_14;
+      out_K(13, 14) = out_13_14;
+      out_K(14, 14) = out_14_14;
+      out_K(18, 14) = out_18_14;
+      out_K(3, 15) = out_3_15;
+      out_K(4, 15) = out_4_15;
+      out_K(5, 15) = out_5_15;
+      out_K(9, 15) = out_9_15;
+      out_K(10, 15) = out_10_15;
+      out_K(11, 15) = out_11_15;
+      out_K(15, 15) = out_15_15;
+      out_K(16, 15) = out_16_15;
+      out_K(17, 15) = out_17_15;
+      out_K(3, 16) = out_3_16;
+      out_K(4, 16) = out_4_16;
+      out_K(5, 16) = out_5_16;
+      out_K(10, 16) = out_10_16;
+      out_K(11, 16) = out_11_16;
+      out_K(15, 16) = out_15_16;
+      out_K(16, 16) = out_16_16;
+      out_K(17, 16) = out_17_16;
+      out_K(3, 17) = out_3_17;
+      out_K(4, 17) = out_4_17;
+      out_K(5, 17) = out_5_17;
+      out_K(9, 17) = out_9_17;
+      out_K(10, 17) = out_10_17;
+      out_K(11, 17) = out_11_17;
+      out_K(15, 17) = out_15_17;
+      out_K(16, 17) = out_16_17;
+      out_K(17, 17) = out_17_17;
+      out_K(1, 18) = out_1_18;
+      out_K(2, 18) = out_2_18;
+      out_K(13, 18) = out_13_18;
+      out_K(14, 18) = out_14_18;
+      out_K(18, 18) = out_18_18;
     end % K
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_K_ff = K_ff( ~, ~, ~ )
+    function out_K_ff = K_ff( this, ~, ~ )
       % Evaluate the stiffness matrix K_ff.
 
       % Extract properties
-      % No properties
+      E = this.m_data.E;
+      A = this.m_data.A;
+      I_x = this.m_data.I_x;
+      I_y = this.m_data.I_y;
+      I_z = this.m_data.I_z;
 
       % Extract inputs
       % No inputs
 
       % Evaluate function
-      % No body
+      out_1_1 = 0.8e1 / 0.28125e5 * E * (421 * I_z + 450 * A);
+      out_2_1 = 0.12e2 / 0.3125e4 * E * (25 * A - 3 * I_z);
+      t9 = E * I_z;
+      out_6_1 = t9 / 3;
+      t10 = sqrt(2);
+      t11 = E * t10;
+      t12 = I_z * t11;
+      out_7_1 = -t12 / 18;
+      out_11_1 = 0.9e1 / 0.125e3 * t9;
+      out_1_2 = out_2_1;
+      out_2_2 = 0.8e1 / 0.9375e4 * E * (475 * A + 18 * I_z);
+      out_7_2 = -A * t11 / 6;
+      out_11_2 = -0.12e2 / 0.125e3 * t9;
+      t21 = E * I_y;
+      out_3_3 = 0.608e3 / 0.1125e4 * t21;
+      out_4_3 = -0.304e3 / 0.375e3 * t21;
+      out_5_3 = 0.24e2 / 0.125e3 * t21;
+      t24 = I_y * t11 / 3;
+      out_8_3 = -t24;
+      out_9_3 = t24;
+      out_3_4 = out_4_3;
+      out_4_4 = 0.8e1 / 0.375e3 * E * (76 * I_y + 3 * I_x);
+      t29 = 8 * I_y;
+      t31 = (I_x - t29) * E;
+      out_5_4 = 0.6e1 / 0.125e3 * t31;
+      out_8_4 = out_9_3;
+      out_9_4 = out_8_3;
+      out_3_5 = out_5_3;
+      out_4_5 = out_5_4;
+      out_5_5 = 0.4e1 / 0.375e3 * E * (19 * I_x + 48 * I_y);
+      out_8_5 = -I_x * t11 / 12;
+      out_9_5 = out_8_5;
+      out_1_6 = out_6_1;
+      out_6_6 = t9;
+      out_7_6 = -t12 / 6;
+      out_1_7 = out_7_1;
+      out_2_7 = out_7_2;
+      out_6_7 = out_7_6;
+      out_7_7 = 0.7e1 / 0.1152e4 * E * (13 * I_z + 48 * A);
+      out_10_7 = -0.3e1 / 0.32e2 * t12;
+      out_3_8 = out_9_4;
+      out_4_8 = out_8_4;
+      out_5_8 = out_9_5;
+      out_8_8 = 0.7e1 / 0.48e2 * (t29 + I_x) * E;
+      out_9_8 = t31 / 48;
+      out_3_9 = out_4_8;
+      out_4_9 = out_3_8;
+      out_5_9 = out_5_8;
+      out_8_9 = out_9_8;
+      out_9_9 = out_8_8;
+      out_7_10 = out_10_7;
+      out_10_10 = 0.3e1 / 0.4e1 * out_6_6;
+      out_1_11 = out_11_1;
+      out_2_11 = out_11_2;
+      out_11_11 = 0.3e1 / 0.5e1 * out_6_6;
 
       % Store outputs
       out_K_ff = sparse(11, 11);
-      out_K_ff(1, 1) = .2477511111;
-      out_K_ff(2, 1) = .8448000000e-1;
-      out_K_ff(6, 1) = .3333333332;
-      out_K_ff(7, 1) = -.7856742007e-1;
-      out_K_ff(11, 1) = .7200000000e-1;
-      out_K_ff(1, 2) = .8448000000e-1;
-      out_K_ff(2, 2) = .4206933333;
-      out_K_ff(7, 2) = -.2357022603;
-      out_K_ff(11, 2) = -.9600000000e-1;
-      out_K_ff(3, 3) = .5404444444;
-      out_K_ff(4, 3) = -.8106666666;
-      out_K_ff(5, 3) = .1920000000;
-      out_K_ff(8, 3) = -.4714045206;
-      out_K_ff(9, 3) = .4714045206;
-      out_K_ff(3, 4) = -.8106666666;
-      out_K_ff(4, 4) = 1.749333333;
-      out_K_ff(5, 4) = -.2880000000;
-      out_K_ff(8, 4) = .4714045206;
-      out_K_ff(9, 4) = -.4714045206;
-      out_K_ff(3, 5) = .1920000000;
-      out_K_ff(4, 5) = -.2880000000;
-      out_K_ff(5, 5) = .9173333333;
-      out_K_ff(8, 5) = -.2357022603;
-      out_K_ff(9, 5) = -.2357022603;
-      out_K_ff(1, 6) = .3333333332;
-      out_K_ff(6, 6) = .9999999996;
-      out_K_ff(7, 6) = -.2357022603;
-      out_K_ff(1, 7) = -.7856742007e-1;
-      out_K_ff(2, 7) = -.2357022603;
-      out_K_ff(6, 7) = -.2357022603;
-      out_K_ff(7, 7) = .3706597222;
-      out_K_ff(10, 7) = -.1325825214;
-      out_K_ff(3, 8) = -.4714045206;
-      out_K_ff(4, 8) = .4714045206;
-      out_K_ff(5, 8) = -.2357022603;
-      out_K_ff(8, 8) = 1.458333333;
-      out_K_ff(9, 8) = -.1249999998;
-      out_K_ff(3, 9) = .4714045206;
-      out_K_ff(4, 9) = -.4714045206;
-      out_K_ff(5, 9) = -.2357022603;
-      out_K_ff(8, 9) = -.1249999998;
-      out_K_ff(9, 9) = 1.458333333;
-      out_K_ff(7, 10) = -.1325825214;
-      out_K_ff(10, 10) = .7500000000;
-      out_K_ff(1, 11) = .7200000000e-1;
-      out_K_ff(2, 11) = -.9600000000e-1;
-      out_K_ff(11, 11) = .6000000000;
+      out_K_ff(1, 1) = out_1_1;
+      out_K_ff(2, 1) = out_2_1;
+      out_K_ff(6, 1) = out_6_1;
+      out_K_ff(7, 1) = out_7_1;
+      out_K_ff(11, 1) = out_11_1;
+      out_K_ff(1, 2) = out_1_2;
+      out_K_ff(2, 2) = out_2_2;
+      out_K_ff(7, 2) = out_7_2;
+      out_K_ff(11, 2) = out_11_2;
+      out_K_ff(3, 3) = out_3_3;
+      out_K_ff(4, 3) = out_4_3;
+      out_K_ff(5, 3) = out_5_3;
+      out_K_ff(8, 3) = out_8_3;
+      out_K_ff(9, 3) = out_9_3;
+      out_K_ff(3, 4) = out_3_4;
+      out_K_ff(4, 4) = out_4_4;
+      out_K_ff(5, 4) = out_5_4;
+      out_K_ff(8, 4) = out_8_4;
+      out_K_ff(9, 4) = out_9_4;
+      out_K_ff(3, 5) = out_3_5;
+      out_K_ff(4, 5) = out_4_5;
+      out_K_ff(5, 5) = out_5_5;
+      out_K_ff(8, 5) = out_8_5;
+      out_K_ff(9, 5) = out_9_5;
+      out_K_ff(1, 6) = out_1_6;
+      out_K_ff(6, 6) = out_6_6;
+      out_K_ff(7, 6) = out_7_6;
+      out_K_ff(1, 7) = out_1_7;
+      out_K_ff(2, 7) = out_2_7;
+      out_K_ff(6, 7) = out_6_7;
+      out_K_ff(7, 7) = out_7_7;
+      out_K_ff(10, 7) = out_10_7;
+      out_K_ff(3, 8) = out_3_8;
+      out_K_ff(4, 8) = out_4_8;
+      out_K_ff(5, 8) = out_5_8;
+      out_K_ff(8, 8) = out_8_8;
+      out_K_ff(9, 8) = out_9_8;
+      out_K_ff(3, 9) = out_3_9;
+      out_K_ff(4, 9) = out_4_9;
+      out_K_ff(5, 9) = out_5_9;
+      out_K_ff(8, 9) = out_8_9;
+      out_K_ff(9, 9) = out_9_9;
+      out_K_ff(7, 10) = out_7_10;
+      out_K_ff(10, 10) = out_10_10;
+      out_K_ff(1, 11) = out_1_11;
+      out_K_ff(2, 11) = out_2_11;
+      out_K_ff(11, 11) = out_11_11;
     end % K_ff
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_K_fs = K_fs( ~, ~, ~ )
+    function out_K_fs = K_fs( this, ~, ~ )
       % Evaluate the stiffness matrix K_fs.
 
       % Extract properties
-      % No properties
+      E = this.m_data.E;
+      A = this.m_data.A;
+      I_x = this.m_data.I_x;
+      I_y = this.m_data.I_y;
+      I_z = this.m_data.I_z;
 
       % Extract inputs
       % No inputs
 
       % Evaluate function
-      % No body
+      t1 = sqrt(2);
+      t2 = E * t1;
+      t3 = I_z * t2;
+      out_1_1 = t3 / 18;
+      t4 = A * t2;
+      out_2_1 = -t4 / 6;
+      out_6_1 = t3 / 6;
+      out_7_1 = E * (-37 * I_z + 48 * A) / 1152;
+      out_10_1 = -0.3e1 / 0.32e2 * t3;
+      t11 = E * I_y;
+      out_3_2 = -0.4e1 / 0.9e1 * t11;
+      out_4_2 = 0.2e1 / 0.3e1 * t11;
+      t13 = I_y * t2;
+      out_8_2 = 0.25e2 / 0.48e2 * t13;
+      out_9_2 = -0.7e1 / 0.48e2 * t13;
+      out_1_3 = -E * (400 * A + 27 * I_z) / 3125;
+      out_2_3 = -0.12e2 / 0.3125e4 * E * (25 * A - 3 * I_z);
+      out_7_3 = -t4 / 8;
+      t26 = E * I_z;
+      out_11_3 = -0.9e1 / 0.125e3 * t26;
+      out_1_4 = out_2_3;
+      out_2_4 = -0.3e1 / 0.3125e4 * E * (75 * A + 16 * I_z);
+      out_7_4 = -0.3e1 / 0.128e3 * t3;
+      out_10_4 = 0.3e1 / 0.16e2 * t26;
+      out_11_4 = 0.12e2 / 0.125e3 * t26;
+      out_3_5 = -0.12e2 / 0.125e3 * t11;
+      out_4_5 = 0.18e2 / 0.125e3 * t11;
+      t35 = 0.24e2 / 0.125e3 * t11;
+      out_5_5 = -t35;
+      out_8_5 = -0.3e1 / 0.16e2 * t13;
+      out_9_5 = out_8_5;
+      out_3_6 = -out_4_5;
+      out_4_6 = -0.2e1 / 0.125e3 * E * (4 * I_x - 9 * I_y);
+      out_5_6 = -0.6e1 / 0.125e3 * E * (I_x + 4 * I_y);
+      t47 = I_x * t2 / 16;
+      out_8_6 = -t47;
+      out_9_6 = t47;
+      out_3_7 = t35;
+      out_4_7 = out_5_6;
+      out_5_7 = -E * (9 * I_x - 64 * I_y) / 250;
+      out_8_7 = t13 / 4;
+      out_9_7 = out_8_7;
 
       % Store outputs
       out_K_fs = sparse(11, 7);
-      out_K_fs(1, 1) = .7856742007e-1;
-      out_K_fs(2, 1) = -.2357022603;
-      out_K_fs(6, 1) = .2357022603;
-      out_K_fs(7, 1) = .9548611125e-2;
-      out_K_fs(10, 1) = -.1325825214;
-      out_K_fs(3, 2) = -.4444444444;
-      out_K_fs(4, 2) = .6666666666;
-      out_K_fs(8, 2) = .7365695635;
-      out_K_fs(9, 2) = -.2062394777;
-      out_K_fs(1, 3) = -.1366400000;
-      out_K_fs(2, 3) = -.8448000000e-1;
-      out_K_fs(7, 3) = -.1767766953;
-      out_K_fs(11, 3) = -.7200000000e-1;
-      out_K_fs(1, 4) = -.8448000000e-1;
-      out_K_fs(2, 4) = -.8736000000e-1;
-      out_K_fs(7, 4) = -.3314563036e-1;
-      out_K_fs(10, 4) = .1875000000;
-      out_K_fs(11, 4) = .9600000000e-1;
-      out_K_fs(3, 5) = -.9600000000e-1;
-      out_K_fs(4, 5) = .1440000000;
-      out_K_fs(5, 5) = -.1920000000;
-      out_K_fs(8, 5) = -.2651650429;
-      out_K_fs(9, 5) = -.2651650429;
-      out_K_fs(3, 6) = -.1440000000;
-      out_K_fs(4, 6) = .1600000000e-1;
-      out_K_fs(5, 6) = -.2880000000;
-      out_K_fs(8, 6) = -.1767766953;
-      out_K_fs(9, 6) = .1767766953;
-      out_K_fs(3, 7) = .1920000000;
-      out_K_fs(4, 7) = -.2880000000;
-      out_K_fs(5, 7) = .1840000000;
-      out_K_fs(8, 7) = .3535533905;
-      out_K_fs(9, 7) = .3535533905;
+      out_K_fs(1, 1) = out_1_1;
+      out_K_fs(2, 1) = out_2_1;
+      out_K_fs(6, 1) = out_6_1;
+      out_K_fs(7, 1) = out_7_1;
+      out_K_fs(10, 1) = out_10_1;
+      out_K_fs(3, 2) = out_3_2;
+      out_K_fs(4, 2) = out_4_2;
+      out_K_fs(8, 2) = out_8_2;
+      out_K_fs(9, 2) = out_9_2;
+      out_K_fs(1, 3) = out_1_3;
+      out_K_fs(2, 3) = out_2_3;
+      out_K_fs(7, 3) = out_7_3;
+      out_K_fs(11, 3) = out_11_3;
+      out_K_fs(1, 4) = out_1_4;
+      out_K_fs(2, 4) = out_2_4;
+      out_K_fs(7, 4) = out_7_4;
+      out_K_fs(10, 4) = out_10_4;
+      out_K_fs(11, 4) = out_11_4;
+      out_K_fs(3, 5) = out_3_5;
+      out_K_fs(4, 5) = out_4_5;
+      out_K_fs(5, 5) = out_5_5;
+      out_K_fs(8, 5) = out_8_5;
+      out_K_fs(9, 5) = out_9_5;
+      out_K_fs(3, 6) = out_3_6;
+      out_K_fs(4, 6) = out_4_6;
+      out_K_fs(5, 6) = out_5_6;
+      out_K_fs(8, 6) = out_8_6;
+      out_K_fs(9, 6) = out_9_6;
+      out_K_fs(3, 7) = out_3_7;
+      out_K_fs(4, 7) = out_4_7;
+      out_K_fs(5, 7) = out_5_7;
+      out_K_fs(8, 7) = out_8_7;
+      out_K_fs(9, 7) = out_9_7;
     end % K_fs
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_K_sf = K_sf( ~, ~, ~ )
+    function out_K_sf = K_sf( this, ~, ~ )
       % Evaluate the stiffness matrix K_sf.
 
       % Extract properties
-      % No properties
+      E = this.m_data.E;
+      A = this.m_data.A;
+      I_x = this.m_data.I_x;
+      I_y = this.m_data.I_y;
+      I_z = this.m_data.I_z;
 
       % Extract inputs
       % No inputs
 
       % Evaluate function
-      % No body
+      t1 = sqrt(2);
+      t2 = E * t1;
+      t3 = I_z * t2;
+      out_1_1 = t3 / 18;
+      out_3_1 = -E * (400 * A + 27 * I_z) / 3125;
+      out_4_1 = -0.12e2 / 0.3125e4 * E * (25 * A - 3 * I_z);
+      t14 = A * t2;
+      out_1_2 = -t14 / 6;
+      out_3_2 = out_4_1;
+      out_4_2 = -0.3e1 / 0.3125e4 * E * (75 * A + 16 * I_z);
+      t21 = E * I_y;
+      out_2_3 = -0.4e1 / 0.9e1 * t21;
+      out_5_3 = -0.12e2 / 0.125e3 * t21;
+      t24 = 0.18e2 / 0.125e3 * t21;
+      out_6_3 = -t24;
+      out_7_3 = 0.24e2 / 0.125e3 * t21;
+      out_2_4 = 0.2e1 / 0.3e1 * t21;
+      out_5_4 = t24;
+      out_6_4 = -0.2e1 / 0.125e3 * E * (4 * I_x - 9 * I_y);
+      out_7_4 = -0.6e1 / 0.125e3 * E * (I_x + 4 * I_y);
+      out_5_5 = -out_7_3;
+      out_6_5 = out_7_4;
+      out_7_5 = -E * (9 * I_x - 64 * I_y) / 250;
+      out_1_6 = t3 / 6;
+      out_1_7 = E * (-37 * I_z + 48 * A) / 1152;
+      out_3_7 = -t14 / 8;
+      out_4_7 = -0.3e1 / 0.128e3 * t3;
+      t45 = I_y * t2;
+      out_2_8 = 0.25e2 / 0.48e2 * t45;
+      out_5_8 = -0.3e1 / 0.16e2 * t45;
+      t48 = I_x * t2 / 16;
+      out_6_8 = -t48;
+      out_7_8 = t45 / 4;
+      out_2_9 = -0.7e1 / 0.48e2 * t45;
+      out_5_9 = out_5_8;
+      out_6_9 = t48;
+      out_7_9 = out_7_8;
+      out_1_10 = -0.3e1 / 0.32e2 * t3;
+      t51 = E * I_z;
+      out_4_10 = 0.3e1 / 0.16e2 * t51;
+      out_3_11 = -0.9e1 / 0.125e3 * t51;
+      out_4_11 = 0.12e2 / 0.125e3 * t51;
 
       % Store outputs
       out_K_sf = sparse(7, 11);
-      out_K_sf(1, 1) = .7856742007e-1;
-      out_K_sf(3, 1) = -.1366400000;
-      out_K_sf(4, 1) = -.8448000000e-1;
-      out_K_sf(1, 2) = -.2357022603;
-      out_K_sf(3, 2) = -.8448000000e-1;
-      out_K_sf(4, 2) = -.8736000000e-1;
-      out_K_sf(2, 3) = -.4444444444;
-      out_K_sf(5, 3) = -.9600000000e-1;
-      out_K_sf(6, 3) = -.1440000000;
-      out_K_sf(7, 3) = .1920000000;
-      out_K_sf(2, 4) = .6666666666;
-      out_K_sf(5, 4) = .1440000000;
-      out_K_sf(6, 4) = .1600000000e-1;
-      out_K_sf(7, 4) = -.2880000000;
-      out_K_sf(5, 5) = -.1920000000;
-      out_K_sf(6, 5) = -.2880000000;
-      out_K_sf(7, 5) = .1840000000;
-      out_K_sf(1, 6) = .2357022603;
-      out_K_sf(1, 7) = .9548611125e-2;
-      out_K_sf(3, 7) = -.1767766953;
-      out_K_sf(4, 7) = -.3314563036e-1;
-      out_K_sf(2, 8) = .7365695635;
-      out_K_sf(5, 8) = -.2651650429;
-      out_K_sf(6, 8) = -.1767766953;
-      out_K_sf(7, 8) = .3535533905;
-      out_K_sf(2, 9) = -.2062394777;
-      out_K_sf(5, 9) = -.2651650429;
-      out_K_sf(6, 9) = .1767766953;
-      out_K_sf(7, 9) = .3535533905;
-      out_K_sf(1, 10) = -.1325825214;
-      out_K_sf(4, 10) = .1875000000;
-      out_K_sf(3, 11) = -.7200000000e-1;
-      out_K_sf(4, 11) = .9600000000e-1;
+      out_K_sf(1, 1) = out_1_1;
+      out_K_sf(3, 1) = out_3_1;
+      out_K_sf(4, 1) = out_4_1;
+      out_K_sf(1, 2) = out_1_2;
+      out_K_sf(3, 2) = out_3_2;
+      out_K_sf(4, 2) = out_4_2;
+      out_K_sf(2, 3) = out_2_3;
+      out_K_sf(5, 3) = out_5_3;
+      out_K_sf(6, 3) = out_6_3;
+      out_K_sf(7, 3) = out_7_3;
+      out_K_sf(2, 4) = out_2_4;
+      out_K_sf(5, 4) = out_5_4;
+      out_K_sf(6, 4) = out_6_4;
+      out_K_sf(7, 4) = out_7_4;
+      out_K_sf(5, 5) = out_5_5;
+      out_K_sf(6, 5) = out_6_5;
+      out_K_sf(7, 5) = out_7_5;
+      out_K_sf(1, 6) = out_1_6;
+      out_K_sf(1, 7) = out_1_7;
+      out_K_sf(3, 7) = out_3_7;
+      out_K_sf(4, 7) = out_4_7;
+      out_K_sf(2, 8) = out_2_8;
+      out_K_sf(5, 8) = out_5_8;
+      out_K_sf(6, 8) = out_6_8;
+      out_K_sf(7, 8) = out_7_8;
+      out_K_sf(2, 9) = out_2_9;
+      out_K_sf(5, 9) = out_5_9;
+      out_K_sf(6, 9) = out_6_9;
+      out_K_sf(7, 9) = out_7_9;
+      out_K_sf(1, 10) = out_1_10;
+      out_K_sf(4, 10) = out_4_10;
+      out_K_sf(3, 11) = out_3_11;
+      out_K_sf(4, 11) = out_4_11;
     end % K_sf
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_K_ss = K_ss( ~, ~, ~ )
+    function out_K_ss = K_ss( this, ~, ~ )
       % Evaluate the stiffness matrix K_ss.
 
       % Extract properties
-      % No properties
+      E = this.m_data.E;
+      A = this.m_data.A;
+      I_x = this.m_data.I_x;
+      I_y = this.m_data.I_y;
+      I_z = this.m_data.I_z;
 
       % Extract inputs
       % No inputs
 
       % Evaluate function
-      % No body
+      out_1_1 = 0.7e1 / 0.1152e4 * E * (13 * I_z + 48 * A);
+      t5 = sqrt(2);
+      t6 = E * t5;
+      out_3_1 = A * t6 / 8;
+      out_4_1 = -0.3e1 / 0.128e3 * I_z * t6;
+      t10 = E * I_y;
+      out_2_2 = 0.91e2 / 0.144e3 * t10;
+      out_5_2 = -0.3e1 / 0.16e2 * t10;
+      out_7_2 = 0.3e1 / 0.8e1 * t10;
+      out_1_3 = out_3_1;
+      out_3_3 = 0.27e2 / 0.12500e5 * E * (175 * A + 4 * I_z);
+      out_4_3 = 0.12e2 / 0.3125e4 * E * (25 * A - 3 * I_z);
+      out_1_4 = out_4_1;
+      out_3_4 = out_4_3;
+      out_4_4 = 0.9e1 / 0.200000e6 * E * (1383 * I_z + 1600 * A);
+      out_2_5 = out_5_2;
+      out_5_5 = 0.567e3 / 0.2000e4 * t10;
+      out_6_5 = 0.18e2 / 0.125e3 * t10;
+      out_7_5 = -0.567e3 / 0.1000e4 * t10;
+      out_5_6 = out_6_5;
+      out_6_6 = 0.9e1 / 0.1000e4 * E * (21 * I_x + 32 * I_y);
+      out_7_6 = 0.6e1 / 0.125e3 * E * (I_x - 8 * I_y);
+      out_2_7 = out_7_2;
+      out_5_7 = out_7_5;
+      out_6_7 = out_7_6;
+      out_7_7 = 0.9e1 / 0.250e3 * E * (42 * I_y + I_x);
 
       % Store outputs
       out_K_ss = sparse(7, 7);
-      out_K_ss(1, 1) = .3706597222;
-      out_K_ss(3, 1) = .1767766953;
-      out_K_ss(4, 1) = -.3314563036e-1;
-      out_K_ss(2, 2) = .6319444444;
-      out_K_ss(5, 2) = -.1875000000;
-      out_K_ss(7, 2) = .3750000000;
-      out_K_ss(1, 3) = .1767766953;
-      out_K_ss(3, 3) = .3866400000;
-      out_K_ss(4, 3) = .8448000000e-1;
-      out_K_ss(1, 4) = -.3314563036e-1;
-      out_K_ss(3, 4) = .8448000000e-1;
-      out_K_ss(4, 4) = .1342350000;
-      out_K_ss(2, 5) = -.1875000000;
-      out_K_ss(5, 5) = .2835000000;
-      out_K_ss(6, 5) = .1440000000;
-      out_K_ss(7, 5) = -.5670000000;
-      out_K_ss(5, 6) = .1440000000;
-      out_K_ss(6, 6) = .6660000000;
-      out_K_ss(7, 6) = -.2880000000;
-      out_K_ss(2, 7) = .3750000000;
-      out_K_ss(5, 7) = -.5670000000;
-      out_K_ss(6, 7) = -.2880000000;
-      out_K_ss(7, 7) = 1.584000000;
+      out_K_ss(1, 1) = out_1_1;
+      out_K_ss(3, 1) = out_3_1;
+      out_K_ss(4, 1) = out_4_1;
+      out_K_ss(2, 2) = out_2_2;
+      out_K_ss(5, 2) = out_5_2;
+      out_K_ss(7, 2) = out_7_2;
+      out_K_ss(1, 3) = out_1_3;
+      out_K_ss(3, 3) = out_3_3;
+      out_K_ss(4, 3) = out_4_3;
+      out_K_ss(1, 4) = out_1_4;
+      out_K_ss(3, 4) = out_3_4;
+      out_K_ss(4, 4) = out_4_4;
+      out_K_ss(2, 5) = out_2_5;
+      out_K_ss(5, 5) = out_5_5;
+      out_K_ss(6, 5) = out_6_5;
+      out_K_ss(7, 5) = out_7_5;
+      out_K_ss(5, 6) = out_5_6;
+      out_K_ss(6, 6) = out_6_6;
+      out_K_ss(7, 6) = out_7_6;
+      out_K_ss(2, 7) = out_2_7;
+      out_K_ss(5, 7) = out_5_7;
+      out_K_ss(6, 7) = out_6_7;
+      out_K_ss(7, 7) = out_7_7;
     end % K_ss
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_d = d( ~, ~, ~ )
+    function out_d = d( this, ~, ~ )
       % Evaluate the deformation vector d.
 
       % Extract properties
-      % No properties
+      E = this.m_data.E;
+      A = this.m_data.A;
+      P = this.m_data.P;
 
       % Extract inputs
       % No inputs
 
       % Evaluate function
-      % No body
+      t1 = 0.1e1 / E;
+      t3 = 0.1e1 / A;
+      t4 = t3 * t1 * P;
+      out_1 = 0.47e2 / 0.4e1 * t4;
+      out_2 = -0.21e2 / 0.4e1 * t4;
+      out_6 = -0.59e2 / 0.12e2 * t4;
+      t8 = sqrt(2);
+      out_7 = -3 * P * t8 * t3 * t1;
+      out_12 = -0.3e1 / 0.4e1 * t4;
+      out_18 = -0.9e1 / 0.4e1 * t4;
 
       % Store outputs
       out_d = sparse(18, 1);
-      out_d(1) = 352499.99983743;
-      out_d(2) = -157499.999865861;
-      out_d(6) = -147499.999913796;
-      out_d(7) = -127279.22047842;
-      out_d(12) = -22499.9999638072;
-      out_d(18) = -67499.9999590293;
+      out_d(1) = out_1;
+      out_d(2) = out_2;
+      out_d(6) = out_6;
+      out_d(7) = out_7;
+      out_d(12) = out_12;
+      out_d(18) = out_18;
     end % d
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_d_f = d_f( ~, ~, ~ )
+    function out_d_f = d_f( this, ~, ~ )
       % Evaluate the deformation vector d_f.
 
       % Extract properties
-      % No properties
+      E = this.m_data.E;
+      A = this.m_data.A;
+      P = this.m_data.P;
 
       % Extract inputs
       % No inputs
 
       % Evaluate function
-      % No body
+      t1 = 0.1e1 / E;
+      t3 = 0.1e1 / A;
+      t4 = t3 * t1 * P;
+      out_1 = 0.47e2 / 0.4e1 * t4;
+      out_2 = -0.21e2 / 0.4e1 * t4;
+      out_6 = -0.59e2 / 0.12e2 * t4;
+      t8 = sqrt(2);
+      out_7 = -3 * P * t8 * t3 * t1;
+      out_10 = -0.3e1 / 0.4e1 * t4;
+      out_11 = -0.9e1 / 0.4e1 * t4;
 
       % Store outputs
       out_d_f = zeros(11, 1);
-      out_d_f(1) = 352499.99983743;
-      out_d_f(2) = -157499.999865861;
-      out_d_f(6) = -147499.999913796;
-      out_d_f(7) = -127279.22047842;
-      out_d_f(10) = -22499.9999638072;
-      out_d_f(11) = -67499.9999590293;
+      out_d_f(1) = out_1;
+      out_d_f(2) = out_2;
+      out_d_f(6) = out_6;
+      out_d_f(7) = out_7;
+      out_d_f(10) = out_10;
+      out_d_f(11) = out_11;
     end % d_f
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -462,64 +830,83 @@ classdef Test_02 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_f = f( ~, ~, ~ )
+    function out_f = f( this, ~, ~ )
       % Evaluate the force vector f.
 
       % Extract properties
-      % No properties
+      A = this.m_data.A;
+      I_z = this.m_data.I_z;
+      P = this.m_data.P;
 
       % Extract inputs
       % No inputs
 
       % Evaluate function
-      % No body
+      out_1 = P;
+      t1 = sqrt(2);
+      t3 = 0.1e1 / A;
+      t7 = P * t1;
+      out_8 = -0.37e2 / 0.384e3 * t3 * P * I_z * t1 + 0.7e1 / 0.8e1 * t7 - t7 * t3 * (-37 * I_z + 48 * A) / 384;
+      t25 = t3 * P * (25 * A - 3 * I_z);
+      t29 = t3 * P * I_z;
+      out_13 = -0.47e2 / 0.12500e5 * t3 * P * (400 * A + 27 * I_z) + 0.63e2 / 0.3125e4 * t25 + 0.3e1 / 0.4e1 * P + 0.81e2 / 0.500e3 * t29;
+      out_14 = -0.141e3 / 0.3125e4 * t25 + 0.63e2 / 0.12500e5 * t3 * P * (75 * A + 16 * I_z) - 0.27e2 / 0.125e3 * t29;
 
       % Store outputs
       out_f = sparse(18, 1);
-      out_f(1) = 30000;
-      out_f(8) = 31819.8050996638;
-      out_f(13) = -7500.00001553323;
-      out_f(14) = -22499.9999927785;
+      out_f(1) = out_1;
+      out_f(8) = out_8;
+      out_f(13) = out_13;
+      out_f(14) = out_14;
     end % f
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_f_f = f_f( ~, ~, ~ )
+    function out_f_f = f_f( this, ~, ~ )
       % Evaluate the force vector f_f.
 
       % Extract properties
-      % No properties
+      P = this.m_data.P;
 
       % Extract inputs
       % No inputs
 
       % Evaluate function
-      % No body
+      out_1 = P;
 
       % Store outputs
       out_f_f = sparse(11, 1);
-      out_f_f(1) = 30000;
+      out_f_f(1) = out_1;
     end % f_f
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_f_s = f_s( ~, ~, ~ )
+    function out_f_s = f_s( this, ~, ~ )
       % Evaluate the force vector f_s.
 
       % Extract properties
-      % No properties
+      A = this.m_data.A;
+      I_z = this.m_data.I_z;
+      P = this.m_data.P;
 
       % Extract inputs
       % No inputs
 
       % Evaluate function
-      % No body
+      t1 = sqrt(2);
+      t3 = 0.1e1 / A;
+      t7 = P * t1;
+      out_1 = -0.37e2 / 0.384e3 * t3 * P * I_z * t1 + 0.7e1 / 0.8e1 * t7 - t7 * t3 * (-37 * I_z + 48 * A) / 384;
+      t25 = t3 * P * (25 * A - 3 * I_z);
+      t29 = t3 * P * I_z;
+      out_3 = -0.47e2 / 0.12500e5 * t3 * P * (400 * A + 27 * I_z) + 0.63e2 / 0.3125e4 * t25 + 0.3e1 / 0.4e1 * P + 0.81e2 / 0.500e3 * t29;
+      out_4 = -0.141e3 / 0.3125e4 * t25 + 0.63e2 / 0.12500e5 * t3 * P * (75 * A + 16 * I_z) - 0.27e2 / 0.125e3 * t29;
 
       % Store outputs
       out_f_s = sparse(7, 1);
-      out_f_s(1) = 31819.8050996638;
-      out_f_s(3) = -7500.00001553323;
-      out_f_s(4) = -22499.9999927785;
+      out_f_s(1) = out_1;
+      out_f_s(3) = out_3;
+      out_f_s(4) = out_4;
     end % f_s
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

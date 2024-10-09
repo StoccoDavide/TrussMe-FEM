@@ -1,8 +1,11 @@
 /*-- scss:defaults --*/
-// Base document colors
-$body-bg: #ffffff;
-$body-color: rgb(157, 142, 156);
-$link-color: #75AADB;
 
-// Code blocks
-$code-block-bg-alpha: -.8;
+$body-bg: white;
+$body-color: black;
+$link-color: #337ab7;
+$code-color: #337ab7;
+
+.title {
+  color: #337ab7;
+}
+

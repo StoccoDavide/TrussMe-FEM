@@ -134,7 +134,6 @@ classdef Test_05 < TrussMe.System
       out_K_ff = sparse(10, 10);
       out_K_ff(1, 1) = 2000000.;
       out_K_ff(4, 1) = 1000000.;
-      out_K_ff(10, 1) = 1500000.;
       out_K_ff(2, 2) = 1000000.;
       out_K_ff(8, 2) = -500000.;
       out_K_ff(3, 3) = 4000000.;
@@ -142,9 +141,12 @@ classdef Test_05 < TrussMe.System
       out_K_ff(9, 3) = 1000000.;
       out_K_ff(1, 4) = 1000000.;
       out_K_ff(4, 4) = 4000000.;
-      out_K_ff(10, 4) = 1500000.;
+      out_K_ff(6, 4) = -1500000.;
+      out_K_ff(10, 4) = 1000000.;
       out_K_ff(5, 5) = 1000000000.;
-      out_K_ff(6, 6) = 1000000000.;
+      out_K_ff(4, 6) = -1500000.;
+      out_K_ff(6, 6) = 1500000.;
+      out_K_ff(10, 6) = -1500000.;
       out_K_ff(3, 7) = 1500000.;
       out_K_ff(7, 7) = 1500000.;
       out_K_ff(9, 7) = 1500000.;
@@ -153,9 +155,9 @@ classdef Test_05 < TrussMe.System
       out_K_ff(3, 9) = 1000000.;
       out_K_ff(7, 9) = 1500000.;
       out_K_ff(9, 9) = 2000000.;
-      out_K_ff(1, 10) = 1500000.;
-      out_K_ff(4, 10) = 1500000.;
-      out_K_ff(10, 10) = 1500000.;
+      out_K_ff(4, 10) = 1000000.;
+      out_K_ff(6, 10) = -1500000.;
+      out_K_ff(10, 10) = 2000000.;
     end % K_ff
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -174,15 +176,15 @@ classdef Test_05 < TrussMe.System
 
       % Store outputs
       out_K_fs = sparse(10, 8);
-      out_K_fs(3, 1) = -1500000.;
-      out_K_fs(2, 2) = -500000.;
+      out_K_fs(1, 2) = 1500000.;
+      out_K_fs(4, 2) = 1500000.;
       out_K_fs(3, 3) = -1500000.;
       out_K_fs(2, 4) = -500000.;
       out_K_fs(3, 5) = 1000000.;
       out_K_fs(5, 6) = -1000000000.;
-      out_K_fs(6, 6) = -1000000000.;
       out_K_fs(1, 7) = -1500000.;
-      out_K_fs(10, 7) = -1500000.;
+      out_K_fs(6, 7) = -1500000.;
+      out_K_fs(10, 7) = 1500000.;
       out_K_fs(7, 8) = -1500000.;
       out_K_fs(9, 8) = -1500000.;
     end % K_fs
@@ -203,17 +205,17 @@ classdef Test_05 < TrussMe.System
 
       % Store outputs
       out_K_sf = sparse(8, 10);
+      out_K_sf(2, 1) = 1500000.;
       out_K_sf(7, 1) = -1500000.;
-      out_K_sf(2, 2) = -500000.;
       out_K_sf(4, 2) = -500000.;
-      out_K_sf(1, 3) = -1500000.;
       out_K_sf(3, 3) = -1500000.;
       out_K_sf(5, 3) = 1000000.;
+      out_K_sf(2, 4) = 1500000.;
       out_K_sf(6, 5) = -1000000000.;
-      out_K_sf(6, 6) = -1000000000.;
+      out_K_sf(7, 6) = -1500000.;
       out_K_sf(8, 7) = -1500000.;
       out_K_sf(8, 9) = -1500000.;
-      out_K_sf(7, 10) = -1500000.;
+      out_K_sf(7, 10) = 1500000.;
     end % K_sf
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -232,25 +234,21 @@ classdef Test_05 < TrussMe.System
 
       % Store outputs
       out_K_ss = sparse(8, 8);
-      out_K_ss(1, 1) = 1500000.;
-      out_K_ss(3, 1) = 1500000.;
-      out_K_ss(5, 1) = -1500000.;
-      out_K_ss(8, 1) = -1500000.;
-      out_K_ss(2, 2) = 500000.;
-      out_K_ss(4, 2) = 500000.;
-      out_K_ss(1, 3) = 1500000.;
+      out_K_ss(1, 1) = 1000000000.;
+      out_K_ss(6, 1) = -1000000000.;
+      out_K_ss(2, 2) = 1500000.;
+      out_K_ss(7, 2) = -1500000.;
       out_K_ss(3, 3) = 1500000.;
       out_K_ss(5, 3) = -1500000.;
       out_K_ss(8, 3) = -1500000.;
-      out_K_ss(2, 4) = 500000.;
       out_K_ss(4, 4) = 500000.;
-      out_K_ss(1, 5) = -1500000.;
       out_K_ss(3, 5) = -1500000.;
       out_K_ss(5, 5) = 2000000.;
       out_K_ss(8, 5) = 1500000.;
+      out_K_ss(1, 6) = -1000000000.;
       out_K_ss(6, 6) = 2000000000.;
+      out_K_ss(2, 7) = -1500000.;
       out_K_ss(7, 7) = 3000000.;
-      out_K_ss(1, 8) = -1500000.;
       out_K_ss(3, 8) = -1500000.;
       out_K_ss(5, 8) = 1500000.;
       out_K_ss(8, 8) = 3000000.;
@@ -272,6 +270,10 @@ classdef Test_05 < TrussMe.System
 
       % Store outputs
       out_d = sparse(18, 1);
+      out_d(6) = .00333333333333333;
+      out_d(12) = -.00666666666666666;
+      out_d(14) = -.0266666666666666;
+      out_d(18) = -.0166666666666666;
     end % d
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -290,6 +292,10 @@ classdef Test_05 < TrussMe.System
 
       % Store outputs
       out_d_f = sparse(10, 1);
+      out_d_f(1) = .00333333333333333;
+      out_d_f(4) = -.00666666666666666;
+      out_d_f(6) = -.0266666666666666;
+      out_d_f(10) = -.0166666666666666;
     end % d_f
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -326,6 +332,9 @@ classdef Test_05 < TrussMe.System
 
       % Store outputs
       out_f = sparse(18, 1);
+      out_f(2) = -4999.99999999999;
+      out_f(8) = 9999.99999999999;
+      out_f(14) = -5000;
     end % f
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -344,6 +353,7 @@ classdef Test_05 < TrussMe.System
 
       % Store outputs
       out_f_f = sparse(10, 1);
+      out_f_f(6) = -5000;
     end % f_f
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -362,6 +372,8 @@ classdef Test_05 < TrussMe.System
 
       % Store outputs
       out_f_s = sparse(8, 1);
+      out_f_s(2) = -4999.99999999999;
+      out_f_s(7) = 9999.99999999999;
     end % f_s
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -403,13 +415,13 @@ classdef Test_05 < TrussMe.System
       out_perm(3) = 11;
       out_perm(4) = 12;
       out_perm(5) = 13;
-      out_perm(6) = 1;
+      out_perm(6) = 14;
       out_perm(7) = 15;
       out_perm(8) = 16;
       out_perm(9) = 17;
-      out_perm(10) = 2;
-      out_perm(11) = 3;
-      out_perm(12) = 4;
+      out_perm(10) = 18;
+      out_perm(11) = 1;
+      out_perm(12) = 2;
       out_perm(13) = 3;
       out_perm(14) = 4;
       out_perm(15) = 5;
@@ -434,24 +446,24 @@ classdef Test_05 < TrussMe.System
 
       % Store outputs
       out_unperm = zeros(18, 1);
-      out_unperm(1) = 6;
-      out_unperm(2) = 10;
-      out_unperm(3) = 11;
-      out_unperm(4) = 12;
-      out_unperm(5) = 13;
+      out_unperm(1) = 11;
+      out_unperm(2) = 12;
+      out_unperm(3) = 13;
+      out_unperm(4) = 14;
+      out_unperm(5) = 15;
       out_unperm(6) = 1;
-      out_unperm(7) = 15;
-      out_unperm(8) = 16;
-      out_unperm(9) = 17;
+      out_unperm(7) = 16;
+      out_unperm(8) = 17;
+      out_unperm(9) = 18;
       out_unperm(10) = 2;
       out_unperm(11) = 3;
       out_unperm(12) = 4;
-      out_unperm(13) = 3;
-      out_unperm(14) = 4;
-      out_unperm(15) = 5;
-      out_unperm(16) = 7;
-      out_unperm(17) = 8;
-      out_unperm(18) = 9;
+      out_unperm(13) = 5;
+      out_unperm(14) = 6;
+      out_unperm(15) = 7;
+      out_unperm(16) = 8;
+      out_unperm(17) = 9;
+      out_unperm(18) = 10;
     end % unperm
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

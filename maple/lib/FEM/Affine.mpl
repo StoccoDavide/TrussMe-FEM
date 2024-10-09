@@ -34,10 +34,13 @@ export GenerateFrameXY := proc(
   p_1::{list, Vector, VECTOR, POINT},
   p_2::{list, Vector, VECTOR, POINT},
   vec::{list, Vector, VECTOR},
-  $)::FRAME;
+  {
+  distance::algebraic := -1
+  }, $)::FRAME;
 
   description "Generate a reference frame matrix from three points or vectors "
-    "<p_1>, <p_2> and vector <vec> ortogonal to XY-plane <vec>";
+    "<p_1>, <p_2> and vector <vec> ortogonal to XY-plane <vec>. Optional nodes "
+    "distance <distance> can be specified.";
 
   local p_1_tmp, p_2_tmp, vec_tmp, e_x, e_y, e_z;
 
@@ -72,7 +75,7 @@ export GenerateFrameXY := proc(
   end if;
 
   e_x := p_2_tmp - p_1_tmp;
-  e_x := e_x / TrussMe_FEM:-Norm2(e_x);
+  e_x := e_x / `if`(distance = -1, TrussMe_FEM:-Norm2(e_x), distance);
 
   e_y := LinearAlgebra:-CrossProduct(vec_tmp, e_x);
   e_y := e_y / TrussMe_FEM:-Norm2(e_y);
@@ -92,10 +95,13 @@ export GenerateFrameXZ := proc(
   p_1::{list, Vector, VECTOR, POINT},
   p_2::{list, Vector, VECTOR, POINT},
   vec::{list, Vector, VECTOR},
-  $)::FRAME;
+  {
+  distance::algebraic := -1
+  }, $)::FRAME;
 
   description "Generate a reference frame matrix from three points or vectors "
-    "<p_1>, <p_2> and vector <vec> ortogonal to XZ-plane <vec>";
+    "<p_1>, <p_2> and vector <vec> ortogonal to XZ-plane <vec>. Optional nodes "
+    "distance <distance> can be specified.";
 
   local p_1_tmp, p_2_tmp, vec_tmp, e_x, e_y, e_z;
 
@@ -130,7 +136,7 @@ export GenerateFrameXZ := proc(
   end if;
 
   e_z := p_2_tmp - p_1_tmp;
-  e_z := e_z / TrussMe_FEM:-Norm2(e_z);
+  e_z := e_z / `if`(distance = -1, TrussMe_FEM:-Norm2(e_z), distance);
 
   e_x := LinearAlgebra:-CrossProduct(vec_tmp, e_z);
   e_x := e_x / TrussMe_FEM:-Norm2(e_x);
