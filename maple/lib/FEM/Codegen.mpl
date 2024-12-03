@@ -490,7 +490,7 @@ export MatrixToMatlab := proc(
   # Generate the elements
   elements := TrussMe_FEM:-GenerateElements(lst);
 
-  # Check if the vector is sparse
+  # Check if the matrix is sparse
   if evalb(rtable_scanblock(mat, [], ':-NonZeros') < 0.5*dims[1]*dims[2]) and
      evalb(dims[1]*dims[2] > 25) then
     typestr := "sparse";
@@ -511,6 +511,87 @@ export MatrixToMatlab := proc(
     parse("typestr") = typestr
   );
 end proc: # MatrixToMatlab
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+export TensorToMatlab := proc(
+  name::string,
+  vars::list(list(symbol)),
+  ten::Array,
+  {
+  skipnull::boolean  := true,
+  data::list(symbol) := [],
+  info::string       := "No info",
+  label::string      := "out",
+  indent::string     := "  "
+  }, $)::string;
+
+  description "Translate the vector <vec> with variables <vars> into a "
+    "Matlab function named <name> and return it as a string. The optional "
+    "arguments areclass properties <data>, function description <info>, "
+    "veilig label <label>, and indentation string <indent>. If <verbose> "
+    "is true, the function prints the progress on the screen.";
+
+  local header, properties, inputs, veils, elements, outputs, dims, lst,
+    tmp_data, ten_inds, tmp_vars, tmp_vars_rm, tmp_vars_nl , typestr;
+
+  if TrussMe_FEM:-m_VerboseMode then
+    printf("Generating tensor function '%s'... ", name);
+  end if;
+
+  # Extract the function properties
+  tmp_data := convert(data, set) intersect indets(ten, symbol);
+  tmp_data := remove[flatten](j -> not (j in tmp_data), data);
+  properties := TrussMe_FEM:-GenerateProperties(
+    tmp_data, parse("indent") = indent
+  );
+
+  # Extract the function elements
+  dims := op~(2, [ArrayDims(ten)]);
+  lst, outputs := TrussMe_FEM:-ExtractElements(
+    name, ten, dims, parse("skipnull") = skipnull, parse("indent") = indent,
+    parse("label") = label
+  );
+
+  # Extract the function inputs
+  ten_inds    := indets(ten, symbol);
+  tmp_vars    := map(i -> i intersect ten_inds, map(convert, vars, set));
+  tmp_vars_rm := zip((i, j) -> remove[flatten](k -> not (k in j), i), vars, tmp_vars);
+  tmp_vars_nl := zip((i, j) -> map(k -> `if`(not (k in j), "", k), i), vars, tmp_vars);
+  inputs := TrussMe_FEM:-GenerateInputs(
+    tmp_vars_nl, parse("indent") = indent, parse("skipnull") = true
+  );
+
+  # Generate the method header
+  header := TrussMe_FEM:-GenerateHeader(
+    name, tmp_vars_rm, parse("info") = info, parse("indent") = indent,
+    parse("skipthis") = evalb(nops(tmp_data) = 0)
+  );
+
+  # Generate the elements
+  elements := TrussMe_FEM:-GenerateElements(lst);
+
+  # Check if the tensor is sparse
+  if evalb(rtable_scanblock(ten, [], ':-NonZeros') < 0.5*dims[1]*dims[2]*dims[3]) and
+     evalb(dims[1]*dims[2]*dims[3] > 25) then
+    typestr := "sparse";
+  else
+    typestr := "zeros";
+  end if;
+
+  if TrussMe_FEM:-m_VerboseMode then
+    printf("DONE\n");
+  end if;
+
+  # Generate the generated code
+  return TrussMe_FEM:-GenerateBody(
+    name, dims,
+    parse("header") = header, parse("properties") = properties,
+    parse("inputs") = inputs, parse("elements")   = elements,
+    parse("indent") = indent, parse("outputs")    = outputs,
+    parse("typestr") = typestr
+  );
+end proc: # TensorToMatlab
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -602,7 +683,12 @@ export GenerateConstructor := proc(
       "end\n"
       "\n",
       "% Call superclass constructor\n",
-      "this = this@TrussMe.System(data);\n"
+      "this = this@TrussMe.System(data",
+      # FIXME num_free_dofs
+      # FIXME num_spec_dofs
+      # FIXME num_params
+      # FIXME num_veils
+      ");\n"
     )),
     "end % ", name, "\n");
 end proc: # GenerateConstructor
@@ -635,12 +721,41 @@ export SystemToMatlab := proc(
 
   # Retrieve variables and data
   x := vars;
-  v := subs(op(rm_v_deps), convert(lhs~(fem["veils"]), list));
+  v := lhs~(fem["veils"]);
   if evalb(nops(data) > 0) then
     data_vars := lhs~(data);
   else
     data_vars := [];
   end if;
+
+  # Compute tensors and jacobians
+  fem["TK_x"]    := TrussMe_FEM:-DoTensor(fem["K"], x);
+  fem["TK_ff_x"] := TrussMe_FEM:-DoTensor(fem["K_ff"], x);
+  fem["TK_fs_x"] := TrussMe_FEM:-DoTensor(fem["K_fs"], x);
+  fem["TK_sf_x"] := TrussMe_FEM:-DoTensor(fem["K_sf"], x);
+  fem["TK_ss_x"] := TrussMe_FEM:-DoTensor(fem["K_ss"], x);
+  fem["TK_v"]    := TrussMe_FEM:-DoTensor(fem["K"], v);
+  fem["TK_ff_v"] := TrussMe_FEM:-DoTensor(fem["K_ff"], v);
+  fem["TK_fs_v"] := TrussMe_FEM:-DoTensor(fem["K_fs"], v);
+  fem["TK_sf_v"] := TrussMe_FEM:-DoTensor(fem["K_sf"], v);
+  fem["TK_ss_v"] := TrussMe_FEM:-DoTensor(fem["K_ss"], v);
+  fem["Jd_x"]    := TrussMe_FEM:-DoJacobian(fem["d"], x);
+  fem["Jd_f_x"]  := TrussMe_FEM:-DoJacobian(fem["d_f"], x);
+  fem["Jd_s_x"]  := TrussMe_FEM:-DoJacobian(fem["d_s"], x);
+  fem["Jd_v"]    := TrussMe_FEM:-DoJacobian(fem["d"], v);
+  fem["Jd_f_v"]  := TrussMe_FEM:-DoJacobian(fem["d_f"], v);
+  fem["Jd_s_v"]  := TrussMe_FEM:-DoJacobian(fem["d_s"], v);
+  fem["Jf_x"]    := TrussMe_FEM:-DoJacobian(fem["f"], x);
+  fem["Jf_f_x"]  := TrussMe_FEM:-DoJacobian(fem["f_f"], x);
+  fem["Jf_s_x"]  := TrussMe_FEM:-DoJacobian(fem["f_s"], x);
+  fem["Jf_r_x"]  := TrussMe_FEM:-DoJacobian(fem["f_r"], x);
+  fem["Jf_v"]    := TrussMe_FEM:-DoJacobian(fem["f"], v);
+  fem["Jf_f_v"]  := TrussMe_FEM:-DoJacobian(fem["f_f"], v);
+  fem["Jf_s_v"]  := TrussMe_FEM:-DoJacobian(fem["f_s"], v);
+  fem["Jf_r_v"]  := TrussMe_FEM:-DoJacobian(fem["f_r"], v);
+  fem["Jv_x"]    := TrussMe_FEM:-DoJacobian(convert(fem["veils"], Vector), x);
+
+  v := subs(op(rm_v_deps), v);
 
   # Prepare a string to check to detect if the system has been solved
   if fem["solved"] then
@@ -697,7 +812,7 @@ export SystemToMatlab := proc(
     TrussMe_FEM:-ApplyIndent(
       cat(i, i),
       TrussMe_FEM:-MatrixToMatlab(
-        "K", [x, []], subs(op(rm_v_deps), fem["K"]),
+        "K", [x, v], subs(op(rm_v_deps), fem["K"]),
         parse("data") = data_vars,
         parse("info") = "Evaluate the stiffness matrix K."
     )),
@@ -707,7 +822,7 @@ export SystemToMatlab := proc(
     TrussMe_FEM:-ApplyIndent(
       cat(i, i),
       TrussMe_FEM:-MatrixToMatlab(
-        "K_ff", [x, []], subs(op(rm_v_deps), fem["K_ff"]),
+        "K_ff", [x, v], subs(op(rm_v_deps), fem["K_ff"]),
         parse("data") = data_vars,
         parse("info") = "Evaluate the stiffness matrix K_ff."
     )),
@@ -717,7 +832,7 @@ export SystemToMatlab := proc(
     TrussMe_FEM:-ApplyIndent(
       cat(i, i),
       TrussMe_FEM:-MatrixToMatlab(
-        "K_fs", [x, []], subs(op(rm_v_deps), fem["K_fs"]),
+        "K_fs", [x, v], subs(op(rm_v_deps), fem["K_fs"]),
         parse("data") = data_vars,
         parse("info") = "Evaluate the stiffness matrix K_fs."
     )),
@@ -727,7 +842,7 @@ export SystemToMatlab := proc(
     TrussMe_FEM:-ApplyIndent(
       cat(i, i),
       TrussMe_FEM:-MatrixToMatlab(
-        "K_sf", [x, []], subs(op(rm_v_deps), fem["K_sf"]),
+        "K_sf", [x, v], subs(op(rm_v_deps), fem["K_sf"]),
         parse("data") = data_vars,
         parse("info") = "Evaluate the stiffness matrix K_sf."
     )),
@@ -737,9 +852,109 @@ export SystemToMatlab := proc(
     TrussMe_FEM:-ApplyIndent(
       cat(i, i),
       TrussMe_FEM:-MatrixToMatlab(
-        "K_ss", [x, []], subs(op(rm_v_deps), fem["K_ss"]),
+        "K_ss", [x, v], subs(op(rm_v_deps), fem["K_ss"]),
         parse("data") = data_vars,
         parse("info") = "Evaluate the stiffness matrix K_ss."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-TensorToMatlab(
+        "TK_x", [x, v], subs(op(rm_v_deps), fem["TK_x"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the tensor of K with respect to x."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-TensorToMatlab(
+        "TK_ff_x", [x, v], subs(op(rm_v_deps), fem["TK_ff_x"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the tensor of K_ff with respect to x."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-TensorToMatlab(
+        "TK_fs_x", [x, v], subs(op(rm_v_deps), fem["TK_fs_x"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the tensor of K_fs with respect to x."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-TensorToMatlab(
+        "TK_sf_x", [x, v], subs(op(rm_v_deps), fem["TK_sf_x"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the tensor of K_sf with respect to x."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-TensorToMatlab(
+        "TK_ss_x", [x, v], subs(op(rm_v_deps), fem["TK_ss_x"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the tensor of K_ss with respect to x."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-TensorToMatlab(
+        "TK_v", [x, v], subs(op(rm_v_deps), fem["TK_v"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the tensor of K with respect to v."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-TensorToMatlab(
+        "TK_ff_v", [x, v], subs(op(rm_v_deps), fem["TK_ff_v"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the tensor of K_ff with respect to v."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-TensorToMatlab(
+        "TK_fs_v", [x, v], subs(op(rm_v_deps), fem["TK_fs_v"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the tensor of K_fs with respect to v."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-TensorToMatlab(
+        "TK_sf_v", [x, v], subs(op(rm_v_deps), fem["TK_sf_v"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the tensor of K_sf with respect to v."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-TensorToMatlab(
+        "TK_ss_v", [x, v], subs(op(rm_v_deps), fem["TK_ss_v"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the tensor of K_ss with respect to v."
     )),
     i, i, "%\n",
     i, i, bar,
@@ -767,9 +982,69 @@ export SystemToMatlab := proc(
     TrussMe_FEM:-ApplyIndent(
       cat(i, i),
       TrussMe_FEM:-VectorToMatlab(
-        "d_s", [x, []], subs(op(rm_v_deps), fem["d_s"]),
+        "d_s", [x, v], subs(op(rm_v_deps), fem["d_s"]),
         parse("data") = data_vars,
         parse("info") = "Evaluate the deformation vector d_s."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-MatrixToMatlab(
+        "Jd_x", [x, v], subs(op(rm_v_deps), fem["Jd_x"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of d with respect to x."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-MatrixToMatlab(
+        "Jd_f_x", [x, v], subs(op(rm_v_deps), fem["Jd_f_x"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of d with respect to x."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-MatrixToMatlab(
+        "Jd_s_x", [x, v], subs(op(rm_v_deps), fem["Jd_s_x"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of d_s with respect to x."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-MatrixToMatlab(
+        "Jd_v", [x, v], subs(op(rm_v_deps), fem["Jd_v"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of d with respect to v."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-MatrixToMatlab(
+        "Jd_f_v", [x, v], subs(op(rm_v_deps), fem["Jd_f_v"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of d with respect to v."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-MatrixToMatlab(
+        "Jd_s_v", [x, v], subs(op(rm_v_deps), fem["Jd_s_v"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of d_s with respect to v."
     )),
     i, i, "%\n",
     i, i, bar,
@@ -787,7 +1062,7 @@ export SystemToMatlab := proc(
     TrussMe_FEM:-ApplyIndent(
       cat(i, i),
       TrussMe_FEM:-VectorToMatlab(
-        "f_f", [x, []], subs(op(rm_v_deps), fem["f_f"]),
+        "f_f", [x, v], subs(op(rm_v_deps), fem["f_f"]),
         parse("data") = data_vars,
         parse("info") = "Evaluate the force vector f_f."
     )),
@@ -807,9 +1082,110 @@ export SystemToMatlab := proc(
     TrussMe_FEM:-ApplyIndent(
       cat(i, i),
       TrussMe_FEM:-VectorToMatlab(
-        "f_r", [x, []], subs(op(rm_v_deps), fem["f_r"]),
+        "f_r", [x, v], subs(op(rm_v_deps), fem["f_r"]),
         parse("data") = data_vars,
         parse("info") = "Evaluate the force vector f_r."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-MatrixToMatlab(
+        "Jf_x", [x, v], subs(op(rm_v_deps), fem["Jf_x"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of f with respect to x."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-MatrixToMatlab(
+        "Jf_f_x", [x, v], subs(op(rm_v_deps), fem["Jf_f_x"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of f_f with respect to x."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-MatrixToMatlab(
+        "Jf_s_x", [x, v], subs(op(rm_v_deps), fem["Jf_s_x"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of f_s with respect to x."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-MatrixToMatlab(
+        "Jf_r_x", [x, v], subs(op(rm_v_deps), fem["Jf_r_x"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of f_r with respect to x."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-MatrixToMatlab(
+        "Jf_v", [x, v], subs(op(rm_v_deps), fem["Jf_v"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of f with respect to v."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-MatrixToMatlab(
+        "Jf_f_v", [x, v], subs(op(rm_v_deps), fem["Jf_f_v"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of f_f with respect to v."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-MatrixToMatlab(
+        "Jf_s_v", [x, v], subs(op(rm_v_deps), fem["Jf_s_v"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of f_s with respect to v."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-MatrixToMatlab(
+        "Jf_r_v", [x, v], subs(op(rm_v_deps), fem["Jf_r_v"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of f_r with respect to v."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-VectorToMatlab(
+        "v", [x], subs(op(rm_v_deps), convert(rhs~(fem["veils"]), Vector)),
+        parse("data")  = data_vars,
+        parse("label") = fem["label"],
+        parse("info")  = cat("Evaluate the veiling vector.", check_str)
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-MatrixToMatlab(
+        "Jv_x", [x], subs(op(rm_v_deps), fem["Jv_x"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of v with respect to x."
     )),
     i, i, "%\n",
     i, i, bar,
@@ -830,17 +1206,6 @@ export SystemToMatlab := proc(
         "unperm", [], subs(op(rm_v_deps), convert(fem["unperm"], Vector)),
         parse("data") = data_vars,
         parse("info") = "Evaluate the unpermutation vector."
-    )),
-    i, i, "%\n",
-    i, i, bar,
-    i, i, "%\n",
-    TrussMe_FEM:-ApplyIndent(
-      cat(i, i),
-      TrussMe_FEM:-VectorToMatlab(
-        "v", [x], subs(op(rm_v_deps), convert(rhs~(fem["veils"]), Vector)),
-        parse("data")  = data_vars,
-        parse("label") = fem["label"],
-        parse("info")  = cat("Evaluate the veiling vector.", check_str)
     )),
     i, i, "%\n",
     i, i, bar,
