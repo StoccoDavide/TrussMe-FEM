@@ -354,6 +354,76 @@ end proc: # GenerateBody
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+export ScalarToMatlab := proc(
+  name::string,
+  vars::list(list(symbol)),
+  scl::algebraic,
+  {
+  skipnull::boolean  := true,
+  data::list(symbol) := [],
+  info::string       := "No info",
+  label::string      := "out",
+  indent::string     := "  "
+  }, $)::string;
+
+  description "Translate the scalar <scl> with variables <vars> into a "
+    "Matlab function named <name> and return it as a string. The optional "
+    "arguments and class properties <data>, function description <info>, "
+    "veiling label <label>, and indentation string <indent>.";
+
+  local header, properties, inputs, veils, elements, outputs, dims, lst,
+    tmp_data, scl_inds, tmp_vars, tmp_vars_rm, tmp_vars_nl, typestr;
+
+  if TrussMe_FEM:-m_VerboseMode then
+    printf("Generating scalar function '%s'... ", name);
+  end if;
+
+  # Extract the function properties
+  tmp_data := convert(data, set) intersect indets(scl, symbol);
+  tmp_data := remove[flatten](j -> not evalb(j in tmp_data), data);
+  properties := TrussMe_FEM:-GenerateProperties(
+    tmp_data, parse("indent") = indent
+  );
+
+  # Extract the function elements
+  lst, outputs := TrussMe_FEM:-ExtractElements(
+    name, [scl], [1], parse("skipnull") = skipnull, parse("indent") = indent,
+    parse("label") = label
+  );
+
+  # Extract the function inputs
+  scl_inds    := indets(scl, symbol);
+  tmp_vars    := map(i -> i intersect scl_inds, map(convert, vars, set));
+  tmp_vars_rm := zip((i, j) -> remove[flatten](k -> not evalb(k in j), i), vars, tmp_vars);
+  tmp_vars_nl := zip((i, j) -> map(k -> `if`(not evalb(k in j), "", k), i), vars, tmp_vars);
+  inputs := TrussMe_FEM:-GenerateInputs(
+    tmp_vars_nl, parse("indent") = indent, parse("skipnull") = true
+  );
+
+  # Generate the method header
+  header := TrussMe_FEM:-GenerateHeader(
+    name, tmp_vars_rm, parse("info") = info, parse("indent") = indent,
+    parse("skipthis") = evalb(nops(tmp_data) = 0)
+  );
+
+  # Generate the elements
+  elements := TrussMe_FEM:-GenerateElements(lst);
+
+  if TrussMe_FEM:-m_VerboseMode then
+    printf("DONE\n");
+  end if;
+
+  # Generate the generated code
+  return TrussMe_FEM:-GenerateBody(
+    name, [1],
+    parse("header")  = header, parse("properties") = properties,
+    parse("inputs")  = inputs, parse("elements")   = elements,
+    parse("indent")  = indent, parse("outputs")    = outputs
+  );
+end proc: # ScalarToMatlab
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 export VectorToMatlab := proc(
   name::string,
   vars::list(list(symbol)),
@@ -644,6 +714,7 @@ export GenerateConstructor := proc(
   {
   data::list(symbol = algebraic) := [],
   info::string                   := "Class constructor.",
+  nums::list(nonnegint)          := [0, 0, 0, 0],
   indent::string                 := "  "
   }, $)::string;
 
@@ -683,11 +754,8 @@ export GenerateConstructor := proc(
       "end\n"
       "\n",
       "% Call superclass constructor\n",
-      "this = this@TrussMe.System(data",
-      # FIXME num_free_dofs
-      # FIXME num_spec_dofs
-      # FIXME num_params
-      # FIXME num_veils
+      "this = this@TrussMe.System(data, ",
+      nums[1], ", ", nums[2], ", ", nums[3], ", ", nums[4],
       ");\n"
     )),
     "end % ", name, "\n");
@@ -702,13 +770,14 @@ export SystemToMatlab := proc(
   vars::list(symbol)             := [],
   data::list(symbol = algebraic) := [],
   info::string                   := "No class description provided.",
+  cost::algebraic                := 0,
   label::string                  := "out",
   indent::string                 := "  "
   }, $)::string;
 
   description "Generate a FEM system <fem> with name <name>, with optional "
     "data <data>, description <info>, output label <label> and indentation "
-    "<indent>.";
+    "<indent>. The cost function of the system to be optimized is <cost>.";
 
   local i, bar, rm_v_deps, data_vars, x, v, props_str, check_str;
 
@@ -726,6 +795,15 @@ export SystemToMatlab := proc(
     data_vars := lhs~(data);
   else
     data_vars := [];
+  end if;
+
+  # Check the cost function
+  if type(cost, list) and (nops(cost) <> 0) then
+    error("cost function must be a scalar.");
+  elif type(cost, list) and (nops(cost) = 0) then
+    fem["c"] := 0;
+  else
+    fem["c"] := cost;
   end if;
 
   # Compute tensors and jacobians
@@ -754,6 +832,8 @@ export SystemToMatlab := proc(
   fem["Jf_s_v"]  := TrussMe_FEM:-DoJacobian(fem["f_s"], v);
   fem["Jf_r_v"]  := TrussMe_FEM:-DoJacobian(fem["f_r"], v);
   fem["Jv_x"]    := TrussMe_FEM:-DoJacobian(convert(fem["veils"], Vector), x);
+  fem["Dc_x"]    := TrussMe_FEM:-DoGradient(fem["c"], x);
+  fem["Dc_v"]    := TrussMe_FEM:-DoGradient(fem["c"], v);
 
   v := subs(op(rm_v_deps), v);
 
@@ -803,6 +883,10 @@ export SystemToMatlab := proc(
       GenerateConstructor(
         name,
         parse("data")   = data,
+        parse("nums")   = [
+          LinearAlgebra:-Dimension(fem["d_f"]), LinearAlgebra:-Dimension(fem["d_s"]),
+          nops(x), nops(v)
+        ],
         parse("info")   = "Class constructor.",
         parse("indent") = i
     )),
@@ -1210,6 +1294,43 @@ export SystemToMatlab := proc(
     i, i, "%\n",
     i, i, bar,
     i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-ScalarToMatlab(
+        "c", [x, v], subs(op(rm_v_deps), fem["c"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the cost function."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-VectorToMatlab(
+        "Dc_x", [x, v], subs(op(rm_v_deps), fem["Dc_x"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of the cost function with respect to x."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    TrussMe_FEM:-ApplyIndent(
+      cat(i, i),
+      TrussMe_FEM:-VectorToMatlab(
+        "Dc_v", [x, v], subs(op(rm_v_deps), fem["Dc_v"]),
+        parse("data") = data_vars,
+        parse("info") = "Evaluate the Jacobian of the cost function with respect to v."
+    )),
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
+    i, i, "function out = compute_Dc_x( this, x, v )\n",
+    i, i, i, "% Compute the gradient of the cost function with respect to x\n",
+    i, i, i, "out = this.Dc_x(x, v) + this.Dc_v(x, v)'*this.Jv_x(x);\n",
+    i, i, "end\n",
+    i, i, "%\n",
+    i, i, bar,
+    i, i, "%\n",
     i, "end\n",
     "end % ", name, "\n",
     "\n",
@@ -1227,13 +1348,15 @@ export GenerateMatlabCode := proc(
   vars::list(symbol)             := [],
   data::list(symbol = algebraic) := [],
   info::string                   := "No class description provided.",
+  cost::algebraic                := 0,
   label::string                  := "out",
   indent::string                 := "  "
   }, $)
 
   description "Generate Matlab code for the FEM system <fem> with name <name>, "
     "with optional data <data>, description <info>, output label <label> and "
-    "indentation <indent>, variables <vars> and output path <path>.";
+    "indentation <indent>, variables <vars> and output path <path>. The cost "
+    "function of the system to be optimized is <cost>.";
 
   TrussMe_FEM:-GenerateFile(
     cat(path, name, ".m"),
@@ -1242,6 +1365,7 @@ export GenerateMatlabCode := proc(
       parse("vars")   = vars,
       parse("data")   = data,
       parse("info")   = info,
+      parse("cost")   = cost,
       parse("label")  = label,
       parse("indent") = indent
   ));

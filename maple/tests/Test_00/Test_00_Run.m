@@ -44,10 +44,7 @@ f_sc = obj.compute_f_s(x, v);
 f_c  = obj.compute_f(x, v);
 
 % Check size of matrices and vectors
-obj.check_size(x, v);
-
-% Check symmetry of stiffness matrices
-obj.check_symmetry(x, v);
+obj.sanity_check(x, v);
 
 % Check deformation solution
 assert(norm(d_c - d) < 1.0e-08, 'TrussMe - Test_00: Failed to compute displacements.');

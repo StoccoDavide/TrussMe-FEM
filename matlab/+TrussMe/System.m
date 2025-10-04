@@ -17,11 +17,6 @@ classdef System < handle
     %
     m_num_spec_dofs;
     %
-    %> Number of veiling variables \mathbf{v} of the system.
-    %
-    m_num_veils;
-    %
-    %
     %> Number of parameters \mathbf{x} of the system.
     %
     m_num_params;
@@ -173,7 +168,7 @@ classdef System < handle
     %>
     %> \param t_num_params The number of veiling variables \mathbf{c} of the system.
     %
-    function set_num_veils( this, t_num_params )
+    function set_num_veils( this, t_num_veils )
       this.m_num_veils = t_num_veils;
     end
     %
@@ -261,8 +256,8 @@ classdef System < handle
     %
     function out = compute_Jd_x( this, x, v, varargin )
       out = [ ...
-        this.Jd_f_x(x, v, varargin{:}); ...
-        this.compute_Jd_s_x(x, v) ...
+        this.Jd_f_x(x, v); ...
+        this.compute_Jd_s_x(x, v, varargin{:}) ...
       ];
     end
     %
@@ -284,7 +279,25 @@ classdef System < handle
     %> \f$ \mathbf{Jd}_{f\mathbf{x}} \f$.
     %
     function out = compute_Jd_f_x( this, x, v, varargin )
-      out = [];
+      K_ff    = this.K_ff(x, v);
+      TK_ff_x = this.TK_ff_x(x, v);
+      K_fs    = this.K_fs(x, v);
+      TK_fs_x = this.TK_fs_x(x, v);
+      d_s     = this.d_s(x, v);
+      Jd_s_x  = this.Jd_s_x(x, v);
+      d_f     = this.compute_d_f(x, v, varargin{:});
+      f_f     = this.f_f(x, v);
+      Jf_f_x  = this.Jf_f_x(x, v);
+
+      out = zeros(this.m_num_free_dofs, this.m_num_params);
+      for i = 1:size(TK_fs_x, 3)
+        out(:,i) = TK_fs_x(:,:,i) * d_s;
+      end
+      out = out + Jf_f_x - K_fs*d_s;
+      for i = 1:size(TK_ff_x, 3)
+        out(:,i) = out(:,i) - TK_ff_x(:,:,i) * d_f;
+      end
+      out = K_ff \ out;
     end
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -330,7 +343,25 @@ classdef System < handle
     %> \f$ \mathbf{Jd}_{f\mathbf{v}} \f$.
     %
     function out = compute_Jd_f_v( this, x, v, varargin )
-      out = [];
+      K_ff    = this.K_ff(x, v);
+      TK_ff_v = this.TK_ff_v(x, v);
+      K_fs    = this.K_fs(x, v);
+      TK_fs_v = this.TK_fs_v(x, v);
+      d_s     = this.compute_d_s(x, v, varargin{:});
+      Jd_s_v  = this.compute_Jd_s_v(x, v, varargin{:});
+      d_f     = this.d_f(x, v);
+      f_f     = this.f_f(x, v);
+      Jf_f_v  = this.Jf_f_v(x, v);
+
+      out = zeros(this.m_num_free_dofs, this.m_num_veils);
+      for i = 1:size(TK_fs_v, 3)
+        out(:,i) = TK_fs_v(:,:,i) * d_s;
+      end
+      out = out + Jf_f_v - K_fs.d_s;
+      for i = 1:size(TK_ff_v, 3)
+        out(:,i) = out(:,i) - TK_ff_v(:,:,i) * d_f;
+      end
+      out = K_ff \ out;
     end
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -428,11 +459,25 @@ classdef System < handle
     %> \f$ \mathbf{Jf}_{s\mathbf{x}} \f$.
     %
     function out = compute_Jf_s_x( this, x, v, varargin )
-      out = zeros(this.m_num_free_dofs, this.m_num_params);
-      out = this.TK_sf_x(x, v)*this.compute_d_f(x, v, varargin{:}) + ... % FIXME
-            this.K_sf(x, v)*this.compute_Jd_f_x(x, v, varargin{:}) + ...
-            this.TK_ss_x(x, v)*this.d_s(x, v) + ...
-            this.K_ss(x, v)*this.Jd_s_x(x, v) - this.Jf_r_x(x, v);
+      K_sf    = this.K_sf(x, v);
+      TK_sf_x = this.TK_sf_x(x, v);
+      K_ss    = this.K_ss(x, v);
+      TK_ss_x = this.TK_ss_x(x, v);
+      d_f     = this.compute_d_f(x, v, varargin{:});
+      d_s     = this.compute_d_s(x, v);
+      Jd_f_x  = this.compute_Jd_f_x(x, v, varargin{:});
+      Jd_s_x  = this.Jd_s_x(x, v);
+      Jf_r_x  = this.Jf_r_x(x, v);
+
+      out = zeros(this.m_num_spec_dofs, this.m_num_params);
+      for i = 1:size(TK_sf_x, 3)
+        out(:,i) = TK_sf_x(:,:,i) * d_f;
+      end
+      out = out + this.K_sf(x, v)*this.compute_Jd_f_x(x, v, varargin{:});
+      for i = 1:size(TK_ss_x, 3)
+        out(:,i) = out(:,i) + TK_ss_x(:,:,i) * d_s;
+      end
+      out = out + this.K_ss(x, v)*this.Jd_s_x(x, v) - this.Jf_r_x(x, v);
     end
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -482,10 +527,25 @@ classdef System < handle
     %> \f$ \mathbf{Jf}_{s\mathbf{v}} \f$.
     %
     function out = compute_Jf_s_v( this, x, v, varargin )
-      out = this.TK_sf_v(x, v)*this.compute_d_f(x, v, varargin{:}) + ... % FIXME
-            this.K_sf(x, v)*this.compute_Jd_f_v(x, v, varargin{:}) + ...
-            this.TK_ss_v(x, v)*this.d_s(x, v) + ...
-            this.K_ss(x, v)*this.Jd_s_v(x, v) - this.Jf_r_v(x, v);
+      K_sf    = this.K_sf(x, v);
+      TK_sf_v = this.TK_sf_v(x, v);
+      K_ss    = this.K_ss(x, v);
+      TK_ss_v = this.TK_ss_v(x, v);
+      d_f     = this.compute_d_f(x, v, varargin{:});
+      d_s     = this.compute_d_s(x, v, varargin{:});
+      Jd_f_v  = this.compute_Jd_f_v(x, v, varargin{:});
+      Jd_s_v  = this.Jd_s_v(x, v, varargin{:});
+      Jf_r_v  = this.Jf_r_v(x, v);
+
+      out = zeros(this.m_num_free_dofs, this.m_num_veils);
+      for i = 1:size(TK_sf_v, 3)
+        out(:,i) = TK_sf_v(:,:,i) * d_f;
+      end
+      out = out + this.K_sf(x, v)*this.compute_Jd_f_v(x, v, varargin{:});
+      for i = 1:size(TK_ss_v, 3)
+        out(:,i) = out(:,i) + TK_ss_v(:,:,i) * d_s;
+      end
+      out = out + this.K_ss(x, v)*this.Jd_s_v(x, v) - this.Jf_r_v(x, v);
     end
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -504,30 +564,62 @@ classdef System < handle
       CMD = 'TrussMe.System.sanity_check(...): ';
 
       % Evaluate stiffness matrices
-      K_ff = this.K_ff(x, v);
-      K_sf = this.K_sf(x, v);
-      K_fs = this.K_fs(x, v);
-      K_ss = this.K_ss(x, v);
-      K    = this.K(x, v);
+      K_ff    = this.K_ff(x, v);
+      K_sf    = this.K_sf(x, v);
+      K_fs    = this.K_fs(x, v);
+      K_ss    = this.K_ss(x, v);
+      K       = this.K(x, v);
+      TK_ff_x = this.TK_ff_x(x, v);
+      TK_sf_x = this.TK_sf_x(x, v);
+      TK_fs_x = this.TK_fs_x(x, v);
+      TK_ss_x = this.TK_ss_x(x, v);
+      TK_x    = this.TK_x(x, v);
+      TK_ff_v = this.TK_ff_v(x, v);
+      TK_sf_v = this.TK_sf_v(x, v);
+      TK_fs_v = this.TK_fs_v(x, v);
+      TK_ss_v = this.TK_ss_v(x, v);
+      TK_v    = this.TK_v(x, v);
 
       % Evaluate displacements
-      d_f = this.d_f(x, v);
-      d_s = this.d_s(x, v);
-      d   = this.d(x, v);
+      d_f    = this.d_f(x, v);
+      d_s    = this.d_s(x, v);
+      d      = this.d(x, v);
+      Jd_f_x = this.Jd_f_x(x, v);
+      Jd_s_x = this.Jd_s_x(x, v);
+      Jd_x   = this.Jd_x(x, v);
+      Jd_f_v = this.Jd_f_v(x, v);
+      Jd_s_v = this.Jd_s_v(x, v);
+      Jd_v   = this.Jd_v(x, v);
 
       % Evaluate force vectors
-      f_f = this.f_f(x, v);
-      f_s = this.f_s(x, v);
-      f_r = this.f_r(x, v);
-      f   = this.f(x, v);
+      f_f    = this.f_f(x, v);
+      f_s    = this.f_s(x, v);
+      f_r    = this.f_r(x, v);
+      f      = this.f(x, v);
+      Jf_f_x = this.Jf_f_x(x, v);
+      Jf_s_x = this.Jf_s_x(x, v);
+      Jf_r_x = this.Jf_r_x(x, v);
+      Jf_x   = this.Jf_x(x, v);
+      Jf_f_v = this.Jf_f_v(x, v);
+      Jf_s_v = this.Jf_s_v(x, v);
+      Jf_r_v = this.Jf_r_v(x, v);
+      Jf_v   = this.Jf_v(x, v);
 
       % Compute displacements
-      d_fc = this.compute_d_f(x, v, varargin{:});
-      d_c = this.compute_d(x, v, varargin{:});
+      d_fc    = this.compute_d_f(x, v, varargin{:});
+      d_c     = this.compute_d(x, v, varargin{:});
+      Jd_fc_x = this.compute_Jd_f_x(x, v, varargin{:});
+      Jd_c_x  = this.compute_Jd_x(x, v, varargin{:});
+      Jd_fc_v = this.compute_Jd_f_v(x, v, varargin{:});
+      Jd_c_v  = this.compute_Jd_v(x, v, varargin{:});
 
       % Compute force vectors
-      f_sc = this.compute_f_s(x, v);
-      f_c  = this.compute_f(x, v);
+      f_sc    = this.compute_f_s(x, v);
+      f_c     = this.compute_f(x, v);
+      Jf_sc_x = this.compute_Jf_s_x(x, v, varargin{:});
+      Jf_c_x  = this.compute_Jf_x(x, v, varargin{:});
+      Jf_sc_v = this.compute_Jf_s_v(x, v, varargin{:});
+      Jf_c_v  = this.compute_Jf_v(x, v, varargin{:});
 
       % Check sizes
       assert(size(K_ff, 1) == size(K_ff, 2), [CMD, 'K_ff is not square.']);

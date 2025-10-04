@@ -36,8 +36,7 @@ Then test the module in a Maple worksheet or document by executing `TrussMe_FEM:
 
 ### LEM and LAST Packages {.unnumbered}
 
-LEM and LAST packages are not mandatory for the TrussME-FEM module to work. However, they are highly recommended to facilitate the symbolic manipulation of the FEM system.. These packages are not included in the `maple` folder and must be downloaded separately from the [LEM GitHub repository](https://github.com/StoccoDavide/LEM) and [LAST GitHub repository](https://github.com/StoccoDavide/LAST).
-Similarly as before, you can clone the repositories using the following command:
+LEM and LAST packages are not mandatory for the TrussME-FEM module to work. However, they are highly recommended to facilitate the symbolic manipulation of the FEM system.. These packages are not included in the `maple` folder and must be downloaded separately from the [LEM GitHub repository](https://github.com/StoccoDavide/LEM) and [LAST GitHub repository](https://github.com/StoccoDavide/LAST). Similarly as before, you can clone the repositories using the following command:
 
 ```bash
 git clone https://github.com/StoccoDavide/LEM.git

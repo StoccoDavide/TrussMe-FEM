@@ -29,7 +29,7 @@ classdef Test_00 < TrussMe.System
       end
 
       % Call superclass constructor
-      this = this@TrussMe.System(data);
+      this = this@TrussMe.System(data, 15, 15, 0, 0);
     end % Test_00
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -522,6 +522,186 @@ classdef Test_00 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
+    function out_TK_x = TK_x( ~, ~, ~ )
+      % Evaluate the tensor of K with respect to x.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_TK_x = zeros(30, 30, 0);
+    end % TK_x
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_TK_ff_x = TK_ff_x( ~, ~, ~ )
+      % Evaluate the tensor of K_ff with respect to x.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_TK_ff_x = zeros(15, 15, 0);
+    end % TK_ff_x
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_TK_fs_x = TK_fs_x( ~, ~, ~ )
+      % Evaluate the tensor of K_fs with respect to x.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_TK_fs_x = zeros(15, 15, 0);
+    end % TK_fs_x
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_TK_sf_x = TK_sf_x( ~, ~, ~ )
+      % Evaluate the tensor of K_sf with respect to x.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_TK_sf_x = zeros(15, 15, 0);
+    end % TK_sf_x
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_TK_ss_x = TK_ss_x( ~, ~, ~ )
+      % Evaluate the tensor of K_ss with respect to x.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_TK_ss_x = zeros(15, 15, 0);
+    end % TK_ss_x
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_TK_v = TK_v( ~, ~, ~ )
+      % Evaluate the tensor of K with respect to v.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_TK_v = zeros(30, 30, 0);
+    end % TK_v
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_TK_ff_v = TK_ff_v( ~, ~, ~ )
+      % Evaluate the tensor of K_ff with respect to v.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_TK_ff_v = zeros(15, 15, 0);
+    end % TK_ff_v
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_TK_fs_v = TK_fs_v( ~, ~, ~ )
+      % Evaluate the tensor of K_fs with respect to v.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_TK_fs_v = zeros(15, 15, 0);
+    end % TK_fs_v
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_TK_sf_v = TK_sf_v( ~, ~, ~ )
+      % Evaluate the tensor of K_sf with respect to v.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_TK_sf_v = zeros(15, 15, 0);
+    end % TK_sf_v
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_TK_ss_v = TK_ss_v( ~, ~, ~ )
+      % Evaluate the tensor of K_ss with respect to v.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_TK_ss_v = zeros(15, 15, 0);
+    end % TK_ss_v
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
     function out_d = d( ~, ~, ~ )
       % Evaluate the deformation vector d.
 
@@ -591,6 +771,114 @@ classdef Test_00 < TrussMe.System
       % Store outputs
       out_d_s = sparse(15, 1);
     end % d_s
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Jd_x = Jd_x( ~, ~, ~ )
+      % Evaluate the Jacobian of d with respect to x.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Jd_x = zeros(30, 0);
+    end % Jd_x
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Jd_f_x = Jd_f_x( ~, ~, ~ )
+      % Evaluate the Jacobian of d with respect to x.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Jd_f_x = zeros(15, 0);
+    end % Jd_f_x
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Jd_s_x = Jd_s_x( ~, ~, ~ )
+      % Evaluate the Jacobian of d_s with respect to x.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Jd_s_x = zeros(15, 0);
+    end % Jd_s_x
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Jd_v = Jd_v( ~, ~, ~ )
+      % Evaluate the Jacobian of d with respect to v.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Jd_v = zeros(30, 0);
+    end % Jd_v
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Jd_f_v = Jd_f_v( ~, ~, ~ )
+      % Evaluate the Jacobian of d with respect to v.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Jd_f_v = zeros(15, 0);
+    end % Jd_f_v
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Jd_s_v = Jd_s_v( ~, ~, ~ )
+      % Evaluate the Jacobian of d_s with respect to v.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Jd_s_v = zeros(15, 0);
+    end % Jd_s_v
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
@@ -677,6 +965,186 @@ classdef Test_00 < TrussMe.System
       % Store outputs
       out_f_r = sparse(15, 1);
     end % f_r
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Jf_x = Jf_x( ~, ~, ~ )
+      % Evaluate the Jacobian of f with respect to x.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Jf_x = zeros(30, 0);
+    end % Jf_x
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Jf_f_x = Jf_f_x( ~, ~, ~ )
+      % Evaluate the Jacobian of f_f with respect to x.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Jf_f_x = zeros(15, 0);
+    end % Jf_f_x
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Jf_s_x = Jf_s_x( ~, ~, ~ )
+      % Evaluate the Jacobian of f_s with respect to x.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Jf_s_x = zeros(15, 0);
+    end % Jf_s_x
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Jf_r_x = Jf_r_x( ~, ~, ~ )
+      % Evaluate the Jacobian of f_r with respect to x.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Jf_r_x = zeros(15, 0);
+    end % Jf_r_x
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Jf_v = Jf_v( ~, ~, ~ )
+      % Evaluate the Jacobian of f with respect to v.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Jf_v = zeros(30, 0);
+    end % Jf_v
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Jf_f_v = Jf_f_v( ~, ~, ~ )
+      % Evaluate the Jacobian of f_f with respect to v.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Jf_f_v = zeros(15, 0);
+    end % Jf_f_v
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Jf_s_v = Jf_s_v( ~, ~, ~ )
+      % Evaluate the Jacobian of f_s with respect to v.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Jf_s_v = zeros(15, 0);
+    end % Jf_s_v
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Jf_r_v = Jf_r_v( ~, ~, ~ )
+      % Evaluate the Jacobian of f_r with respect to v.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Jf_r_v = zeros(15, 0);
+    end % Jf_r_v
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_v = v( ~, ~ )
+      % Evaluate the veiling vector.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_v = zeros(0, 1);
+    end % v
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Jv_x = Jv_x( ~, ~ )
+      % Evaluate the Jacobian of v with respect to x.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Jv_x = zeros(0, 0);
+    end % Jv_x
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
@@ -776,8 +1244,8 @@ classdef Test_00 < TrussMe.System
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
-    function out_v = v( ~, ~ )
-      % Evaluate the veiling vector.
+    function out_c = c( ~, ~, ~ )
+      % Evaluate the cost function.
 
       % Extract properties
       % No properties
@@ -789,8 +1257,51 @@ classdef Test_00 < TrussMe.System
       % No body
 
       % Store outputs
-      out_v = zeros(0, 1);
-    end % v
+      out_c = zeros(1, 1);
+    end % c
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Dc_x = Dc_x( ~, ~, ~ )
+      % Evaluate the Jacobian of the cost function with respect to x.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Dc_x = zeros(0, 1);
+    end % Dc_x
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out_Dc_v = Dc_v( ~, ~, ~ )
+      % Evaluate the Jacobian of the cost function with respect to v.
+
+      % Extract properties
+      % No properties
+
+      % Extract inputs
+      % No inputs
+
+      % Evaluate function
+      % No body
+
+      % Store outputs
+      out_Dc_v = zeros(0, 1);
+    end % Dc_v
+    %
+    % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    %
+    function out = compute_Dc_x( this, x, v )
+      % Compute the gradient of the cost function with respect to x
+      out = this.Dc_x(x, v) + this.Dc_v(x, v)'*this.Jv_x(x);
+    end
     %
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %
